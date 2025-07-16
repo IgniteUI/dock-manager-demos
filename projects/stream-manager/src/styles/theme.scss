@@ -1,0 +1,62 @@
+@use 'sass:map';
+@forward 'igniteui-theming';
+@use 'igniteui-theming' as ig;
+@use 'igniteui-theming/sass/typography/presets/bootstrap' as *;
+@use 'igniteui-theming/sass/elevations/presets' as *;
+@use 'igniteui-theming/sass/color/presets/dark/bootstrap' as *;
+@use 'global';
+
+$sm-palette: ig.palette(
+	$primary: rgb(156, 39, 176),
+	$secondary: #9af2e4,
+	$surface: white,
+	$info: #1377d5,
+	$gray: #fff,
+	$success: #4eb862,
+	$warn: #faa419,
+	$error: #ff134a,
+	$variant: 'bootstrap',
+);
+
+
+@mixin sm-theme($starting-theme, $theme-variant, $palette) {
+	[dir='rtl'],
+	:root:dir(rtl) {
+		--ig-dir: -1;
+	}
+	
+	@include ig.palette($palette);
+	@include ig.typography($font-family: $typeface, $type-scale: $type-scale);
+	
+	:root {
+		--ig-theme: #{$starting-theme};
+		--ig-theme-variant: #{$theme-variant};
+		--ig-spacing: 1;
+		--ig-spacing-inline: 1;
+		--ig-spacing-block: 1;
+		--ig-size-small: 1;
+		--ig-size-medium: 2;
+		--ig-size-large: 3;
+		--ig-scrollbar-size: #{ig.rem(16px)};
+		
+		--ig-font-family: 'Roboto', sans-serif;
+		--sm-dock-manager-gutter: 1rem;
+		
+		--sm-special-black: var(--ig-gray-900-contrast);
+		--sm-special-white: var(--ig-gray-50-contrast);
+		--sm-border-color: var(--ig-gray-100);
+		
+		/* GLOBAL IGC-LIST THEME */
+		--ig-list-background: red;
+		--ig-list-hover-background: var(--ig-gray-50);
+		--ig-list-foreground: var(--sm-special-white);
+		--ig-list-item-background: var(--sm-special-black);
+		--ig-list-header-background: var(--sm-special-black);
+		--ig-list-header-foreground: var(--sm-special-white);
+		--ig-list-item-foreground: var(--sm-special-white);
+		--ig-avatar-background: var(--ig-primary-500);
+	}
+}
+
+@include sm-theme('bootstrap', 'dark', $sm-palette);
+

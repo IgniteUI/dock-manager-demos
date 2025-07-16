@@ -1,0 +1,131 @@
+@use 'igniteui-theming' as *;
+@use '../../styles/animations' as *;
+
+:host {
+	--ig-card-resting-elevation: 0;
+	--ig-card-hover-elevation: 0;
+	--ig-card-background: var(--sm-special-black);
+	--ig-card-outline-color: transparent;
+	--ig-card-border-radius: 0;
+}
+
+.sm-stream-preview {
+	border: 0;
+}
+
+.sm-stream-preview__title {
+	@include type-style(h3);
+	
+	display: flex;
+	align-items: center;
+	gap: rem(8px);
+	
+	a {
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		gap: rem(4px);
+	}
+	
+}
+
+.sm-stream-preview__header {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min-content, 1fr));
+	
+	a {
+		color: var(--ig-primary-500);
+	}
+}
+
+.sm-stream-preview__subtitle {
+	@include type-style(h4);
+	
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: nowrap;
+	flex-grow: 1;
+	width: 100%;
+}
+
+.sm-stream-preview__state {
+	@include type-style(caption);
+	
+	display: flex;
+	align-items: center;
+	margin-inline-start: auto;
+	gap: rem(8px);
+	
+	
+	::part(base) {
+		--size: #{rem(10px)};
+	}
+}
+
+.sm-stream-preview__content {
+	display: grid;
+	gap: rem(8px);
+}
+
+.sm-stream-preview__social-channels {
+	--ig-size: #{rem(18px)};
+	
+	a {
+		display: flex;
+		align-items: center;
+		gap: rem(2px);
+		padding-inline: rem(2px);
+		text-decoration: none;
+		color: var(--ig-gray-200);
+		
+		&:hover {
+			color: var(--ig-primary-500);
+		}
+	}
+}
+
+.sm-stream-preview__social-channels-name {
+	@include type-style(body-2);
+}
+
+.sm-stream-preview__social,
+.sm-stream-preview__social-channels,
+.sm-stream-preview__genres {
+	display: flex;
+	align-items: center;
+	gap: rem(8px);
+	flex-wrap: wrap;
+}
+
+.sm-stream-preview__genres {
+	igc-chip {
+		--background: var(--ig-gray-50);
+		--text-color: var(--ig-gray-400);
+	}
+	
+	//--focus-outline-color: ;
+	//--focus-selected-outline-color: ;
+	//--hover-text-color: ;
+	//--hover-background: ;
+	//--focus-text-color: ;
+	//--selected-text-color: ;
+	//--selected-background: ;
+	//--hover-selected-text-color: ;
+	//--hover-selected-background: ;
+	//--border-radius: ;
+	
+	//--focus-background: ;
+	//--focus-selected-background: ;
+	//--focus-selected-text-color: ;
+	
+	margin-block-end: rem(4px);
+	
+}
+
+.sm-stream-preview__social {
+	justify-content: space-between;
+}
+
+.sm-stream-preview__followers {
+	@include type-style(caption);
+}

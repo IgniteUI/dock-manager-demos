@@ -1,0 +1,13 @@
+@use 'styles/theme' as *;
+
+:host {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100%;
+}
+
+.sm-main {
+	display: flex;
+	grid-row: 2;
+	position: relative;
+}

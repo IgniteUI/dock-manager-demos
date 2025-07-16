@@ -1,0 +1,74 @@
+@use 'igniteui-theming' as *;
+
+.sm-header {
+	--background: var(--sm-special-black);
+	--border-color: var(--sm-border-color);
+	
+	gap: rem(16px);
+}
+
+.sm-header__logo,
+.sm-header__info,
+.sm-header__actions,
+.sm-info-item {
+	display: flex;
+	align-items: center;
+}
+
+.sm-header__logo {
+	gap: rem(10px);
+}
+
+.sm-header__info {
+	justify-content: center;
+	width: 100%;
+}
+
+.sm-header__actions {
+	gap: rem(16px);
+	
+	> nav {
+		display: flex;
+		gap: inherit;
+		
+		> * {
+			padding: rem(3px);
+		}
+	}
+}
+
+.sm-info-item {
+	font-size: rem(14px);
+	font-weight: 400;
+	gap: rem(2px);
+	padding: rem(8px) rem(16px);
+	min-width: rem(120px);
+}
+
+.sm-info-item__label {
+	color: var(--ig-gray-300);
+}
+
+.sm-info-item__value {
+	color: var(--ig-gray-900);
+	padding-inline: 8px;
+}
+
+.sm-info-item__value--progress {
+	--track-size: #{rem(4px)};
+	--track-border-radius: 0;
+	
+	min-width: rem(80px);
+}
+
+.sm-header__logomark {
+	width: rem(24px);
+	height: rem(24px);
+	fill: var(--ig-secondary-900);
+}
+
+.sm-header__logo-text {
+	font-size: rem(14px);
+	text-transform: uppercase;
+	font-weight: 700;
+}

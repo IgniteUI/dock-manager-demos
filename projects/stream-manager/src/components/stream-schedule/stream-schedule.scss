@@ -1,0 +1,23 @@
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/typography' as *;
+
+.sm-schedule-list {
+	--border-width: 0;
+	--border-radius: 0;
+	
+	padding: rem(16px);
+}
+
+.sm-schedule-item {
+	padding-block: rem(8px);
+}
+
+.sm-schedule-item__label {
+	@include type-style(overline);
+	
+	color: var(--ig-primary-500);
+}
+
+.sm-schedule-item__value {
+	@include type-style(caption);
+}

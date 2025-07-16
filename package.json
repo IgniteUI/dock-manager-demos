@@ -1,0 +1,30 @@
+{
+  "name": "dock-manager-demos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": "infragistics",
+  "description": "Showcase apps for igniteui-dockmanager",
+  "scripts": {
+    "dev": "vite",
+    "dev:stream": "vite projects/stream-manager",
+    "build": "tsc && vite build",
+    "build:ci": "tsc && vite build --mode ci",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.13",
+    "@igniteui/material-icons-extended": "^3.1.0",
+    "@vaadin/router": "^2.0.0",
+    "@infragistics/igniteui-dockmanager": "^1.16.1",
+    "igniteui-theming": "^19.1.1",
+    "igniteui-webcomponents": "6.1.1-alpha.0",
+    "sass": "^1.89.2"
+  },
+  "devDependencies": {
+    "vite": "^6.3.4",
+    "vite-plugin-static-copy": "^2.3.0",
+    "sass-embedded": "^1.86.0",
+    "typescript": "~5.7.2"
+  }
+}

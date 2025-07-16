@@ -1,0 +1,40 @@
+@use 'igniteui-theming' as *;
+
+.sm-quick-actions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(rem(173px), 1fr));
+	gap: rem(16px);
+	padding: var(--sm-dock-manager-gutter);
+}
+
+
+.sm-quick-actions-item {
+	display: grid;
+	gap: rem(20px);
+	border-radius: rem(4px);
+	min-height: rem(90px);
+	
+	&:not(:last-child) {
+		background: var(--ig-primary-400);
+		color: var(--ig-primary-900-contrast);
+		padding: rem(8px) rem(16px);
+		align-items: center;
+		
+		
+		.sm-quick-actions-item__icon {
+			justify-self: start;
+		}
+	}
+	
+	&:last-child {
+		background: var(--ig-gray-100);
+		color: var(--ig-gray-100-contrast);
+		cursor: pointer;
+	}
+}
+
+.sm-quick-actions-item__switch {
+	&::part(base) {
+		justify-content: space-between;
+	}
+}

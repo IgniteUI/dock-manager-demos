@@ -1,0 +1,27 @@
+@use 'igniteui-theming' as *;
+
+.sm-nav {
+	--background: var(--sm-special-black);
+	--border-color: var(--sm-border-color);
+	
+	height: 100%;
+}
+
+.sm-nav__header-item {
+	justify-content: space-between;
+	
+	&::after {
+		content: '';
+		position: absolute;
+		inset-inline-start: rem(-16px);
+		inset-block-end: 0;
+		border-block-end: rem(1px) solid var(--sm-border-color);
+		width: calc(100% + #{rem(32px)});
+	}
+}
+
+.sm-nav__header-item--toggle {
+	padding-block-start: 0;
+	padding-block-end: rem(16px);
+	margin-block-end: rem(16px);
+}
