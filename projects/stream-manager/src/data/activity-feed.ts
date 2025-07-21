@@ -1,4 +1,4 @@
-export type ActivityType = 'follow' | 'tip' | 'subscription' | 'contribution' | 'cheer';
+export type ActivityType = 'follow' | 'tip' | 'subscription' | 'contributed' | 'cheer';
 
 export interface ActivityFeedItem {
 	username: string;
@@ -32,7 +32,7 @@ export const activityFeed: ActivityFeedItem[] = [
 	},
 	{
 		username: 'The Crowd',
-		type: 'contribution',
+		type: 'contributed',
 		icon: 'etherium',
 		message: 'Contributed 10% of the pool',
 		timeAgo: '2 min ago',

@@ -10,13 +10,10 @@
 .sm-header__logo,
 .sm-header__info,
 .sm-header__actions,
-.sm-info-item {
+.sm-info-item,
+.sm-header__actions-nav {
 	display: flex;
 	align-items: center;
-}
-
-.sm-header__logo {
-	gap: rem(10px);
 }
 
 .sm-header__info {
@@ -26,13 +23,25 @@
 
 .sm-header__actions {
 	gap: rem(16px);
+}
+
+.sm-header__actions-nav {
+	gap: inherit;
 	
-	> nav {
-		display: flex;
-		gap: inherit;
+	> * {
+		display: inline-flex;
+		align-items: center;
+		color: var(--ig-gray-900);
+		padding: rem(3px);
 		
-		> * {
-			padding: rem(3px);
+		&:hover,
+		&:focus {
+			color: var(--ig-primary-300);
+		}
+		
+		&:focus-visible {
+			color: var(--ig-gray-900);
+			outline: rem(1px) solid var(--sm-outline-color);
 		}
 	}
 }
@@ -51,14 +60,25 @@
 
 .sm-info-item__value {
 	color: var(--ig-gray-900);
-	padding-inline: 8px;
+	padding-inline: rem(8px);
 }
 
 .sm-info-item__value--progress {
 	--track-size: #{rem(4px)};
 	--track-border-radius: 0;
+	--track-color: #{var(--ig-gray-700)};
 	
 	min-width: rem(80px);
+	
+}
+
+.sm-header__logo {
+	text-decoration: none;
+	gap: rem(10px);
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
 }
 
 .sm-header__logomark {
@@ -68,6 +88,7 @@
 }
 
 .sm-header__logo-text {
+	color: var(--ig-gray-900);
 	font-size: rem(14px);
 	text-transform: uppercase;
 	font-weight: 700;

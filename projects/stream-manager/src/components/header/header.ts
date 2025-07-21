@@ -95,10 +95,10 @@ export default class Header extends LitElement {
 		return html`
             <igc-navbar class="sm-header">
                 <!-- START -->
-                <div slot="start" class="sm-header__logo">
+                <a href="#" slot="start" class="sm-header__logo">
                     <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
                     <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
-                </div>
+                </a>
 
                 <!-- MIDDLE -->
                 <div class="sm-header__info">
@@ -130,14 +130,21 @@ export default class Header extends LitElement {
                         <igc-icon slot="prefix" name="search" collection="material"></igc-icon>
                     </igc-input>
 
-                    <nav>
-                        <igc-icon name="comments" collection="material"></igc-icon>
-                        <igc-icon name="languages" collection="material"></igc-icon>
-                        <igc-icon name="info" collection="material"></igc-icon>
-                        <igc-icon name="inbox" collection="material"></igc-icon>
+                    <nav class="sm-header__actions-nav">
+	                    <a href="#">
+                            <igc-icon name="comments" collection="material"></igc-icon>
+	                    </a>
+	                    <a href="#">
+                        	<igc-icon name="languages" collection="material"></igc-icon>
+                        </a>
+	                    <a href="#">
+                        	<igc-icon name="info" collection="material"></igc-icon>
+                        </a>
+	                    <a href="#">
+                        	<igc-icon name="inbox" collection="material"></igc-icon>
+                        </a>
                     </nav>
-
-                    <igc-avatar shape="circle" name="more_vert">
+                    <igc-avatar src="./src/assets/images/profile.png" shape="circle" name="more_vert">
                         <igc-icon name="user" collection="material"></igc-icon>
                     </igc-avatar>
                 </div>

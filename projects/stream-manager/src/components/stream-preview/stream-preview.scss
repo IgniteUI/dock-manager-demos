@@ -32,9 +32,17 @@
 .sm-stream-preview__header {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(min-content, 1fr));
+}
+
+.sm-link {
+	color: var(--ig-primary-500);
 	
-	a {
-		color: var(--ig-primary-500);
+	&:hover {
+		color: var(--ig-primary-400);
+	}
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
 	}
 }
 
@@ -81,7 +89,15 @@
 		&:hover {
 			color: var(--ig-primary-500);
 		}
+		
+		&:focus-visible {
+			outline: rem(1px) solid var(--sm-outline-color);
+		}
 	}
+}
+
+.sm-stream-preview__media {
+	padding: rem(16px);
 }
 
 .sm-stream-preview__social-channels-name {
@@ -102,21 +118,6 @@
 		--background: var(--ig-gray-50);
 		--text-color: var(--ig-gray-400);
 	}
-	
-	//--focus-outline-color: ;
-	//--focus-selected-outline-color: ;
-	//--hover-text-color: ;
-	//--hover-background: ;
-	//--focus-text-color: ;
-	//--selected-text-color: ;
-	//--selected-background: ;
-	//--hover-selected-text-color: ;
-	//--hover-selected-background: ;
-	//--border-radius: ;
-	
-	//--focus-background: ;
-	//--focus-selected-background: ;
-	//--focus-selected-text-color: ;
 	
 	margin-block-end: rem(4px);
 	

@@ -22,7 +22,7 @@ export default class QuickActions extends LitElement {
 		return html`
             <div class="sm-quick-actions">
                 ${ this.actions.map(action => html`
-                    <div class="sm-quick-actions-item">
+                    <a href="#" class="sm-quick-actions-item">
                         <igc-icon class="sm-quick-actions-item__icon" name="${ action.icon }"
                                   collection="material"></igc-icon>
                         ${ action.label && !action.toggle ? html`
@@ -33,7 +33,7 @@ export default class QuickActions extends LitElement {
                             <igc-switch class="sm-quick-actions-item__switch">
                                 ${ action.label }
                             </igc-switch>`: nothing }
-                    </div>
+                    </a>
                 `) }
             </div>
 		`;

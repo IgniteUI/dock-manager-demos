@@ -10,7 +10,7 @@ import '../quick-actions/quick-actions.ts';
 import {
 	IgcDockManagerPaneType,
 	IgcSplitPaneOrientation,
-	IgcDockManagerLayout,
+	IgcDockManagerLayout, IgcUnpinnedLocation,
 } from '@infragistics/igniteui-dockmanager';
 import styles from './dock-manager.scss?inline';
 
@@ -32,47 +32,49 @@ export default class AppDockManager extends LitElement {
 				type: IgcDockManagerPaneType.splitPane,
 				orientation: IgcSplitPaneOrientation.horizontal,
 				panes: [
-					// Middle: Stream Preview + Actions
 					{
 						type: IgcDockManagerPaneType.splitPane,
 						orientation: IgcSplitPaneOrientation.vertical,
-						size: 400,
+						size: 713,
 						panes: [
 							{
 								type: IgcDockManagerPaneType.contentPane,
 								contentId: 'streamPreview',
 								header: 'Stream Preview',
-								size: 344,
-
-							},
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'quickActions',
-								header: 'Quick Actions',
-							},
+								unpinnedSize: 713,
+								unpinnedLocation: IgcUnpinnedLocation.right
+							}
 						],
 					},
-
-					// Activity + Quick Actions
 					{
 						type: IgcDockManagerPaneType.splitPane,
 						orientation: IgcSplitPaneOrientation.vertical,
-						size: 544,
+						size: 378,
 						panes: [
 							{
 								type: IgcDockManagerPaneType.contentPane,
 								contentId: 'activityFeed',
 								header: 'Activity Feed',
+								unpinnedSize: 378,
+								unpinnedLocation: IgcUnpinnedLocation.right
+							},
+							{
+								type: IgcDockManagerPaneType.contentPane,
+								contentId: 'quickActions',
+								header: 'Quick Actions',
+								unpinnedSize: 378,
+								unpinnedLocation: IgcUnpinnedLocation.right
 							},
 							{
 								type: IgcDockManagerPaneType.contentPane,
 								contentId: 'streamSchedule',
 								header: 'Stream Schedule',
+								isPinned: false,
+								unpinnedSize: 378,
+								unpinnedLocation: IgcUnpinnedLocation.right
 							},
 						],
 					},
-
-					// Stream Chat
 					// {
 					// 	type: IgcDockManagerPaneType.splitPane,
 					// 	orientation: IgcSplitPaneOrientation.vertical,
@@ -82,6 +84,8 @@ export default class AppDockManager extends LitElement {
 					// 			type: IgcDockManagerPaneType.contentPane,
 					// 			contentId: 'streamChat',
 					// 			header: 'Stream chat',
+					// 			unpinnedLocation: IgcUnpinnedLocation.right,
+					// 			unpinnedSize: 344,
 					// 		},
 					// 	],
 					// },

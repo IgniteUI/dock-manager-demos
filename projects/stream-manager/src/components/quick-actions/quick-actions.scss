@@ -1,18 +1,41 @@
 @use 'igniteui-theming' as *;
 
+:host {
+	igc-switch {
+		--thumb-off-color: #{adaptive-contrast(var(--ig-primary-800))};
+		--thumb-on-color: #{adaptive-contrast(var(--ig-primary-800))};
+		
+		--track-off-color: #{var(--ig-primary-800)};
+		--track-off-hover-color: #{var(--ig-primary-800)};
+		
+		--track-on-color: #{var(--ig-primary-800)};
+		--track-on-hover-color: #{var(--ig-primary-800)};
+
+		
+		--border-color: #{var(--ig-primary-800)};
+		--border-hover-color: #{var(--ig-primary-800)};
+	}
+}
+
 .sm-quick-actions {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(rem(173px), 1fr));
 	gap: rem(16px);
 	padding: var(--sm-dock-manager-gutter);
+	
+	@include type-style(body-2);
 }
-
 
 .sm-quick-actions-item {
 	display: grid;
 	gap: rem(20px);
 	border-radius: rem(4px);
 	min-height: rem(90px);
+	text-decoration: none;
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--ig-info-300);
+	}
 	
 	&:not(:last-child) {
 		background: var(--ig-primary-400);

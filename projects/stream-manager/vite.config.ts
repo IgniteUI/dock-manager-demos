@@ -7,8 +7,12 @@ export default defineConfig({
 		},
 	},
 	css: {
-		// You can specify where compiled CSS files should go
-		// if you want them in a specific directory
-		devSourcemap: true, // Enable source maps for debugging
+		devSourcemap: true,
+	},
+	server: {
+		watch: {
+			// Force the watcher to also detect changes in the node_modules
+			usePolling: true
+		}
 	},
 });

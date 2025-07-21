@@ -9,6 +9,13 @@
 
 .sm-activity-feed__item {
 	padding-block: rem(8px);
+	
+	&--follow,
+	&--contributed {
+		--ig-list-item-thumbnail-color: var(--sm-activity-special);
+		--ig-list-item-thumbnail-color-hover: var(--sm-activity-special);
+		--ig-list-item-thumbnail-color-active: var(--sm-activity-special);
+	}
 }
 
 .sm-activity-feed__header {
@@ -16,16 +23,16 @@
 	flex-grow: 1;
 	align-items: center;
 	justify-content: space-between;
+	
+	igc-button[variant="flat"] {
+		--foreground: var(--sm-special-white);
+	}
 }
 
 .sm-activity-feed__message {
 	font-size: rem(12px);
 	color: var(--ig-gray-300);
 	margin-block-start: rem(2px);
-	
-	p {
-		margin: 0;
-	}
 }
 
 .sm-activity-feed__username {
@@ -38,7 +45,14 @@
 .sm-activity-feed__filter {
 	@include type-style(button);
 	
+	color: var(--ig-primary-300);
 	text-decoration: none;
+	background: transparent;
+	border: transparent;
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
 }
 
 .sm-activity-feed__more-button {
@@ -47,3 +61,5 @@
 	--active-foreground: var(--sm-special-white);
 	--focus-foreground: var(--sm-special-white);
 }
+
+
