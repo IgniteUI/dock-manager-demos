@@ -51,16 +51,18 @@ export default class NavigationDrawer extends LitElement {
                     position="relative"
                     class="sm-nav"
             >
-                <igc-nav-drawer-header-item class="sm-nav__header-item sm-nav__header-item--toggle">
+                <igc-nav-drawer-header-item 
+	                class="sm-nav__header-item sm-nav__header-item--toggle"
+                    @click=${ (e: Event) => {
+                        e.stopPropagation();
+                        this.toggleNavDrawer();
+                    }}
+                >
                     <span>DASHBOARD</span>
                     <igc-icon
-                            class="cm-menu-toggle-button"
-                            name="back"
-                            collection="material"
-                            @click=${ (e: Event) => {
-                                e.stopPropagation();
-                                this.toggleNavDrawer();
-                            } }
+                        class="sm-menu-toggle-button"
+                        name="back"
+                        collection="material"
                     ></igc-icon>
                 </igc-nav-drawer-header-item>
 
@@ -76,15 +78,17 @@ export default class NavigationDrawer extends LitElement {
                 `) }
 
                 <div slot="mini">
-                    <igc-nav-drawer-header-item class="sm-nav__header-item sm-nav__header-item--toggle">
+                    <igc-nav-drawer-header-item
+	                    class="sm-nav__header-item sm-nav__header-item--toggle"
+                        @click=${ (e: Event) => {
+                            e.stopPropagation();
+                            this.toggleNavDrawer();
+                        } }
+                    >
                         <igc-icon
-                                class="cm-menu-toggle-button"
+                                class="sm-menu-toggle-button"
                                 name="forward"
                                 collection="material"
-                                @click=${ (e: Event) => {
-                                    e.stopPropagation();
-                                    this.toggleNavDrawer();
-                                } }
                         ></igc-icon>
                     </igc-nav-drawer-header-item>
                     ${ this.items.map(item => html`

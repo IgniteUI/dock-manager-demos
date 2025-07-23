@@ -56,7 +56,7 @@ export default class StreamPreview extends LitElement {
                                                                    href="#">@${ this.previewData.streamerName }</a></span>
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
-                                <igc-badge variant="danger" class="sm-animation-pulse"></igc-badge> live`: nothing }
+                                <igc-badge variant="danger" class="sm-animation-pulse"></igc-badge> LIVE`: nothing }
                         </div>
                     </h5>
                 </igc-card-header>

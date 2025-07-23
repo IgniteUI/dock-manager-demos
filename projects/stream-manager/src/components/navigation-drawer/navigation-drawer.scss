@@ -3,8 +3,15 @@
 .sm-nav {
 	--background: var(--sm-special-black);
 	--border-color: var(--sm-border-color);
+	--item-hover-background: var(--ig-gray-50);
+	--item-hover-icon-color: var(--ig-gray-900);
 	
 	height: 100%;
+	
+	&::part(mini),
+	&::part(main) {
+		padding-block-start: 0;
+	}
 }
 
 .sm-nav__header-item {
@@ -21,7 +28,11 @@
 }
 
 .sm-nav__header-item--toggle {
-	padding-block-start: 0;
-	padding-block-end: rem(16px);
+	cursor: pointer;
+	padding: rem(16px);
 	margin-block-end: rem(16px);
+	
+	&:hover {
+		color: var(--ig-primary-300);
+	}
 }

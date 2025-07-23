@@ -5,6 +5,14 @@
 	--border-color: var(--sm-border-color);
 	
 	gap: rem(16px);
+	
+	igc-input {
+		--input-prefix-background: var(--ig-gray-50);
+		--input-prefix-background--filled: var(--ig-gray-50);
+		--input-prefix-background--focused: var(--ig-gray-50);
+		--border-color: var(--ig-gray-100);
+		--border-color--filled: var(--ig-gray-100);
+	}
 }
 
 .sm-header__logo,

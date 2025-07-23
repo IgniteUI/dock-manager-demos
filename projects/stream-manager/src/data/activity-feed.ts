@@ -1,4 +1,4 @@
-export type ActivityType = 'follow' | 'tip' | 'subscription' | 'contributed' | 'cheer';
+export type ActivityType = 'follow' | 'tipped' | 'subscribed' | 'contributed' | 'cheered';
 
 export interface ActivityFeedItem {
 	username: string;
@@ -18,14 +18,14 @@ export const activityFeed: ActivityFeedItem[] = [
 	},
 	{
 		username: 'PunchyBowl',
-		type: 'tip',
+		type: 'tipped',
 		icon: 'monetization',
 		message: 'Tipped $100',
 		timeAgo: '1 min ago',
 	},
 	{
 		username: 'LazyFace',
-		type: 'subscription',
+		type: 'subscribed',
 		icon: 'star',
 		message: 'Subscribed to your channel',
 		timeAgo: '2 minute ago',
@@ -39,7 +39,7 @@ export const activityFeed: ActivityFeedItem[] = [
 	},
 	{
 		username: 'SoulfulVibes',
-		type: 'cheer',
+		type: 'cheered',
 		icon: 'diamond',
 		message: 'Cheered 100 Bits',
 		timeAgo: '3 minute ago',

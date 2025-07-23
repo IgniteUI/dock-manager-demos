@@ -3,14 +3,17 @@
 .sm-activity-feed {
 	--border-width: 0;
 	--border-radius: 0;
+
 	
 	padding: rem(16px);
 }
 
 .sm-activity-feed__item {
+	--item-subtitle-color-active: var(--item-subtitle-color);
+	
 	padding-block: rem(8px);
 	
-	&--follow,
+	&--tipped,
 	&--contributed {
 		--ig-list-item-thumbnail-color: var(--sm-activity-special);
 		--ig-list-item-thumbnail-color-hover: var(--sm-activity-special);

@@ -38,10 +38,14 @@
 	}
 	
 	&:not(:last-child) {
-		background: var(--ig-primary-400);
-		color: var(--ig-primary-900-contrast);
+		background: var(--ig-info-400);
+		color: var(--ig-info-900-contrast);
 		padding: rem(8px) rem(16px);
 		align-items: center;
+		
+		&:hover {
+			background: var(--ig-info-700);
+		}
 		
 		
 		.sm-quick-actions-item__icon {
@@ -53,6 +57,22 @@
 		background: var(--ig-gray-100);
 		color: var(--ig-gray-100-contrast);
 		cursor: pointer;
+		
+		&:hover {
+			background: var(--ig-gray-50);
+		}
+	}
+	
+	&:not(:last-child):has(igc-switch) {
+		cursor: default;
+		background: var(--ig-primary-200);
+		color: var(--ig-primary-900-contrast);
+		
+		&:hover,
+		&:focus {
+			background: var(--ig-primary-300);
+			color: var(--ig-primary-900-contrast);
+		}
 	}
 }
 

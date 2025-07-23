@@ -22,7 +22,7 @@ export default class ActivityFeed extends LitElement {
 		return html`
             <igc-list class="sm-activity-feed">
                 <igc-list-header class="sm-activity-feed__header">
-                    <button class="sm-activity-feed__filter sm-activity-feed__filter-accent">Filter</button>
+                    <div class="sm-activity-feed__filter sm-activity-feed__filter-accent">Filter</div>
                     <igc-button variant="flat">Skip Alerts</igc-button>
                 </igc-list-header>
                 ${ this.feed.map(item => html`

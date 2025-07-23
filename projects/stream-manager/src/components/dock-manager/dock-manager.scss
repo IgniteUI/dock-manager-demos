@@ -35,19 +35,21 @@
 	--igc-pinned-header-text: var(--ig-gray-400);
 	
 	box-shadow: inset rem(2px) 0 0 0 var(--ig-gray-300);
+	
+	&:hover,
+	&:focus {
+		--igc-pinned-header-background: var(--ig-secondary-900);
+		--igc-pinned-header-text: var(--ig-gray-900);
+	}
 }
 
 ::part(unpinned-pane-header active) {
 	--igc-pinned-header-background: var(--ig-secondary-900);
 	--igc-pinned-header-text: var(--ig-gray-400);
-	
+	--igc-text-color: var(--ig-gray-900);
 	--igc-active-color: var(--ig-gray-900);
-	box-shadow: inset rem(2px) 0 0 0 var(--ig-primary-400);
 	
-}
-
-::part(unpinned-pane-header) {
-	box-shadow: inset rem(2px) 0 0 0 var(--ig-gray-300);
+	box-shadow: inset rem(2px) 0 0 0 var(--ig-primary-300);
 }
 
 ::part(splitter) {
@@ -61,6 +63,7 @@
 ::part(pane-header-unpin-button),
 ::part(pane-header-maximize-button),
 ::part(pane-header-close-button),
+::part(pane-header-pin-button),
 {
 	--igc-accent-color: transparent;
 	outline-color: var(--sm-outline-color);
