@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run watch-theme\"",
-    "build": "tsc && vite build",
+    "build": "npm run compile-theme && tsc && vite build",
     "preview": "vite preview",
     "compile-theme": "sass --load-path=node_modules src/styles/theme.scss:src/styles/theme.css",
     "watch-theme": "sass --watch --load-path=node_modules src/styles:src/styles src/styles/theme.scss:src/styles/theme.css"

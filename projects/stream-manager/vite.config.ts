@@ -8,6 +8,11 @@ export default defineConfig({
 	},
 	css: {
 		devSourcemap: true,
+		preprocessorOptions: {
+			scss: {
+				includePaths: ['node_modules']
+			}
+		}
 	},
 	server: {
 		watch: {
