@@ -15,6 +15,8 @@
 }
 
 .sm-nav__header-item {
+	@include type-style(body-2);
+	
 	justify-content: space-between;
 	
 	&::after {
@@ -33,6 +35,8 @@
 	margin-block-end: rem(16px);
 	
 	&:hover {
-		color: var(--ig-primary-300);
+		igc-icon {
+			--color: #{var(--ig-primary-300)}
+		}
 	}
 }

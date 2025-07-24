@@ -76,7 +76,12 @@ export default class StreamPreview extends LitElement {
                                 </a>
                             `) }
                         </div>
-                        <span class="sm-stream-preview__followers">${ this.previewData.followers } followers</span>
+                        <span class="sm-stream-preview__followers">
+	                        <span class="sm-stream-preview__followers-amount">
+		                        ${ this.previewData.followers }
+	                        </span>
+	                        followers
+                        </span>
                     </div>
                 </igc-card-content>
 		`;

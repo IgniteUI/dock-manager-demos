@@ -75,20 +75,20 @@ export default class AppDockManager extends LitElement {
 							},
 						],
 					},
-					// {
-					// 	type: IgcDockManagerPaneType.splitPane,
-					// 	orientation: IgcSplitPaneOrientation.vertical,
-					// 	size: 344,
-					// 	panes: [
-					// 		{
-					// 			type: IgcDockManagerPaneType.contentPane,
-					// 			contentId: 'streamChat',
-					// 			header: 'Stream chat',
-					// 			unpinnedLocation: IgcUnpinnedLocation.right,
-					// 			unpinnedSize: 344,
-					// 		},
-					// 	],
-					// },
+					{
+						type: IgcDockManagerPaneType.splitPane,
+						orientation: IgcSplitPaneOrientation.vertical,
+						size: 378,
+						panes: [
+							{
+								type: IgcDockManagerPaneType.contentPane,
+								contentId: 'streamChat',
+								header: 'Stream chat',
+								unpinnedLocation: IgcUnpinnedLocation.right,
+								unpinnedSize: 344,
+							},
+						],
+					},
 				],
 			},
 		};
@@ -110,7 +110,10 @@ export default class AppDockManager extends LitElement {
                     <app-quick-actions></app-quick-actions>
                 </div>
                 <div slot="streamChat">
-                    <app-stream-chat></app-stream-chat>
+                    <div class="temporary">
+                        Chat component coming soon
+                    </div>
+<!--                    <app-stream-chat></app-stream-chat>-->
                 </div>
             </igc-dockmanager>
 		`;

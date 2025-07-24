@@ -48,7 +48,7 @@
 .sm-activity-feed__filter {
 	@include type-style(button);
 	
-	color: var(--ig-primary-300);
+	color: var(--sm-dark-purple);
 	text-decoration: none;
 	background: transparent;
 	border: transparent;
@@ -65,4 +65,4 @@
 	--focus-foreground: var(--sm-special-white);
 }
 
-
+/*# sourceMappingURL=activity-feed.css.map */

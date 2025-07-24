@@ -131,3 +131,7 @@
 .sm-stream-preview__followers {
 	@include type-style(caption);
 }
+
+.sm-stream-preview__followers-amount {
+	color: var(--ig-gray-300);
+}

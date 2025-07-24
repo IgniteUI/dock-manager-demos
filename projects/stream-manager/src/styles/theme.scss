@@ -28,7 +28,7 @@
 	--ig-scrollbar-size: #{ig.rem(16px)};
 	
 	--ig-font-family: 'Roboto', sans-serif;
-	--sm-dock-manager-gutter: 1rem;
+	--sm-dock-manager-gutter: #{ig.rem(8px)};
 	
 	--sm-special-black: #000;
 	--sm-special-white: #{ig.adaptive-contrast(var(--sm-special-black))};
@@ -45,14 +45,20 @@
 	--ig-avatar-background: var(--ig-primary-500);
 	--ig-list-item-subtitle-color: var(--ig-gray-300);
 	--ig-list-item-subtitle-color-hover: var(--ig-gray-300);
+	--ig-list-item-thumbnail-color: var(--sm-special-purple);
+	--ig-list-item-thumbnail-color-hover: var(--sm-special-purple);
+	--ig-list-item-thumbnail-color-active: var(--sm-special-purple);
 	
-	--ig-list-item-thumbnail-color: var(--ig-primary-A100);
-	--ig-list-item-thumbnail-color-hover: var(--ig-primary-A100);
-	--ig-list-item-thumbnail-color-active: var(--ig-primary-A100);
+	--ig-scrollbar-track-background: #{var(--ig-gray-50)};
 	
 	// ACTIVITY
 	--sm-activity-special: #{list.nth(ig.$brushes-regular, 4)};
+	--sm-special-purple: #{list.nth(ig.$brushes-color-blind, 5)};
 	--sm-outline-color: var(--ig-primary-300);
+	
+	// CUSTOM COLORS
+	--sm-light-purple: #DA64FF;
+	--sm-dark-purple: #9C27B0;
 }
 
 

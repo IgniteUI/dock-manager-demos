@@ -1259,7 +1259,7 @@ body {
   --ig-size-large: 3;
   --ig-scrollbar-size: 1rem;
   --ig-font-family: "Roboto", sans-serif;
-  --sm-dock-manager-gutter: 1rem;
+  --sm-dock-manager-gutter: 0.5rem;
   --sm-special-black: #000;
   --sm-special-white: hsla(from color(from var(--sm-special-black) var(--y-contrast)) h 0 l/1);
   --sm-border-color: var(--ig-gray-100);
@@ -1274,11 +1274,15 @@ body {
   --ig-avatar-background: var(--ig-primary-500);
   --ig-list-item-subtitle-color: var(--ig-gray-300);
   --ig-list-item-subtitle-color-hover: var(--ig-gray-300);
-  --ig-list-item-thumbnail-color: var(--ig-primary-A100);
-  --ig-list-item-thumbnail-color-hover: var(--ig-primary-A100);
-  --ig-list-item-thumbnail-color-active: var(--ig-primary-A100);
+  --ig-list-item-thumbnail-color: var(--sm-special-purple);
+  --ig-list-item-thumbnail-color-hover: var(--sm-special-purple);
+  --ig-list-item-thumbnail-color-active: var(--sm-special-purple);
+  --ig-scrollbar-track-background: var(--ig-gray-50);
   --sm-activity-special: rgb(154, 242, 228);
+  --sm-special-purple: rgb(214, 0, 254);
   --sm-outline-color: var(--ig-primary-300);
+  --sm-light-purple: #DA64FF;
+  --sm-dark-purple: #9C27B0;
 }
 
 /*# sourceMappingURL=theme.css.map */

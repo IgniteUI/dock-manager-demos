@@ -38,15 +38,15 @@
 	}
 	
 	&:not(:last-child) {
-		background: var(--ig-info-400);
-		color: var(--ig-info-900-contrast);
+		background: var(--sm-light-purple);
+		color: var(--ig-primary-900-contrast);
 		padding: rem(8px) rem(16px);
 		align-items: center;
 		
 		&:hover {
-			background: var(--ig-info-700);
+			background: var(--ig-primary-300);
+			color: var(--ig-primary-900-contrast);
 		}
-		
 		
 		.sm-quick-actions-item__icon {
 			justify-self: start;
@@ -65,14 +65,6 @@
 	
 	&:not(:last-child):has(igc-switch) {
 		cursor: default;
-		background: var(--ig-primary-200);
-		color: var(--ig-primary-900-contrast);
-		
-		&:hover,
-		&:focus {
-			background: var(--ig-primary-300);
-			color: var(--ig-primary-900-contrast);
-		}
 	}
 }
 

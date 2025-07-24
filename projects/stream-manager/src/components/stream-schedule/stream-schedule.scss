@@ -14,8 +14,6 @@
 
 .sm-schedule-item__label {
 	@include type-style(overline);
-	
-	color: var(--ig-primary-500);
 }
 
 .sm-schedule-item__value {

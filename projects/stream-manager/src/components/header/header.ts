@@ -55,22 +55,21 @@ export default class Header extends LitElement {
 	private static readonly MAX_VIEWERS = 175000; // Corrected from 17500 to 175000 which seems more realistic
 	private static readonly MINUTES_LOOP_COUNT = 40;
 
+	// Timer Configuration
+	private readonly timeUpdateInterval = 1000;
+	private readonly updateInterval = 2000;
+	private readonly bitrateUpdateInterval = 3000;
+
+	private readonly startTime: number;
+	private intervals: { [key: string]: number } = {};
+
 	// State Properties
 	@state() private sessionTime = '1:00:00';
 	@state() private viewers = Header.MIN_VIEWERS;
-	@state() private followers = 123000;
+	@state() private followers = 65000;
 	@state() private bitrate = Header.MIN_BITRATE;
 	@state() private bitrateDirection = 1; // 1 for increasing, -1 for decreasing
 	@state() private qualityInfo: QualityLevel = Header.QUALITY_LEVELS[0];
-
-	// Timer Configuration
-	private readonly timeUpdateInterval = 1000;
-	private readonly updateInterval = 4000;
-	private readonly bitrateUpdateInterval = 5000;
-
-	// Private Properties
-	private readonly startTime: number;
-	private intervals: { [key: string]: number } = {};
 
 	constructor() {
 		super();
@@ -89,7 +88,7 @@ export default class Header extends LitElement {
 	}
 
 	/**
-	 * Set up timers for updating metrics when component is connected
+	 * Set up timers for updating metrics when a component is connected
 	 */
 	connectedCallback(): void {
 		super.connectedCallback();
@@ -127,6 +126,7 @@ export default class Header extends LitElement {
 		this.intervals = {
 			sessionTime: window.setInterval(() => this.updateSessionTime(), this.timeUpdateInterval),
 			viewers: window.setInterval(() => this.updateViewersAndFollowers(), this.updateInterval),
+			followers: window.setInterval(() => this.updateViewersAndFollowers(), (this.updateInterval + 1000)),
 			bitrate: window.setInterval(() => this.updateBitrate(), this.bitrateUpdateInterval)
 		};
 	}
@@ -160,7 +160,7 @@ export default class Header extends LitElement {
 		}
 
 		// Update followers with small random increments
-		const randomFollowerIncrement = Math.floor(Math.random() * 12);
+		const randomFollowerIncrement = Math.floor(Math.random() * 500);
 		this.followers += randomFollowerIncrement;
 	}
 
@@ -314,13 +314,12 @@ export default class Header extends LitElement {
                 <span class="sm-info-item__label">Bitrate</span>
                 <igc-linear-progress
                         hide-label
-                        variant="${this.qualityInfo.variant}"
                         class="sm-info-item__value sm-info-item__value--progress"
                         value="${percent}">
                 </igc-linear-progress>
             </div>
             <igc-tooltip anchor="bitrateValue">
-                Current Bitrate: ${formattedBitrate} Mbps (${this.qualityInfo.label} Quality)
+	            Bitrate Quality: ${formattedBitrate} Mbps (${this.qualityInfo.label})
             </igc-tooltip>
 		`;
 	}
