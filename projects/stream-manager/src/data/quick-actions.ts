@@ -1,11 +1,11 @@
-export interface QuickAction {
+export interface IQuickAction {
 	label?: string;
 	icon?: string;
 	actionKey: string;
 	toggle?: boolean;
 }
 
-export const quickActions: QuickAction[] = [
+export const quickActions: IQuickAction[] = [
 	{
 		label: 'Edit Stream Info',
 		actionKey: 'edit-stream',

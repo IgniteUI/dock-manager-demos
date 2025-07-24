@@ -1,12 +1,12 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
 import {
 	defineComponents, IgcListComponent,
 } from 'igniteui-webcomponents';
 import styles from './stream-schedule.scss?inline';
-import { streamSchedule, StreamScheduleItem } from '../../data/stream-schedule.ts';
+import { streamSchedule, IStreamScheduleItem } from '../../data/stream-schedule.ts';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
@@ -15,8 +15,7 @@ defineComponents(IgcListComponent);
 
 @customElement('app-stream-schedule')
 export default class StreamSchedule extends LitElement {
-	@state()
-	private schedule: StreamScheduleItem[] = streamSchedule;
+	private schedule: IStreamScheduleItem[] = streamSchedule;
 
 	render() {
 		return html`
@@ -28,7 +27,6 @@ export default class StreamSchedule extends LitElement {
                     </igc-list-item>
                 `) }
             </igc-list>
-
 		`;
 	}
 

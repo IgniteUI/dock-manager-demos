@@ -11,7 +11,7 @@ import {
 	IgcDividerComponent,
 } from 'igniteui-webcomponents';
 import styles from './stream-preview.scss?inline';
-import { mockStreamPreview, StreamPreviewData } from '../../data/stream-preview.ts';
+import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
 import foxGuitar from '../../assets/videos/fox-guitar.webm';
 
 // Initialize the dock manager custom elements
@@ -28,18 +28,18 @@ defineComponents(
 @customElement('app-stream-preview')
 export default class StreamPreview extends LitElement {
 	@state()
-	private previewData: StreamPreviewData = mockStreamPreview;
+	private previewData: IStreamPreviewData = mockStreamPreview;
 
 	render() {
 		return html`
             <igc-card class="sm-stream-preview">
                 <igc-card-media class="sm-stream-preview__media">
                     <video src="${ foxGuitar }"
-                           autoplay
-                           loop
-                           muted
-                           playsinline
-                           type="video/webm"
+                       autoplay
+                       loop
+                       muted
+                       playsinline
+                       type="video/webm"
                     >
                         <source src="../../assets/videos/fox-guitar.webm" type="video/webm">
                         Your browser does not support the video tag.
@@ -50,10 +50,12 @@ export default class StreamPreview extends LitElement {
                     <h3 slot="title" class="sm-stream-preview__title">
                         ${ this.previewData.streamTitle }
                         <igc-icon name="verified" collection="material">icon</igc-icon>
-                    </h3>-
+                    </h3>
                     <h5 slot="subtitle" class="sm-stream-preview__subtitle">
-                        <span>${ this.previewData.description } <a class="sm-link"
-                                                                   href="#">@${ this.previewData.streamerName }</a></span>
+                        <span>
+	                        ${ this.previewData.description } 
+	                        <a class="sm-link" href="#">@${ this.previewData.streamerName }</a>
+                        </span>
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
                                 <igc-badge variant="danger" class="sm-animation-pulse"></igc-badge> LIVE`: nothing }

@@ -1,5 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import {
 	defineComponents,
 	IgcNavbarComponent,
@@ -10,6 +11,8 @@ import {
 	IgcTooltipComponent,
 } from 'igniteui-webcomponents';
 import styles from './header.scss?inline';
+import { InavbarAction, navbarActions } from '../../data/navbar-actions.ts';
+import { IqualityLevel, qualityLevels } from '../../data/quality-levels.ts';
 
 // Initialize required Igniteui components
 defineComponents(
@@ -22,30 +25,11 @@ defineComponents(
 );
 
 /**
- * Quality level information type
- */
-interface QualityLevel {
-	min: number;
-	max: number;
-	label: string;
-	variant: string;
-	percentRange: [number, number];
-}
-
-/**
  * Stream Manager application header component
  * Displays live-streaming metrics and navigation controls
  */
 @customElement('app-header')
 export default class Header extends LitElement {
-	// Quality levels and thresholds
-	private static readonly QUALITY_LEVELS: QualityLevel[] = [
-		{ min: 0, max: 30000, label: 'Poor', variant: 'danger', percentRange: [0, 30] },
-		{ min: 30000, max: 35000, label: 'Acceptable', variant: 'primary', percentRange: [30, 50] },
-		{ min: 35000, max: 45000, label: 'Good', variant: 'primary', percentRange: [50, 80] },
-		{ min: 45000, max: Infinity, label: 'Excellent', variant: 'primary', percentRange: [80, 100] }
-	];
-
 	// Constants
 	private static readonly MIN_BITRATE = 29500;
 	private static readonly MAX_BITRATE = 60000;
@@ -60,16 +44,37 @@ export default class Header extends LitElement {
 	private readonly updateInterval = 2000;
 	private readonly bitrateUpdateInterval = 3000;
 
+	// 1 for increasing, -1 for decreasing
+	private bitrateDirection = 1;
+
 	private readonly startTime: number;
 	private intervals: { [key: string]: number } = {};
 
 	// State Properties
-	@state() private sessionTime = '1:00:00';
-	@state() private viewers = Header.MIN_VIEWERS;
-	@state() private followers = 65000;
-	@state() private bitrate = Header.MIN_BITRATE;
-	@state() private bitrateDirection = 1; // 1 for increasing, -1 for decreasing
-	@state() private qualityInfo: QualityLevel = Header.QUALITY_LEVELS[0];
+	@state()
+	private sessionTime = '1:00:00';
+
+	@state()
+	private viewers = Header.MIN_VIEWERS;
+
+	@state()
+	private followers = 65000;
+
+	@state()
+	private bitrate = Header.MIN_BITRATE;
+
+	@state()
+	private qualityInfo: IqualityLevel = qualityLevels[0];
+
+	@state()
+	private navbarActions: InavbarAction[] = navbarActions;
+
+	private _logoTemplate = html`
+    <a href="#" slot="start" class="sm-header__logo">
+        <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
+        <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
+    </a>
+`;
 
 	constructor() {
 		super();
@@ -78,7 +83,7 @@ export default class Header extends LitElement {
 	}
 
 	/**
-	 * Recalculate derived state when bitrate changes
+	 * Recalculate `qualityInfo` whenever the `bitrate` changes
 	 */
 	updated(changedProperties: Map<string, any>) {
 		if (changedProperties.has('bitrate')) {
@@ -122,13 +127,34 @@ export default class Header extends LitElement {
 		// Initial update
 		this.updateSessionTime();
 
-		// Set intervals for regular updates
+		// Set intervals for regular updates with different frequencies
 		this.intervals = {
+			// Session time updates most frequently (every second)
 			sessionTime: window.setInterval(() => this.updateSessionTime(), this.timeUpdateInterval),
-			viewers: window.setInterval(() => this.updateViewersAndFollowers(), this.updateInterval),
-			followers: window.setInterval(() => this.updateViewersAndFollowers(), (this.updateInterval + 1000)),
+
+			// Viewers update every 2 seconds
+			viewers: window.setInterval(() => {
+				// Update viewers with random increments
+				const randomViewerIncrement = Math.floor(Math.random() * 300);
+				this.viewers += randomViewerIncrement;
+
+				// Reset viewers if they exceed a max threshold
+				if (this.viewers > Header.MAX_VIEWERS) {
+					this.viewers = Header.MIN_VIEWERS;
+				}
+			}, this.updateInterval),
+
+			// Followers update with a slight offset (every 3 seconds)
+			followers: window.setInterval(() => {
+				// Update followers with small random increments
+				const randomFollowerIncrement = Math.floor(Math.random() * 500);
+				this.followers += randomFollowerIncrement;
+			}, this.updateInterval + 1000),
+
+			// Bitrate updates with its own interval (every 3 seconds)
 			bitrate: window.setInterval(() => this.updateBitrate(), this.bitrateUpdateInterval)
 		};
+
 	}
 
 	/**
@@ -147,33 +173,15 @@ export default class Header extends LitElement {
 	}
 
 	/**
-	 * Update viewer and follower counts with random increments
-	 */
-	private updateViewersAndFollowers(): void {
-		// Update viewers with random increments
-		const randomViewerIncrement = Math.floor(Math.random() * 300);
-		this.viewers += randomViewerIncrement;
-
-		// Reset viewers if they exceed a max threshold
-		if (this.viewers > Header.MAX_VIEWERS) {
-			this.viewers = Header.MIN_VIEWERS;
-		}
-
-		// Update followers with small random increments
-		const randomFollowerIncrement = Math.floor(Math.random() * 500);
-		this.followers += randomFollowerIncrement;
-	}
-
-	/**
 	 * Calculate quality info based on bitrate
 	 */
-	private calculateQualityInfo(bitrate: number): QualityLevel {
-		for (const level of Header.QUALITY_LEVELS) {
+	private calculateQualityInfo(bitrate: number): IqualityLevel {
+		for (const level of qualityLevels) {
 			if (bitrate >= level.min && bitrate < level.max) {
 				return level;
 			}
 		}
-		return Header.QUALITY_LEVELS[Header.QUALITY_LEVELS.length - 1];
+		return qualityLevels[qualityLevels.length - 1];
 	}
 
 	/**
@@ -182,16 +190,7 @@ export default class Header extends LitElement {
 	private get bitratePercentage(): number {
 		const [minPercent, maxPercent] = this.qualityInfo.percentRange;
 
-		// Find the current quality level index
-		const qualityLevelIndex = Header.QUALITY_LEVELS.findIndex(level =>
-			this.bitrate >= level.min && this.bitrate < level.max
-		);
-
-		if (qualityLevelIndex === -1) {
-			return maxPercent; // Default to max percent if no range found
-		}
-
-		const { min, max } = Header.QUALITY_LEVELS[qualityLevelIndex];
+		const { min, max } = this.qualityInfo;
 		const range = max - min;
 
 		// Calculate percentage within the current quality range
@@ -214,14 +213,14 @@ export default class Header extends LitElement {
 		// Update bitrate with direction and randomness
 		this.bitrate += (this.bitrateDirection * Header.BITRATE_STEP) + randomVariation;
 
-		// Change direction at boundaries
+		// Change a direction at boundaries
 		if (this.bitrate >= Header.MAX_BITRATE) {
 			this.bitrateDirection = -1;
 		} else if (this.bitrate <= Header.MIN_BITRATE) {
 			this.bitrateDirection = 1;
 		}
 
-		// Occasionally change direction randomly
+		// Occasionally change a direction randomly
 		if (Math.random() < Header.DIRECTION_CHANGE_PROBABILITY) {
 			this.bitrateDirection *= -1;
 		}
@@ -235,59 +234,6 @@ export default class Header extends LitElement {
 	 */
 	private formatThousands(value: number): string {
 		return (value / 1000).toFixed(1) + 'K';
-	}
-
-	/**
-	 * Format viewer count for display
-	 */
-	private formatViewers(value: number): string {
-		return this.formatThousands(value);
-	}
-
-	/**
-	 * Format follower count for display
-	 */
-	private formatFollowers(value: number): string {
-		return this.formatThousands(value);
-	}
-
-	/**
-	 * Render the header component UI
-	 */
-	render() {
-		return html`
-            <igc-navbar class="sm-header">
-                ${this.renderLogo()}
-                ${this.renderMetrics()}
-                ${this.renderActions()}
-            </igc-navbar>
-        `;
-	}
-
-	/**
-	 * Render the logo section
-	 */
-	private renderLogo() {
-		return html`
-            <a href="#" slot="start" class="sm-header__logo">
-                <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
-                <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
-            </a>
-		`;
-	}
-
-	/**
-	 * Render the metrics section
-	 */
-	private renderMetrics() {
-		return html`
-            <div class="sm-header__info">
-                ${this.renderMetricItem('Session', this.sessionTime)}
-                ${this.renderMetricItem('Viewers', this.formatViewers(this.viewers))}
-                ${this.renderMetricItem('Followers', this.formatFollowers(this.followers))}
-                ${this.renderBitrateItem()}
-            </div>
-        `;
 	}
 
 	/**
@@ -306,7 +252,8 @@ export default class Header extends LitElement {
 	 * Render the bitrate metric with the progress bar
 	 */
 	private renderBitrateItem() {
-		const formattedBitrate = (this.bitrate / 1000).toFixed(1); // Convert to Mbps
+		// Convert to Mbps
+		const formattedBitrate = (this.bitrate / 1000).toFixed(1);
 		const percent = this.bitratePercentage;
 
 		return html`
@@ -322,6 +269,20 @@ export default class Header extends LitElement {
 	            Bitrate Quality: ${formattedBitrate} Mbps (${this.qualityInfo.label})
             </igc-tooltip>
 		`;
+	}
+
+	/**
+	 * Render the metrics section
+	 */
+	private renderMetrics() {
+		return html`
+            <div class="sm-header__info">
+                ${this.renderMetricItem('Session', this.sessionTime)}
+                ${this.renderMetricItem('Viewers', this.formatThousands(this.viewers))}
+                ${this.renderMetricItem('Followers', this.formatThousands(this.followers))}
+                ${this.renderBitrateItem()}
+            </div>
+        `;
 	}
 
 	/**
@@ -342,24 +303,37 @@ export default class Header extends LitElement {
 	}
 
 	/**
+	 * Render the logo section
+	 */
+	private renderLogo() {
+		return this._logoTemplate;
+	}
+
+	/**
 	 * Render the navigation icons
 	 */
 	private renderNavigation() {
-		const navIcons = [
-			{ name: 'comments', collection: 'material' },
-			{ name: 'languages', collection: 'material' },
-			{ name: 'info', collection: 'material' },
-			{ name: 'inbox', collection: 'material' },
-		];
-
 		return html`
             <nav class="sm-header__actions-nav">
-                ${navIcons.map(({ name, collection }) => html`
-                    <a href="#">
-                        <igc-icon name="${name}" collection="${collection}"></igc-icon>
+                ${ repeat(this.navbarActions, action => action.name, action => html`
+                    <a href="#" aria-label="${action.label}">
+                        <igc-icon name="${action.name}" collection="${action.collection}"></igc-icon>
                     </a>
                 `)}
             </nav>
+        `;
+	}
+
+	/**
+	 * Render the header component UI
+	 */
+	render() {
+		return html`
+            <igc-navbar class="sm-header">
+                ${this.renderLogo()}
+                ${this.renderMetrics()}
+                ${this.renderActions()}
+            </igc-navbar>
         `;
 	}
 

@@ -1,6 +1,6 @@
 export type ActivityType = 'follow' | 'tipped' | 'subscribed' | 'contributed' | 'cheered';
 
-export interface ActivityFeedItem {
+export interface IActivityFeedItem {
 	username: string;
 	type: ActivityType;
 	message: string;
@@ -8,7 +8,7 @@ export interface ActivityFeedItem {
 	timeAgo: string;
 }
 
-export const activityFeed: ActivityFeedItem[] = [
+export const activityFeed: IActivityFeedItem[] = [
 	{
 		username: 'KappaCares',
 		type: 'follow',

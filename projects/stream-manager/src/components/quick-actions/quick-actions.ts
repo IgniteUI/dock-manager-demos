@@ -6,7 +6,7 @@ import {
 	defineComponents, IgcSwitchComponent, IgcIconComponent,
 } from 'igniteui-webcomponents';
 import styles from './quick-actions.scss?inline';
-import { QuickAction, quickActions } from '../../data/quick-actions.ts';
+import { IQuickAction, quickActions } from '../../data/quick-actions.ts';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
@@ -16,7 +16,7 @@ defineComponents(IgcSwitchComponent, IgcIconComponent);
 @customElement('app-quick-actions')
 export default class QuickActions extends LitElement {
 	@state()
-	private actions: QuickAction[] = quickActions;
+	private actions: IQuickAction[] = quickActions;
 
 	render() {
 		return html`
@@ -34,7 +34,7 @@ export default class QuickActions extends LitElement {
                                 ${ action.label }
                             </igc-switch>`: nothing }
                     </a>
-                `) }
+                `)}
             </div>
 		`;
 	}

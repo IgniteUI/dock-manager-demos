@@ -83,6 +83,7 @@
 .sm-header__logo {
 	text-decoration: none;
 	gap: rem(10px);
+	color: var(--sm-light-purple);
 	
 	&:focus-visible {
 		outline: rem(1px) solid var(--sm-outline-color);

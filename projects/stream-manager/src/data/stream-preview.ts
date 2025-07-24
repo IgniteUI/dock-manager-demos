@@ -1,21 +1,21 @@
-export interface SocialMediaPlatform {
+export interface ISocialMediaPlatform {
 	url: string;
 	icon: string;
 	accountName: string;
 }
 
-export interface StreamPreviewData {
+export interface IStreamPreviewData {
 	streamTitle: string;
 	streamerName: string;
 	description: string;
 	isLive: boolean;
 	genres: string[];
-	socialMedia: SocialMediaPlatform[];
+	socialMedia: ISocialMediaPlatform[];
 	followers: string;
 	thumbnailUrl: string;
 }
 
-export const mockStreamPreview: StreamPreviewData = {
+export const mockStreamPreview: IStreamPreviewData = {
 	streamTitle: 'FOXYONAIR',
 	streamerName: 'foxyonairtv',
 	description: '24Hours blues + singing',

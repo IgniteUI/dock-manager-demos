@@ -6,7 +6,7 @@ import {
 	defineComponents, IgcButtonComponent, IgcIconButtonComponent, IgcIconComponent, IgcListComponent,
 } from 'igniteui-webcomponents';
 import styles from './activity-feed.scss?inline';
-import { activityFeed, ActivityFeedItem } from '../../data/activity-feed.ts';
+import { activityFeed, IActivityFeedItem } from '../../data/activity-feed.ts';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
@@ -16,7 +16,7 @@ defineComponents(IgcListComponent, IgcButtonComponent, IgcIconButtonComponent, I
 @customElement('app-activity-feed')
 export default class ActivityFeed extends LitElement {
 	@state()
-	private feed: ActivityFeedItem[] = activityFeed;
+	private feed: IActivityFeedItem[] = activityFeed;
 
 	render() {
 		return html`

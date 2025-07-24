@@ -27,6 +27,9 @@
 		gap: rem(4px);
 	}
 	
+	igc-icon {
+		--color: var(--sm-dark-purple);
+	}
 }
 
 .sm-stream-preview__header {
@@ -35,7 +38,7 @@
 }
 
 .sm-link {
-	color: var(--ig-primary-500);
+	color: var(--sm-dark-purple);
 	
 	&:hover {
 		color: var(--ig-primary-400);
@@ -130,6 +133,7 @@
 
 .sm-stream-preview__social {
 	justify-content: space-between;
+	padding-block-start: rem(8px);
 }
 
 .sm-stream-preview__followers {
