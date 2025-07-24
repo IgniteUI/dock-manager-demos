@@ -19,6 +19,12 @@
 		--ig-list-item-thumbnail-color-hover: var(--sm-activity-special);
 		--ig-list-item-thumbnail-color-active: var(--sm-activity-special);
 	}
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
+	}
 }
 
 .sm-activity-feed__header {
@@ -29,6 +35,12 @@
 	
 	igc-button[variant="flat"] {
 		--foreground: var(--sm-special-white);
+	}
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
 	}
 }
 

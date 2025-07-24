@@ -99,6 +99,10 @@
 
 .sm-stream-preview__media {
 	padding: rem(16px);
+	
+	video {
+		aspect-ratio: 1.4 / 1;
+	}
 }
 
 .sm-stream-preview__social-channels-name {

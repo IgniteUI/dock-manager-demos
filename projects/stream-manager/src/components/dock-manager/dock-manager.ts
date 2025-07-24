@@ -35,7 +35,7 @@ export default class AppDockManager extends LitElement {
 					{
 						type: IgcDockManagerPaneType.splitPane,
 						orientation: IgcSplitPaneOrientation.vertical,
-						size: 713,
+						size: 723,
 						panes: [
 							{
 								type: IgcDockManagerPaneType.contentPane,

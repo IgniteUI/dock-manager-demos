@@ -22,7 +22,7 @@ export default class StreamSchedule extends LitElement {
 		return html`
             <igc-list class="sm-schedule-list">
                 ${ this.schedule.map(item => html`
-                    <igc-list-item class="sm-schedule-item">
+                    <igc-list-item class="sm-schedule-item" tabindex="0">
                         <div slot="start" class="sm-schedule-item__label">${ item.day }</div>
                         <div slot="end" class="sm-schedule-item__value">${ item.startTime } - ${ item.endTime }</div>
                     </igc-list-item>

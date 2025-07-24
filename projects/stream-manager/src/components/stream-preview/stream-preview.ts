@@ -50,7 +50,7 @@ export default class StreamPreview extends LitElement {
                     <h3 slot="title" class="sm-stream-preview__title">
                         ${ this.previewData.streamTitle }
                         <igc-icon name="verified" collection="material">icon</igc-icon>
-                    </h3>
+                    </h3>-
                     <h5 slot="subtitle" class="sm-stream-preview__subtitle">
                         <span>${ this.previewData.description } <a class="sm-link"
                                                                    href="#">@${ this.previewData.streamerName }</a></span>
@@ -70,7 +70,7 @@ export default class StreamPreview extends LitElement {
                     <div class="sm-stream-preview__social">
                         <div class="sm-stream-preview__social-channels">
                             ${ this.previewData.socialMedia.map(platform => html`
-                                <a href="${ platform.url }">
+                                <a href="${ platform.url }" aria-label="Go to ${ platform.accountName } profile">
                                     <igc-icon name="${ platform.icon }" collection="material"></igc-icon>
                                     <span class="sm-stream-preview__social-channels-name">${ platform.accountName }</span>
                                 </a>

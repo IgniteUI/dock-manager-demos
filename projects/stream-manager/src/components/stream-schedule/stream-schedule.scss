@@ -10,6 +10,12 @@
 
 .sm-schedule-item {
 	padding-block: rem(8px);
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
+	}
 }
 
 .sm-schedule-item__label {
@@ -19,3 +25,4 @@
 .sm-schedule-item__value {
 	@include type-style(caption);
 }
+

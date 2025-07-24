@@ -21,12 +21,16 @@ export default class ActivityFeed extends LitElement {
 	render() {
 		return html`
             <igc-list class="sm-activity-feed">
-                <igc-list-header class="sm-activity-feed__header">
+                <igc-list-header class="sm-activity-feed__header" tabindex="0">
                     <div class="sm-activity-feed__filter sm-activity-feed__filter-accent">Filter</div>
                     <igc-button variant="flat">Skip Alerts</igc-button>
                 </igc-list-header>
                 ${ this.feed.map(item => html`
-                    <igc-list-item class="sm-activity-feed__item sm-activity-feed__item--${item.type}">
+                    <igc-list-item 
+	                    tabindex="0"
+	                    aria-label="${ item.username } - ${ item.message}${ item.timeAgo }"
+	                    class="sm-activity-feed__item sm-activity-feed__item--${item.type}"
+                    >
                         <igc-icon slot="start" name="${ item.icon }" collection="material"></igc-icon>
 
                         <span slot="title">${ item.username }</span>
@@ -34,7 +38,7 @@ export default class ActivityFeed extends LitElement {
                             ${ item.message } <small class="sm-activity-feed__timestamp">${ item.timeAgo }</small>
 						</span>
 
-                        <igc-icon-button class="sm-activity-feed__more-button" slot="end" variant="flat">
+                        <igc-icon-button aria-label="Select Options" class="sm-activity-feed__more-button" slot="end" variant="flat">
                             <igc-icon name="more" , collection="material"></igc-icon>
                         </igc-icon-button>
                     </igc-list-item>
