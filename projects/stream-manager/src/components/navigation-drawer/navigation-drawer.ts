@@ -1,11 +1,13 @@
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+
 import {
 	defineComponents,
 	IgcNavDrawerComponent,
 	IgcIconComponent,
 	IgcNavDrawerItemComponent,
 } from 'igniteui-webcomponents';
+
 import { navigationItems, INavItem } from '../../data/navigation-items.ts';
 import styles from './navigation-drawer.scss?inline';
 
@@ -40,10 +42,6 @@ export default class NavigationDrawer extends LitElement {
 		}
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-	}
-
 	render() {
 		return html`
             <igc-nav-drawer
@@ -67,11 +65,10 @@ export default class NavigationDrawer extends LitElement {
                 </igc-nav-drawer-header-item>
 
                 ${ this.items.map(item => html`
-                    <igc-nav-drawer-item ?active=${ item.route===this.activePath }
-                    >
+                    <igc-nav-drawer-item ?active=${ item.route===this.activePath }>
                         <igc-icon
-                                slot="icon" name="${ item.icon }"
-                                collection="${ item.collection }">
+                            slot="icon" name="${ item.icon }"
+                            collection="${ item.collection }">
                         </igc-icon>
                         <span slot="content">${ item.label }</span>
                     </igc-nav-drawer-item>

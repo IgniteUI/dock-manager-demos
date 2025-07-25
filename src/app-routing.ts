@@ -10,7 +10,6 @@ export const routes: Route[] = [
 			{ path: 'stream-manager', component: 'stream-manager' },
 		],
 	},
-
 	// Fallback route
 	{ path: '(.*)', redirect: 'home' },
 ];

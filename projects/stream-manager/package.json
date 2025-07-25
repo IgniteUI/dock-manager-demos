@@ -16,13 +16,13 @@
     "@infragistics/igniteui-dockmanager": "^1.16.1",
     "igniteui-theming": "^19.1.1",
     "igniteui-webcomponents": "6.1.1-alpha.0",
-    "marked": "^16.0.0",
     "lit": "^3.2.1",
-    "sass": "^1.86.3"
+    "sass": "^1.89.2"
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
     "typescript": "~5.7.2",
-    "vite": "^6.3.1"
+    "vite": "^6.3.1",
+    "marked": "^16.0.0"
   }
 }

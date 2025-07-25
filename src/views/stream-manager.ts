@@ -1,7 +1,9 @@
 import { LitElement, unsafeCSS, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import sampleStyles from './stream-manager.scss?inline';
-import sharedStyles from '../shared.scss?inline';
+import { classMap } from 'lit/directives/class-map.js';
+import { customElement, state } from 'lit/decorators.js';
+import styles from './stream-manager.scss?inline';
+import sharedStyles from '../styles/_shared.scss?inline';
+
 
 @customElement('stream-manager')
 export default class StreamManager extends LitElement {
@@ -9,18 +11,41 @@ export default class StreamManager extends LitElement {
 		super();
 	}
 
-	private onLoad = (event: any) => {
-		event.target.parentElement.classList.remove('loading');
+	@state() private isLoading = true;
+	private loaderShownAt = 0;
+
+	protected firstUpdated() {
+		this.loaderShownAt = Date.now();
+
+		const iframe = this.shadowRoot?.querySelector('iframe');
+		iframe?.addEventListener('load', this.onIframeLoad);
+	}
+
+	private onIframeLoad = () => {
+		const elapsed = Date.now() - this.loaderShownAt;
+		const remaining = Math.max(1000 - elapsed, 0);
+
+		setTimeout(() => {
+			this.isLoading = false;
+		}, remaining);
 	};
 
 	render() {
-		const iframeSrc = `${ import.meta.env.BASE_URL }igx-docmanager`;
+		const iframeSrc = `${import.meta.env.BASE_URL}projects/stream-manager/index.html`;
+
 		return html`
-            <div class="iframe-wrapper loading">
-                <iframe src=${ iframeSrc } @load=${ this.onLoad }></iframe>
+            <div
+                class=${classMap({
+                    'dm-loading': true,
+                    'dm-loading--visible': this.isLoading,
+                })}
+	            aria-labelledby="loading-message">
+                <igc-circular-progress></igc-circular-progress>
+                <p id="loading-message">The sample is loading, please wait...</p>
             </div>
+            <iframe src=${iframeSrc} loading="eager"></iframe>
 		`;
 	}
 
-	static styles = [unsafeCSS(sampleStyles), unsafeCSS(sharedStyles)];
+	static styles = [unsafeCSS(styles), unsafeCSS(sharedStyles)];
 }

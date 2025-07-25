@@ -1,0 +1,9 @@
+@use 'igniteui-theming' as *;
+
+.dm-app-layout {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	height: 100vh;
+	position: relative;
+	background: var(--ig-gray-50);
+}

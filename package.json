@@ -4,27 +4,30 @@
   "private": true,
   "type": "module",
   "author": "infragistics",
-  "description": "Showcase apps for igniteui-dockmanager",
+  "description": "Dock manager - showcase sample apps",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"npm run watch-styles\"",
+    "build": "npm run compile-styles && tsc && vite build",
     "dev:stream": "vite projects/stream-manager",
-    "build": "tsc && vite build",
     "build:ci": "tsc && vite build --mode ci",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compile-styles": "sass --load-path=node_modules src/styles/styles.scss:src/styles/styles.css",
+    "watch-styles": "sass --watch --load-path=node_modules src/styles:src/styles src/styles/styles.scss:src/styles/styles.css"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@igniteui/material-icons-extended": "^3.1.0",
     "@vaadin/router": "^2.0.0",
-    "@infragistics/igniteui-dockmanager": "^1.16.1",
     "igniteui-theming": "^19.1.1",
     "igniteui-webcomponents": "6.1.1-alpha.0",
     "sass": "^1.89.2"
   },
   "devDependencies": {
-    "vite": "^6.3.4",
-    "vite-plugin-static-copy": "^2.3.0",
+    "concurrently": "^9.2.0",
+    "marked": "^16.0.0",
     "sass-embedded": "^1.86.0",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "vite": "^6.3.4",
+    "vite-plugin-static-copy": "^2.3.0"
   }
 }
