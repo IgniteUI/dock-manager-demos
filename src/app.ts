@@ -19,7 +19,7 @@ export default class App extends LitElement {
 		const outlet = this.shadowRoot?.querySelector('router-outlet');
 
 		const router = new Router(outlet, {
-			baseUrl: '/showcase/',
+			baseUrl: 'stream-manager',
 		});
 
 		router.setRoutes(routes);

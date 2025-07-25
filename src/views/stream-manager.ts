@@ -3,7 +3,11 @@ import { classMap } from 'lit/directives/class-map.js';
 import { customElement, state } from 'lit/decorators.js';
 import styles from './stream-manager.scss?inline';
 import sharedStyles from '../styles/_shared.scss?inline';
+import { defineComponents, IgcCircularProgressComponent } from 'igniteui-webcomponents';
 
+defineComponents(
+	IgcCircularProgressComponent,
+)
 
 @customElement('stream-manager')
 export default class StreamManager extends LitElement {
@@ -32,6 +36,7 @@ export default class StreamManager extends LitElement {
 
 	render() {
 		const iframeSrc = `${import.meta.env.BASE_URL}projects/stream-manager/index.html`;
+		console.log('iframeSrc:', iframeSrc); // Confirm iframeSrc in the browser console
 
 		return html`
             <div
@@ -40,8 +45,8 @@ export default class StreamManager extends LitElement {
                     'dm-loading--visible': this.isLoading,
                 })}
 	            aria-labelledby="loading-message">
-                <igc-circular-progress></igc-circular-progress>
-                <p id="loading-message">The sample is loading, please wait...</p>
+                <igc-circular-progress indeterminate></igc-circular-progress>
+                <p id="loading-message" class="dm-loading__message">The sample is loading, please wait...</p>
             </div>
             <iframe src=${iframeSrc} loading="eager"></iframe>
 		`;

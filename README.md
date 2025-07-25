@@ -1,6 +1,6 @@
 # Dock Manager Demos
 
-This project demonstrates the usage of the Ignite UI Dock Manager component with Vite.
+This project demonstrates the usage of the Ignite UI Dock Manager component.
 
 ## Project Structure
 
@@ -50,8 +50,3 @@ To preview the production build locally:
 npm run preview
 ```
 
-## Features
-
-- Dock Manager with split panes
-- Draggable and resizable panes
-- Customizable layout

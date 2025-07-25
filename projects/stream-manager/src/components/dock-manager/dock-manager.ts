@@ -96,7 +96,7 @@ export default class AppDockManager extends LitElement {
 
 	render() {
 		return html`
-            <igc-dockmanager id="dockManager" class="app-dock-manager" .layout=${ this.dockLayout }>
+            <igc-dockmanager id="dockManager" class="app-dock-manager dark-theme" .layout=${ this.dockLayout }>
                 <div slot="streamPreview">
                     <app-stream-preview></app-stream-preview>
                 </div>
