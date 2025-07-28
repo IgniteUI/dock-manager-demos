@@ -15,7 +15,7 @@
 	--igc-pane-header-background: var(--ig-gray-50);
 	--igc-pane-content-background: #000;
 	--igc-pane-content-text: #fff;
-	--igc-splitter-handle: var(--ig-gray-100);
+	--igc-splitter-handle: var(--ig-gray-300);
 	--igc-splitter-background: var(--ig-gray-100);
 	
 	--igc-floating-pane-border-color: var(--ig-gray-50);
@@ -72,6 +72,12 @@
 
 ::part(splitter) {
 	flex: 0 0 rem(8px);
+}
+
+::part(splitter-base) {
+	&:focus-within {
+		background: var(--ig-gray-100);
+	}
 }
 
 ::part(splitter-ghost) {

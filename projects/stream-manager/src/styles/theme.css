@@ -1257,7 +1257,6 @@ body {
   --ig-size-small: 1;
   --ig-size-medium: 2;
   --ig-size-large: 3;
-  --ig-scrollbar-size: 1rem;
   --ig-font-family: "Roboto", sans-serif;
   --sm-dock-manager-gutter: 0.5rem;
   --sm-special-black: #000;
@@ -1278,6 +1277,7 @@ body {
   --ig-list-item-thumbnail-color-hover: var(--sm-special-purple);
   --ig-list-item-thumbnail-color-active: var(--sm-special-purple);
   --ig-scrollbar-track-background: var(--ig-gray-50);
+  --ig-scrollbar-thumb-background: var(--ig-gray-200);
   --sm-activity-special: rgb(154, 242, 228);
   --sm-special-purple: rgb(214, 0, 254);
   --sm-outline-color: var(--ig-primary-300);

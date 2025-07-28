@@ -25,7 +25,6 @@
 	--ig-size-small: 1;
 	--ig-size-medium: 2;
 	--ig-size-large: 3;
-	--ig-scrollbar-size: #{ig.rem(16px)};
 	
 	--ig-font-family: 'Roboto', sans-serif;
 	--sm-dock-manager-gutter: #{ig.rem(8px)};
@@ -50,6 +49,7 @@
 	--ig-list-item-thumbnail-color-active: var(--sm-special-purple);
 	
 	--ig-scrollbar-track-background: #{var(--ig-gray-50)};
+	--ig-scrollbar-thumb-background: #{var(--ig-gray-200)};
 	
 	// ACTIVITY
 	--sm-activity-special: #{list.nth(ig.$brushes-regular, 4)};
