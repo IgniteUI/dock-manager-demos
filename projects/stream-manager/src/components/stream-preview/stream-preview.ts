@@ -58,7 +58,7 @@ export default class StreamPreview extends LitElement {
                         </span>
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
-                                <igc-badge variant="danger" class="sm-animation-pulse"></igc-badge> LIVE`: nothing }
+                                <igc-badge variant="danger" class="sm-animation-live"></igc-badge> LIVE`: nothing }
                         </div>
                     </h5>
                 </igc-card-header>
@@ -66,7 +66,9 @@ export default class StreamPreview extends LitElement {
                 <igc-card-content class="sm-stream-preview__content">
                     <div class="sm-stream-preview__genres">
                         ${ this.previewData.genres.map(genre => html`
-                            <igc-chip>${ genre }</igc-chip>`) }
+                            <igc-chip>
+	                            <span class="sm-stream-preview__genres-text">${ genre }</span>
+                            </igc-chip>`)}
                     </div>
                     <igc-divider></igc-divider>
                     <div class="sm-stream-preview__social">

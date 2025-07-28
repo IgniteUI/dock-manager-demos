@@ -110,6 +110,8 @@
 
 .sm-stream-preview__social-channels-name {
 	@include type-style(body-2);
+	
+	padding-inline: rem(3px);
 }
 
 .sm-stream-preview__social,
@@ -123,12 +125,19 @@
 
 .sm-stream-preview__genres {
 	igc-chip {
+		--ig-size: 1;
 		--background: var(--ig-gray-50);
 		--text-color: var(--ig-gray-400);
+		--ig-body-2-text-transform: lowercase;
 	}
 	
 	margin-block-end: rem(4px);
-	
+	padding-block: rem(4px);
+}
+
+.sm-stream-preview__genres-text {
+	display: inline-flex;
+	padding-inline: rem(3px);
 }
 
 .sm-stream-preview__social {

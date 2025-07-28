@@ -17,7 +17,7 @@
 	--igc-pane-content-text: #fff;
 	--igc-splitter-handle: var(--ig-gray-100);
 	--igc-splitter-background: var(--ig-gray-100);
-	--igc-active-color: var(--ig-primary-200);
+	
 	--igc-floating-pane-border-color: var(--ig-gray-50);
 	--igc-joystick-icon-color: var(--ig-primary-100);
 	--igc-joystick-icon-color-active: orange;
@@ -25,6 +25,13 @@
 	--igc-joystick-background-active: black;
 	--igc-joystick-border-color: var(--ig-primary-700);
 	--igc-drop-shadow-background: #{color($sm-palette, primary, 500, .3)};
+	--igc-tab-background: var(--ig-secondary-900);
+	--igc-tab-border-color: var(--ig-secondary-900);
+	--igc-tab-text: var(--ig-gray-400);
+	--igc-tab-background-active: var(--ig-secondary-900);
+	--igc-tab-border-color-active: var(--ig-secondary-900);
+	--igc-tab-text-active: var(--ig-gray-900);
+	--igc-active-color: var(--ig-gray-900);
 	
 	width: 100%;
 	height: 100%;
@@ -55,7 +62,7 @@
 	--igc-text-color: var(--ig-gray-900);
 	--igc-active-color: var(--ig-gray-900);
 	
-	box-shadow: inset rem(2px) 0 0 0 var(--ig-primary-300);
+	box-shadow: inset rem(2px) 0 0 0 var(--ig-gray-900);
 }
 
 ::part(splitter) {
