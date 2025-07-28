@@ -55,27 +55,27 @@ export default class ActivityFeed extends LitElement {
                     <div class="sm-activity-feed__filter sm-activity-feed__filter-accent">Filter</div>
                     <igc-button variant="flat">Skip Alerts</igc-button>
                 </igc-list-header>
-	            ${repeat(
-	                this.feed,
-	                (item) => item.id,
-	                (item) => html`
-		            <igc-list-item
-		              tabindex="0"
-		              aria-label="${item.username} - ${item.message}${item.timeAgo}"
-		              class="sm-activity-feed__item sm-activity-feed__item--${item.type}"
-		              ${animate()}
-		            >
-		              <igc-icon slot="start" name="${item.icon}" collection="material"></igc-icon>
-		              <span slot="title">${item.username}</span>
-		              <span slot="subtitle">
+                ${repeat(
+                        this.feed,
+                        (item) => item.id,
+                        (item) => html`
+                            <igc-list-item
+                                    tabindex="0"
+                                    aria-label="${item.username} - ${item.message}${item.timeAgo}"
+                                    class="sm-activity-feed__item sm-activity-feed__item--${item.type}"
+                                    ${animate()}
+                            >
+                                <igc-icon slot="start" name="${item.icon}" collection="material"></igc-icon>
+                                <span slot="title">${item.username}</span>
+                                <span slot="subtitle">
 		                ${item.message}
 		                <small class="sm-activity-feed__timestamp">${item.timeAgo}</small>
 		              </span>
-		              <igc-icon-button aria-label="Select Options" class="sm-activity-feed__more-button" slot="end" variant="flat">
-		                <igc-icon name="more" collection="material"></igc-icon>
-		              </igc-icon-button>
-		            </igc-list-item>`
-	            )}
+                                <igc-icon-button aria-label="Select Options" class="sm-activity-feed__more-button" slot="end" variant="flat">
+                                    <igc-icon name="more" collection="material"></igc-icon>
+                                </igc-icon-button>
+                            </igc-list-item>`
+                )}
             </igc-list>
 		`;
 	}

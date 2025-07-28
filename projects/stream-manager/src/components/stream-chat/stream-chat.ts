@@ -16,7 +16,10 @@ defineComponents(IgcChatComponent);
 export default class StreamChat extends LitElement {
 	render() {
 		return html`
-            <igc-chat></igc-chat>
+			<!-- <igc-chat></igc-chat> -->
+            <div class="coming-soon">
+                Chat component coming soon
+            </div>
 		`;
 	}
 

@@ -110,10 +110,7 @@ export default class AppDockManager extends LitElement {
                     <app-quick-actions></app-quick-actions>
                 </div>
                 <div slot="streamChat">
-                    <div class="coming-soon">
-                        Chat component coming soon
-                    </div>
-<!--                    <app-stream-chat></app-stream-chat>-->
+                    <app-stream-chat></app-stream-chat>
                 </div>
             </igc-dockmanager>
 		`;
