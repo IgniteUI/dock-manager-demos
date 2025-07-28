@@ -127,7 +127,10 @@
 	igc-chip {
 		--ig-size: 1;
 		--background: var(--ig-gray-50);
+		--focus-background: var(--ig-gray-50);
+		--hover-background: var(--ig-gray-50);
 		--text-color: var(--ig-gray-400);
+		--focus-outline-color: #{color($color: primary, $variant: 500, $opacity: .38)};
 		--ig-body-2-text-transform: lowercase;
 	}
 	

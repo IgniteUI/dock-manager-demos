@@ -14,6 +14,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@infragistics/igniteui-dockmanager": "^1.16.1",
+    "@lit-labs/motion": "^1.0.9",
     "igniteui-theming": "^19.1.1",
     "igniteui-webcomponents": "6.1.1-alpha.0",
     "lit": "^3.2.1",
@@ -21,8 +22,8 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
+    "marked": "^16.0.0",
     "typescript": "~5.7.2",
-    "vite": "^6.3.1",
-    "marked": "^16.0.0"
+    "vite": "^6.3.1"
   }
 }

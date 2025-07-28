@@ -1,6 +1,7 @@
 export type ActivityType = 'follow' | 'tipped' | 'subscribed' | 'contributed' | 'cheered';
 
 export interface IActivityFeedItem {
+	id: string;
 	username: string;
 	type: ActivityType;
 	message: string;
@@ -10,6 +11,7 @@ export interface IActivityFeedItem {
 
 export const activityFeed: IActivityFeedItem[] = [
 	{
+		id: 'follow',
 		username: 'KappaCares',
 		type: 'follow',
 		icon: 'heart',
@@ -17,6 +19,7 @@ export const activityFeed: IActivityFeedItem[] = [
 		timeAgo: '1 min ago',
 	},
 	{
+		id: 'tipped',
 		username: 'PunchyBowl',
 		type: 'tipped',
 		icon: 'monetization',
@@ -24,6 +27,7 @@ export const activityFeed: IActivityFeedItem[] = [
 		timeAgo: '1 min ago',
 	},
 	{
+		id: 'subscribed',
 		username: 'LazyFace',
 		type: 'subscribed',
 		icon: 'star',
@@ -31,6 +35,7 @@ export const activityFeed: IActivityFeedItem[] = [
 		timeAgo: '2 minute ago',
 	},
 	{
+		id: 'contributed',
 		username: 'The Crowd',
 		type: 'contributed',
 		icon: 'etherium',
@@ -38,6 +43,7 @@ export const activityFeed: IActivityFeedItem[] = [
 		timeAgo: '2 min ago',
 	},
 	{
+		id: 'cheered',
 		username: 'SoulfulVibes',
 		type: 'cheered',
 		icon: 'diamond',
