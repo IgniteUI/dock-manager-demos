@@ -2,7 +2,7 @@ import {defineConfig} from 'vite';
 import {viteStaticCopy} from 'vite-plugin-static-copy';
 
 export default defineConfig({
-    base: '/stream-manager/',
+    base: './',
     resolve: {
         alias: {
             'igniteui-theming': new URL('./node_modules/igniteui-theming',
@@ -23,9 +23,14 @@ export default defineConfig({
                     dest: '',
                 },
                 {
-                    src: './projects/stream-manager/public/*',
-                    dest: '',
+                    src: ['./projects/stream-manager/**', '!./projects/stream-manager/node_modules/**'],
+                    dest: 'projects/stream-manager',
+                },
+                {
+                    src: './downloads/*.zip',
+                    dest: 'downloads',
                 }
+
             ],
         }),
     ],

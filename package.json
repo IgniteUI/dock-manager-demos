@@ -7,6 +7,7 @@
   "description": "Dock manager - showcase sample apps",
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run watch-styles\"",
+    "prebuild": "node prepare-downloads.js",
     "build": "npm run compile-styles && tsc && vite build",
     "dev:stream": "vite projects/stream-manager",
     "build:ci": "tsc && vite build --mode ci",
@@ -18,11 +19,19 @@
     "@floating-ui/dom": "^1.6.13",
     "@igniteui/material-icons-extended": "^3.1.0",
     "@vaadin/router": "^2.0.0",
+    "archiver": "^7.0.1",
+    "file-saver": "^2.0.5",
+    "fs-extra": "^11.3.0",
     "igniteui-theming": "^19.1.1",
     "igniteui-webcomponents": "6.1.1-alpha.0",
+    "jszip": "^3.10.1",
     "sass": "^1.89.2"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/file-saver": "^2.0.7",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.1.0",
     "concurrently": "^9.2.0",
     "marked": "^16.0.0",
     "sass-embedded": "^1.86.0",

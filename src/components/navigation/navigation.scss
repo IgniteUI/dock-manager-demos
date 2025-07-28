@@ -1,0 +1,21 @@
+@use 'igniteui-theming' as *;
+
+.dm-navigation-drawer {
+	height: 100%;
+}
+
+.dm-navigation-drawer[open] {
+	z-index: 9999;
+}
+
+.dm-navigation-drawer__header {
+	display: flex;
+	justify-content: space-between;
+	align-self: center;
+}
+
+.dm-navigation-drawer__header-title {
+	font-size: rem(14px);
+	text-transform: uppercase;
+	font-weight: 700;
+}

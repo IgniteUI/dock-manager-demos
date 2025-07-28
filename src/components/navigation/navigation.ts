@@ -9,8 +9,8 @@ import {
 } from 'igniteui-webcomponents';
 
 import { customElement, property, state } from 'lit/decorators.js';
-import styles from './navigation-drawer.scss?inline';
-import { IsampleItem, sampleItems } from '../../views/data/samples-navigation.ts';
+import styles from './navigation.scss?inline';
+import { IsampleItem, sampleItems } from '../../data/samples-navigation.ts';
 import { Router } from '@vaadin/router';
 
 defineComponents(
@@ -20,8 +20,8 @@ defineComponents(
 	IgcIconButtonComponent,
 );
 
-@customElement('app-navigation-drawer')
-export default class NavigationDrawer extends LitElement {
+@customElement('app-navigation')
+export default class Navigation extends LitElement {
 	@property({ type: Array })
 	items: IsampleItem[] = sampleItems;
 
@@ -29,15 +29,31 @@ export default class NavigationDrawer extends LitElement {
 	 * The active route path - used to determine which item should be active
 	 */
 	@property({ type: String })
-	activePath: string = '/home/stream-manager';
+	activePath: string = 'stream-manager';
 
 	@state()
-	open = true;
+	open = false;
+
+	connectedCallback() {
+		super.connectedCallback();
+		document.addEventListener('toggle-drawer', this.handleToggleDrawer.bind(this));
+		this.activePath = window.location.pathname;
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		document.removeEventListener('toggle-drawer', this.handleToggleDrawer.bind(this));
+	}
+
+	private handleToggleDrawer() {
+		this.open = !this.open;
+	}
 
 	private handleNavigation(route: string | undefined, e: Event) {
 		e.preventDefault();
 		if (route) {
 			this.activePath = route;
+			this.open = false;
 			Router.go(route);
 		}
 	}
@@ -45,18 +61,24 @@ export default class NavigationDrawer extends LitElement {
 	render() {
 		return html`
             <igc-nav-drawer
+	            class="dm-navigation-drawer"
                 .open=${this.open}
-                position="relative"
             >
-                <igc-nav-drawer-header-item>
-                    Sample Drawer
+                <igc-nav-drawer-header-item class="dm-navigation-drawer__header">
+                    <span class="dm-navigation-drawer__header-title">Samples</span>
+	                <igc-icon-button 
+		                aria-label="Close navigation"
+		                title="Close the navigation"
+		                variant="flat"
+		                @click=${() => this.open = false}>
+                        <igc-icon name="close" collection="material"></igc-icon>
+                    </igc-icon-button>
                 </igc-nav-drawer-header-item>
 
                 ${this.items.map(item => html`
                     <igc-nav-drawer-item 
                         ?active=${item.route === this.activePath}
-                        @click=${(e: Event) => this.handleNavigation(item.route, e)}
-                    >
+                        @click=${ (e: Event) => this.handleNavigation(item.route, e)}>
                         <igc-icon
                             slot="icon" name="${item.icon}"
                             collection="${item.collection || 'material'}">
@@ -64,12 +86,6 @@ export default class NavigationDrawer extends LitElement {
                         <span slot="content">${item.label}</span>
                     </igc-nav-drawer-item>
                 `)}
-
-
-                <igc-nav-drawer-item>
-                    <igc-icon slot="icon" name="search"></igc-icon>
-                    <span slot="content">Search</span>
-                </igc-nav-drawer-item>
             </igc-nav-drawer>
 		`;
 	}
