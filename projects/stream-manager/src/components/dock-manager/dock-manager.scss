@@ -31,7 +31,7 @@
 	--igc-tab-background-active: var(--ig-secondary-900);
 	--igc-tab-border-color-active: var(--ig-secondary-900);
 	--igc-tab-text-active: var(--ig-gray-900);
-	--igc-active-color: var(--ig-gray-900);
+	--igc-active-color: var(--ig-gray-200);
 	
 	width: 100%;
 	height: 100%;
@@ -60,9 +60,14 @@
 	--igc-pinned-header-background: var(--ig-secondary-900);
 	--igc-pinned-header-text: var(--ig-gray-400);
 	--igc-text-color: var(--ig-gray-900);
-	--igc-active-color: var(--ig-gray-900);
 	
-	box-shadow: inset rem(2px) 0 0 0 var(--ig-gray-900);
+	box-shadow: inset rem(2px) 0 0 0 #{var(--sm-light-purple)};
+}
+
+::part(tab-header active),
+::part(unpinned-pane-header active),
+::part(pane-header active) {
+	--igc-active-color: #{var(--sm-light-purple)};
 }
 
 ::part(splitter) {
@@ -70,7 +75,7 @@
 }
 
 ::part(splitter-ghost) {
-	background: var(--ig-primary-500);
+	background: var(--ig-gray-200);
 }
 
 ::part(pane-header-unpin-button),
@@ -86,7 +91,7 @@
 	backdrop-filter: blur(3px);
 }
 
-.temporary {
+.coming-soon {
 	display: flex;
 	flex-direction: column;
 	align-items: center;

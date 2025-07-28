@@ -20,11 +20,10 @@
 	}
 }
 
-.sm-schedule-item__label {
-	@include type-style(overline);
-}
-
+.sm-schedule-item__label,
 .sm-schedule-item__value {
-	@include type-style(caption);
+	@include type-style(overline);
+	
+	--ig-overline-font-size: #{rem(12px)};
 }
 
