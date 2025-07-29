@@ -36,7 +36,7 @@ export default class Header extends LitElement {
 	private static readonly BITRATE_STEP = 2000;
 	private static readonly DIRECTION_CHANGE_PROBABILITY = 0.15;
 	private static readonly MIN_VIEWERS = 43000;
-	private static readonly MAX_VIEWERS = 175000; // Corrected from 17500 to 175000 which seems more realistic
+	private static readonly MAX_VIEWERS = 175000;
 	private static readonly MINUTES_LOOP_COUNT = 40;
 
 	// Timer Configuration

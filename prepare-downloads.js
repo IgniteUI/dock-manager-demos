@@ -10,7 +10,7 @@ console.log('Preparing downloadable project packages...');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create downloads directory if it doesn't exist
+// Create a downloads directory if it doesn't exist
 const downloadsDir = path.join(__dirname, 'downloads');
 if (!fs.existsSync(downloadsDir)) {
     fs.mkdirSync(downloadsDir, { recursive: true });
@@ -95,7 +95,7 @@ npm run dev
 For questions or issues, please visit the Infragistics website.
 `;
 
-    // Add the README to the archive (or update existing one)
+    // Add the README to the archive (or update the existing one)
     archive.append(readmeContent, { name: 'README.md' });
 
     // Finalize the archive
