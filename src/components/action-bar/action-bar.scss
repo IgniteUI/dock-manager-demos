@@ -1,3 +1,9 @@
+@use 'igniteui-theming' as *;
+
 igc-nav-drawer {
 	height: 100%;
+}
+
+igc-navbar::part(base) {
+	min-height: var(--dm-navbar-height);
 }

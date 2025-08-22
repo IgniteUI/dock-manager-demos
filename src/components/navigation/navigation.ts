@@ -29,15 +29,19 @@ export default class Navigation extends LitElement {
 	 * The active route path - used to determine which item should be active
 	 */
 	@property({ type: String })
-	activePath: string = 'stream-manager';
+	activePath: string = '/';
 
 	@state()
 	open = false;
 
+	constructor() {
+		super();
+		this.activePath = window.location.pathname;
+	}
+
 	connectedCallback() {
 		super.connectedCallback();
 		document.addEventListener('toggle-drawer', this.handleToggleDrawer.bind(this));
-		this.activePath = window.location.pathname;
 	}
 
 	disconnectedCallback() {
@@ -53,6 +57,7 @@ export default class Navigation extends LitElement {
 		e.preventDefault();
 		if (route) {
 			this.activePath = route;
+			// Once an item is clicked, navigate and close the drawer
 			this.open = false;
 			Router.go(route);
 		}

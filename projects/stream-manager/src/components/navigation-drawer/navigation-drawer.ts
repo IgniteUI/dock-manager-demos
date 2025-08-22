@@ -56,7 +56,7 @@ export default class NavigationDrawer extends LitElement {
                         this.toggleNavDrawer();
                     }}
                 >
-                    <span>DASHBOARD</span>
+                    <span class="sm-nav__title">DASHBOARD</span>
                     <igc-icon
                         class="sm-menu-toggle-button"
                         name="back"

@@ -3,6 +3,7 @@ import {
 	CLOSE,
 	DOWNLOAD,
 	HAMBURGER_MENU,
+	HOME,
 	LOGO_STREAM_MANAGER,
 } from '../assets/icons/icons.ts';
 
@@ -14,4 +15,5 @@ export function registerAppIcons(): void {
 	registerIconFromText('download', DOWNLOAD, 'material');
 	registerIconFromText('hamburger_menu', HAMBURGER_MENU, 'material');
 	registerIconFromText('close', CLOSE, 'material');
+	registerIconFromText('home', HOME, 'material');
 }

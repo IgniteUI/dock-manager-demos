@@ -2,48 +2,11 @@
 
 body {
 	font-family: var(--ig-font-family);
-}
-
-:host {
-	display: grid;
-	grid-template-rows: 1fr;
-	height: 100%;
-	position: relative;
 	
-	> iframe {
-		width: 100%;
-		height: 100%;
-		border: none;
-		overflow: auto;
-	}
-}
-
-.dm-loading {
-	igc-circular-progress {
-		--stroke-thickness: #{rem(3px)};
-		--circular-size: #{rem(60)};
-	}
+	--dm-navbar-height: #{rem(56px)};
 	
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	background: color($color: gray, $variant: 50, $opacity: .4);
-	color: adaptive-contrast(#{color($color: gray, $variant: 50, $opacity: .4)});
-	display: grid;
-	place-content: center;
-	opacity: 0;
-	backdrop-filter: blur(0);
-	transition: all 0.4s ease-in-out;
-	text-align: center;
-	
-	&--visible {
-		opacity: 1;
-		backdrop-filter: blur(10px);
-		background: color($color: gray, $variant: 50, $opacity: .9);
+	> * {
+		height: calc(100vh - var(--dm-navbar-height));
 	}
-}
-
-.dm-loading__message {
-	@include type-style(h5);
 }
 

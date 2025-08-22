@@ -15,20 +15,20 @@ defineComponents(IgcListComponent);
 
 @customElement('app-stream-schedule')
 export default class StreamSchedule extends LitElement {
-	private schedule: IStreamScheduleItem[] = streamSchedule;
+    // readonly to prevent accidental changes
+    private readonly schedule: IStreamScheduleItem[] = streamSchedule;
 
-	render() {
-		return html`
-            <igc-list class="sm-schedule-list">
-                ${ this.schedule.map(item => html`
-                    <igc-list-item class="sm-schedule-item" tabindex="0">
-                        <div slot="start" class="sm-schedule-item__label">${ item.day }</div>
-                        <div slot="end" class="sm-schedule-item__value">${ item.startTime } - ${ item.endTime }</div>
-                    </igc-list-item>
-                `) }
-            </igc-list>
-		`;
-	}
+    // Pre-render templates since data is static
+    private readonly scheduleTemplates = this.schedule.map(item => html`
+		<igc-list-item class="sm-schedule-item" tabindex="0">
+			<div slot="start" class="sm-schedule-item__label">${item.day}</div>
+			<div slot="end" class="sm-schedule-item__value">${item.startTime} - ${item.endTime}</div>
+		</igc-list-item>
+	`);
 
-	static styles = unsafeCSS(styles);
+    render() {
+        return html`<igc-list class="sm-schedule-list">${this.scheduleTemplates}</igc-list>`;
+    }
+
+    static styles = unsafeCSS(styles);
 }

@@ -13,7 +13,7 @@ import {
 } from 'igniteui-webcomponents';
 import styles from './stream-preview.scss?inline';
 import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
-import foxGuitar from '../../assets/videos/fox-guitar.webm';
+import foxGuitar from '../../assets/videos/AdobeStock_1269394798.mp4';
 import { repeat } from 'lit/directives/repeat.js';
 
 // Initialize the dock manager custom elements
@@ -69,7 +69,7 @@ export default class StreamPreview extends LitElement {
                         `: nothing }
 
                         ${ this.isVideoError ? html`
-                            <p class=" sm-stream-preview__error">
+                            <p class="sm-stream-preview__error">
                                 ${ ERROR_MESSAGE }
                             </p>`: nothing }
                     </div>
@@ -99,8 +99,8 @@ export default class StreamPreview extends LitElement {
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
                                 <igc-badge
-                                        variant="danger"
-                                        class="${ this.isVideoLoading && !this.isVideoError ? 'loading': 'sm-animation-live' }">
+                                    variant="danger"
+                                    class="${ this.isVideoLoading && !this.isVideoError ? 'loading': 'sm-animation-live' }">
                                 </igc-badge> ${ LIVE_LABEL }`: nothing }
                         </div>
                     </h5>

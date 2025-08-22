@@ -1,25 +1,38 @@
 export class DownloadService {
+	private getDownloadUrl(projectName: string, version: string): string {
+		const basePath = this.getBasePath();
+		return `${basePath}downloads/${projectName}-${version}.zip`;
+	}
+
+	private getBasePath(): string {
+		// Get the current base path from the URL
+		return document.querySelector('base')?.getAttribute('href') || './';
+	}
+
 	/**
 	 * Downloads the currently viewed project as a zip file
 	 * @param projectName The name of the project to download
+	 * @param version The project version premium(paid) or community(free)
+	 * @returns Promise<boolean> - true if successful, false if failed
 	 */
-	async downloadProject(projectName: string): Promise<void> {
+	async downloadProject(projectName: string, version: string): Promise<boolean> {
 		try {
-			// Download the pre-packaged zip file
-			const zipUrl = `${import.meta.env.BASE_URL}downloads/${projectName}.zip`;
+			const downloadUrl = this.getDownloadUrl(projectName, version);
 
-			// Create a link element and trigger the download
+			// Create download link
 			const link = document.createElement('a');
-			link.href = zipUrl;
-			link.download = `${projectName}.zip`;
+			link.href = downloadUrl;
+			link.download = `${projectName}-${version}.zip`;
+			link.style.display = 'none';
+
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
 
-			// Hide loading indicator
-
+			return true;
 		} catch (error) {
-			alert('Failed to download the project. Please try again.');
+			console.error('Download failed:', error);
+			return false;
 		}
 	}
 }

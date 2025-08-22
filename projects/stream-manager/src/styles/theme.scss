@@ -52,6 +52,7 @@
 	--ig-scrollbar-thumb-background: #{var(--ig-gray-200)};
 	
 	// ACTIVITY
+	--sm-dim-purple: #{list.nth(ig.$brushes-regular, 2)};
 	--sm-activity-special: #{list.nth(ig.$brushes-regular, 4)};
 	--sm-special-purple: #{list.nth(ig.$brushes-color-blind, 5)};
 	--sm-outline-color: var(--ig-primary-300);

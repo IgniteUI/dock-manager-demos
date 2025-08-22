@@ -10,7 +10,8 @@ import '../quick-actions/quick-actions.ts';
 import {
 	IgcDockManagerPaneType,
 	IgcSplitPaneOrientation,
-	IgcDockManagerLayout, IgcUnpinnedLocation,
+	IgcDockManagerLayout,
+	IgcUnpinnedLocation,
 } from '@infragistics/igniteui-dockmanager';
 import styles from './dock-manager.scss?inline';
 
