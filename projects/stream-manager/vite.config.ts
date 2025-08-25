@@ -5,6 +5,7 @@ export default defineConfig({
     resolve: {
         alias: {
             // Use a relative path to main node_modules
+            // @ts-ignore
             'igniteui-theming': new URL('../../node_modules/igniteui-theming', import.meta.url).pathname,
         },
     },

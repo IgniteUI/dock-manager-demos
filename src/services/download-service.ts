@@ -19,7 +19,7 @@ export class DownloadService {
 		try {
 			const downloadUrl = this.getDownloadUrl(projectName, version);
 
-			// Create download link
+			// Create a download link
 			const link = document.createElement('a');
 			link.href = downloadUrl;
 			link.download = `${projectName}-${version}.zip`;

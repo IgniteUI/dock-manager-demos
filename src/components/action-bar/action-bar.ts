@@ -102,9 +102,6 @@ export default class ActionBar extends LitElement {
                     <igc-dropdown-item @click="${() => this.handleDownloadItemClick('community')}">
                         Community Version
                     </igc-dropdown-item>
-                    <igc-dropdown-item @click="${() => this.handleDownloadItemClick('both')}">
-                        Download Both
-                    </igc-dropdown-item>
                 </igc-dropdown>
             </igc-navbar>
 		`;

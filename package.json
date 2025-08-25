@@ -11,13 +11,13 @@
     "dev:projects": "tsx scripts/project-manager.ts dev",
     "install-projects": "tsx scripts/project-manager.ts install",
     "build": "npm run prebuild && npm run install-projects && npm run compile-styles && tsc && vite build",
-    "prebuild": "node prepare-downloads.js",
+    "prebuild": "tsx scripts/downloads/index.ts",
     "build:ci": "tsc && vite build --mode ci",
     "preview": "npm run prebuild && npm run build && vite preview",
+    "prepare-downloads": "npm run prebuild",
     "compile-styles": "sass --load-path=node_modules src/styles/styles.scss:src/styles/styles.css",
     "watch-styles": "sass --watch --load-path=node_modules src/styles:src/styles src/styles/styles.scss:src/styles/styles.css"
   },
-
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
     "@igniteui/material-icons-extended": "^3.1.0",
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.1.0",
     "marked": "^12.0.0",
     "sass-embedded": "^1.86.0",
