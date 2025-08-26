@@ -1,6 +1,5 @@
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { Router } from '@vaadin/router';
 import {
 	defineComponents,
 	IgcButtonComponent,
@@ -46,10 +45,6 @@ export default class ActionBar extends LitElement {
 		this.dropdownOpen = !this.dropdownOpen;
 	}
 
-	private handleHomeClick() {
-		Router.go('/');
-	}
-
 	private handleDownloadItemClick(version: string) {
 		console.log('Download item clicked:', version);
 
@@ -68,23 +63,15 @@ export default class ActionBar extends LitElement {
 	render() {
 		return html`
             <igc-navbar>
-                <igc-icon-button
-                        @click="${this.handleHamburgerClick}"
-                        variant="flat"
-                        slot="start">
-                    <igc-icon name="hamburger_menu" collection="material"></igc-icon>
-                </igc-icon-button>
-
-                ${this.currentProject ? html`
+                <div slot="start" class="dm-app-title">
                     <igc-icon-button
-                            @click="${this.handleHomeClick}"
-                            variant="flat"
-                            slot="start">
-                        <igc-icon name="home" collection="material"></igc-icon>
+                            @click="${this.handleHamburgerClick}"
+                            variant="flat">
+                        <igc-icon name="hamburger_menu" collection="material"></igc-icon>
                     </igc-icon-button>
-                ` : ''}
 
-                <h1 slot="start" class="ig-typography__h5">${this.projectTitle}</h1>
+                    <h1 class="dm-app-title__text">Dock manager demos</h1>
+                </div>
 
                 <igc-dropdown slot="end">
                     <igc-button

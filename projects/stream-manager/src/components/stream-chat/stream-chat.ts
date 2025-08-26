@@ -144,10 +144,10 @@ export default class StreamChat extends LitElement {
                                 font-style: normal;
                                 font-weight: 400;
                                 line-height: 20px;
-
-                                :not(:first-child) {
-                                    margin-block-end: 4px;
-                                }
+                            }
+                            
+                            .sm-message__time {
+                                color: var(--ig-gray-500);
                             }
 
                             .sm-message__username {
@@ -190,10 +190,37 @@ export default class StreamChat extends LitElement {
                                     color: #EE5879;
                                 }
                             }
+                            
+                            .sm-message__badges {
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 4px;
+                                
+                                igc-icon {
+                                    --ig-size: 1;
+                                    
+                                    color: var(--sm-dim-purple);
+                                }
+                            }
+                            
+                            .sm-message__info {
+                                float: left;
+                                display: flex;
+                                align-items: center;
+                                gap: 4px;
+                                margin-inline-end: 4px;
+                            }
                         </style>
                         <div class="sm-message sm-message--${ stagedData?.role || 'user' }">
-                            <span class="sm-message__time">${ stagedData?.time || message.timestamp?.toLocaleTimeString()}</span>
-                            <span class="sm-message__username">${ stagedData?.username || message.sender }:</span>
+                            <div class="sm-message__info">
+                                <span class="sm-message__time">
+                                    ${ stagedData?.time || message.timestamp?.toLocaleTimeString()}
+                                </span>
+                                    <span class="sm-message__badges">
+                                    ${stagedData?.badges?.map(badge => html`<igc-icon name="${badge}" collection="material"></igc-icon>`)}
+                                </span>
+                                <span class="sm-message__username">${ stagedData?.username || message.sender }:</span>
+                            </div>
                             <span class="sm-message__username-text">${ message.text }</span>
                         </div>
                     `;

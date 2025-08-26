@@ -6,7 +6,7 @@
   "author": "infragistics",
   "description": "Dock manager - showcase sample apps",
   "scripts": {
-    "dev": "npm run prebuild && npm run install-projects && concurrently \"npm run dev:main\" \"npm run dev:projects\" \"npm run watch-styles\"",
+    "dev": "npm run prebuild && npm run install-projects && concurrently -n \"main,projects,styles\" -c \"cyan,magenta,gray\" \"npm run dev:main\" \"npm run dev:projects\" \"npm run watch-styles\"",
     "dev:main": "vite --port 5173",
     "dev:projects": "tsx scripts/project-manager.ts dev",
     "install-projects": "tsx scripts/project-manager.ts install",

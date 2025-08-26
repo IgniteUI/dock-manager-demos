@@ -11,9 +11,17 @@ export const projects: ProjectConfig[] = [
 	{
 		id: 'stream-manager',
 		name: 'Stream Manager',
-		icon: 'stream',
+		icon: 'smanager',
 		component: 'stream-manager',
 		route: '/projects/stream-manager',
 		description: 'Stream Manager demo'
-	}
+	},
+    {
+        id: 'demo',
+        name: 'Demo',
+        icon: 'download',
+        component: 'demo',
+        route: '/projects/demo',
+        description: 'Minimal demo project'
+    }
 ];

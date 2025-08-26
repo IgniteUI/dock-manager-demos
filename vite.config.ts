@@ -1,71 +1,101 @@
 import { defineConfig } from 'vite';
-import { readdirSync } from 'fs';
 import type { ProxyOptions } from 'vite';
+import { projects } from './src/project-config.ts';
 
-interface ProjectPortMap {
-    [projectName: string]: number;
+import fs from 'node:fs';
+import path from 'node:path';
+
+const BASE_PORT = 3001;
+const PORTS_FILE = path.resolve(process.cwd(), 'projects.ports.json');
+const ENV_MAP_VAR = 'PROJECTS_PORT_MAP';
+
+// Parse JSON safely (env/file), return undefined on failure.
+function safeParseJSON<T>(value?: string): T | undefined {
+    if (!value) return undefined;
+    try {
+        const parsed = JSON.parse(value);
+        return (parsed && typeof parsed === 'object') ? parsed as T : undefined;
+    } catch {
+        return undefined;
+    }
 }
 
-// Auto-discover projects and create port mapping
-function createProjectPortMap(): ProjectPortMap {
-    const projects = readdirSync('projects', { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => d.name);
+// Read ports map from env (preferred) or file fallback.
+function readPortsMap(): Record<string, number> {
+    const fromEnv = safeParseJSON<Record<string, number>>(process.env[ENV_MAP_VAR]);
+    if (fromEnv) return fromEnv;
 
-    const BASE_PORT = 3001;
-    return projects.reduce((map: ProjectPortMap, project, index) => {
-        map[project] = BASE_PORT + index;
-        return map;
+    if (fs.existsSync(PORTS_FILE)) {
+        const fileContent = fs.readFileSync(PORTS_FILE, 'utf-8');
+        const fromFile = safeParseJSON<Record<string, number>>(fileContent);
+        if (fromFile) return fromFile;
+    }
+    return {};
+}
+
+// Compute alphabetical index-based fallback (aligns with typical project runner behavior)
+function alphabeticalIndexFallback(id: string): number {
+    const sortedIds = [...projects.map(p => p.id)].sort((a, b) => a.localeCompare(b));
+    const idx = Math.max(0, sortedIds.indexOf(id));
+    return BASE_PORT + idx;
+}
+
+// Compute port for a project: explicit map -> env override -> alphabetical fallback.
+function resolveProjectPort(id: string, portsMap: Record<string, number>): number {
+    const fromMap = portsMap[id];
+
+    const envKey = `PORT_${id.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
+    const envPortRaw = process.env[envKey];
+    const envPortParsed = envPortRaw ? parseInt(envPortRaw, 10) : NaN;
+    const fromEnv = Number.isFinite(envPortParsed) ? envPortParsed : undefined;
+
+    const fallback = alphabeticalIndexFallback(id);
+
+    return (fromMap ?? fromEnv) ?? fallback;
+}
+
+function buildProxyEntry(routeWithSlash: string, port: number): ProxyOptions {
+    return {
+        target: `http://localhost:${port}`,
+        changeOrigin: true,
+        // No rewrite – child apps expect the full base prefix
+        configure: (proxy) => {
+            proxy.on('error', (err: Error) => {
+                console.error(`❌ Proxy error for ${routeWithSlash}:`, err.message);
+            });
+            proxy.on('proxyReq', (_proxyReq: any, req: any) => {
+                console.log(`🔄 Proxying ${routeWithSlash}:`, req.url);
+            });
+        }
+    };
+}
+
+function buildProjectsProxy(): Record<string, ProxyOptions> {
+    const portsMap = readPortsMap();
+
+    const proxy = projects.reduce<Record<string, ProxyOptions>>((acc, p) => {
+        const route = `/projects/${p.id}`;
+        const routeWithSlash = `${route}/`; // IMPORTANT: only proxy the trailing-slash path
+        const port = resolveProjectPort(p.id, portsMap);
+        acc[routeWithSlash] = buildProxyEntry(routeWithSlash, port);
+        return acc;
     }, {});
-}
 
-const PROJECT_PORTS = createProjectPortMap();
-console.log('🔗 Main app proxy configuration:', PROJECT_PORTS);
+    console.log('🔧 Projects proxy map:');
+    for (const [route, cfg] of Object.entries(proxy)) {
+        console.log(`  ${route} -> ${cfg.target}`);
+    }
+    return proxy;
+}
 
 export default defineConfig({
     base: './',
-    resolve: {
-        alias: {
-            'igniteui-theming': new URL('./node_modules/igniteui-theming', import.meta.url).pathname,
-        },
-    },
     server: {
-        port: 5173, // Main app port
-        watch: {
-            usePolling: true
-        },
-        proxy: createProjectProxies(PROJECT_PORTS)
-    },
-    build: {
-        rollupOptions: {
-            output: {
-                assetFileNames: 'assets/[name]-[hash][extname]',
-                chunkFileNames: 'assets/[name]-[hash].js',
-                entryFileNames: 'assets/[name]-[hash].js'
-            }
-        }
+        port: parseInt(process.env.VITE_PORT || process.env.PORT || '5173', 10),
+        host: true,
+        strictPort: true,
+        watch: { usePolling: true },
+        cors: true,
+        proxy: buildProjectsProxy()
     }
 });
-
-function createProjectProxies(portMap: ProjectPortMap): Record<string, ProxyOptions> {
-    const proxies: Record<string, ProxyOptions> = {};
-
-    Object.entries(portMap).forEach(([project, port]) => {
-        proxies[`/projects/${project}`] = {
-            target: `http://localhost:${port}`,
-            changeOrigin: true,
-            rewrite: (path: string) => path.replace(`/projects/${project}`, ''),
-            configure: (proxy) => {
-                proxy.on('error', (err: Error) => {
-                    console.error(`❌ Proxy error for ${project}:`, err.message);
-                });
-                proxy.on('proxyReq', (_proxyReq, req) => {
-                    console.log(`🔄 Proxying ${project}:`, req.url);
-                });
-            }
-        };
-    });
-
-    console.log('📍 Configured proxies:', Object.keys(proxies));
-    return proxies;
-}

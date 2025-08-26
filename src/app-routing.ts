@@ -1,18 +1,17 @@
-import { Route } from '@vaadin/router';
-import './views/projects-view/projects-view.ts';
-import { projects } from './project-config.ts';
+import type { Route } from '@vaadin/router';
+import { projects } from './project-config';
+
+// Pick Stream Manager if present; otherwise the first project.
+const defaultRoute = (projects.find(p => p.id === 'stream-manager') || projects[0])?.route || '/projects/stream-manager';
 
 export const routes: Route[] = [
-	{
-		path: '/',
-        redirect: projects.length > 0 ? `/demos/${projects[0].id}` : '/404'
-	},
-	{
-        path: '/demos/:projectName',
-        component: 'projects-view'
-	},
-	{
-		path: '(.*)',
-		redirect: '/'
-	},
+    // Redirect roots to the default project
+    { path: '/', redirect: defaultRoute },
+    { path: '/projects', redirect: defaultRoute },
+
+    // Projects view (expects :projectName)
+    { path: '/projects/:projectName', component: 'projects-view' },
+
+    // Catch-all → default
+    { path: '(.*)', redirect: defaultRoute }
 ];

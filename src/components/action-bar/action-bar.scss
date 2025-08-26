@@ -7,3 +7,17 @@ igc-nav-drawer {
 igc-navbar::part(base) {
 	min-height: var(--dm-navbar-height);
 }
+
+.dm-app-title {
+	display: flex;
+	gap: rem(16px);
+	align-items: center;
+	
+	igc-icon {
+		--ig-size: 2;
+	}
+}
+
+.dm-app-title__text {
+	font-size: rem(16px);
+}

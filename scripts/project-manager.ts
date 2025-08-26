@@ -1,110 +1,114 @@
-import { readdirSync } from 'fs';
-import { spawn, ChildProcess, execSync } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { execSync, spawn } from 'node:child_process';
+import { writeFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const projectsDir = join(__dirname, '../projects');
+const projectsDir = join(process.cwd(), 'projects');
 
-interface ProjectProcess {
-    name: string;
-    process: ChildProcess;
-    port: number;
+function listProjects(dir: string): string[] {
+    const entries = readdirSync(dir);
+    const result: string[] = [];
+    for (const name of entries) {
+        if (name.startsWith('.') || name.endsWith('.zip')) continue;
+        const full = join(dir, name);
+        try {
+            const st = statSync(full);
+            if (st.isDirectory()) {
+                result.push(name);
+            }
+        } catch {
+            // ignore
+        }
+    }
+    return result;
 }
 
-// Auto-discover projects
-const projects: string[] = readdirSync(projectsDir, { withFileTypes: true })
-.filter(d => d.isDirectory())
-.map(d => d.name);
+function buildPortMap(ids: string[], base = 3001): Map<string, number> {
+    const sorted = [...ids].sort((a, b) => a.localeCompare(b));
+    const map = new Map<string, number>();
+    sorted.forEach((id, idx) => map.set(id, base + idx));
+    return map;
+}
 
-// Port management
-const BASE_PORT = 3001;
-const portMap = new Map<string, number>();
-projects.forEach((project, index) => {
-    portMap.set(project, BASE_PORT + index);
-});
+function npmCmd(): string {
+    return /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+}
 
-export const PROJECT_PORTS: Record<string, number> = Object.fromEntries(portMap);
+async function runInstall() {
+    const projects = listProjects(projectsDir);
+    console.log('🚀 Discovered %d projects:', projects.length, projects);
 
-console.log(`🚀 Discovered ${projects.length} projects:`, projects);
-console.log('📍 Port mapping:', PROJECT_PORTS);
+    const portMap = buildPortMap(projects);
+    console.log('📍 Port mapping:', Object.fromEntries(portMap));
 
-// Function to install dependencies for all projects
-export function installProjects(): void {
     console.log('\n📦 Installing dependencies for all projects...');
-    projects.forEach(project => {
-        console.log(`Installing dependencies for ${project}...`);
+    for (const id of projects) {
+        console.log(`Installing dependencies for ${id}...`);
         try {
             execSync('npm install', {
-                cwd: join(projectsDir, project),
+                cwd: join(projectsDir, id),
                 stdio: 'inherit'
             });
-            console.log(`✅ ${project} dependencies installed`);
+            console.log(`✅ ${id} dependencies installed`);
         } catch (error) {
-            console.error(`❌ Failed to install dependencies for ${project}:`, error);
+            console.error(`❌ Failed to install dependencies for ${id}:`, (error as Error).message ?? error);
         }
-    });
+    }
     console.log('📦 All dependencies installed\n');
 }
 
-// Function to start all dev servers
-export function startDevServers(): void {
-    const processes: ProjectProcess[] = [];
+async function runDev() {
+    const projects = listProjects(projectsDir);
+    console.log('🚀 Discovered %d projects:', projects.length, projects);
 
-    projects.forEach(project => {
-        const port = portMap.get(project)!;
-        console.log(`📦 Starting ${project} on port ${port}...`);
+    const portMap = buildPortMap(projects);
+    console.log('📍 Port mapping:', Object.fromEntries(portMap));
 
-        const childProcess = spawn('npm', ['run', 'dev'], {
-            cwd: join(projectsDir, project),
-            stdio: ['ignore', 'inherit', 'inherit'], // Change this to see all output
-            env: {
-                ...process.env,
-                PORT: port.toString(),
-                VITE_PORT: port.toString(),
-                NODE_ENV: 'development'
-            }
+    // Write a plain object ports map for the main app proxy
+    try {
+        const mapPath = join(process.cwd(), 'projects.ports.json');
+        const plain = Object.fromEntries(portMap);
+        writeFileSync(mapPath, JSON.stringify(plain, null, 2), 'utf-8');
+        console.log(`🗺️  Wrote ports map to ${mapPath}:`, plain);
+    } catch (e) {
+        console.warn('⚠️ Failed to write projects.ports.json:', e);
+    }
+
+    // Start child dev servers WITH BASE_PATH and PORT
+    for (const id of projects) {
+        const port = portMap.get(id);
+        const cwd = join(process.cwd(), 'projects', id);
+
+        const env = {
+            ...process.env,
+            PORT: String(port),
+            BASE_PATH: `/projects/${id}/`,
+        };
+
+        console.log(`📦 Starting ${id} on port ${port} with BASE_PATH=${env.BASE_PATH}...`);
+
+        const child = spawn(npmCmd(), ['run', 'dev'], {
+            cwd,
+            stdio: 'inherit',
+            env
         });
 
-        processes.push({ name: project, process: childProcess, port });
-    });
-
-    // Graceful cleanup
-    const shutdownSignals = ['SIGINT', 'SIGTERM'] as const;
-    shutdownSignals.forEach(signal => {
-        process.on(signal, () => {
-            console.log(`\n🛑 Received ${signal}, shutting down...`);
-            processes.forEach(({ name, process: childProcess }) => {
-                console.log(`   Stopping ${name}...`);
-                childProcess.kill();
-            });
-            process.exit(0);
+        child.on('exit', (code) => {
+            console.log(`ℹ️  ${id} dev exited with code ${code}`);
         });
-    });
+    }
 
     console.log('✅ All projects started. Press Ctrl+C to stop.');
 }
 
-// If run directly, perform both operations
-if (import.meta.url === `file://${process.argv[1]}`) {
-    const command = process.argv[2];
-
-    switch (command) {
-        case 'install':
-            installProjects();
-            break;
-        case 'dev':
-            startDevServers();
-            break;
-        case 'setup':
-            installProjects();
-            startDevServers();
-            break;
-        default:
-            console.log('Usage: npm run projects [install|dev|setup]');
-            console.log('  install - Install dependencies for all projects');
-            console.log('  dev     - Start dev servers for all projects');
-            console.log('  setup   - Install dependencies and start dev servers');
+// Entry point
+(async () => {
+    const mode = process.argv[2]; // "install" or "dev"
+    if (mode === 'install') {
+        await runInstall();   // DO NOT start dev servers here
+    } else if (mode === 'dev') {
+        await runDev();
+    } else {
+        console.error('Unknown mode. Use: tsx scripts/project-manager.ts install | dev');
+        process.exit(1);
     }
-}
+})();

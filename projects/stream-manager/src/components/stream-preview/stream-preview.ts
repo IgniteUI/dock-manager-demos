@@ -28,7 +28,7 @@ defineComponents(
 	IgcCircularProgressComponent,
 );
 
-const LOADER_DELAY_MS = 2000;
+const LOADER_DELAY_MS = 0;
 const LOADING_MESSAGE = 'Loading stream, please wait…';
 const ERROR_MESSAGE = 'Sorry, we have technical difficulties, please try again later.';
 const LIVE_LABEL = 'LIVE';
