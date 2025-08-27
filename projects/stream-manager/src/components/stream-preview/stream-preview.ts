@@ -1,89 +1,157 @@
-// dock-manager.ts
+/**
+ * Stream Preview web component.
+ *
+ * Renders a card with:
+ * - A media area that plays a looping muted video
+ * - A loading indicator while media is fetching/decoding
+ * - An inline error message if the media fails to load
+ * - Stream metadata (title, verified icon, description, live state)
+ * - Genre chips and social links with follower count
+ *
+ * Accessibility:
+ * - The media wrapper uses aria-busy to announce loading to assistive tech.
+ * - Error message is marked with role="alert" for immediate announcement.
+ * - A loader region is presentational and removed from the tree once ready.
+ *
+ * Usage:
+ *   <app-stream-preview></app-stream-preview>
+ *
+ * Dependencies:
+ * - LitElement for templating and reactive state
+ * - Ignite UI Web Components for Card, Icon, Chip, Badge, Divider, Progress
+ */
 import { LitElement, html, unsafeCSS, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
 import {
-	defineComponents,
-	IgcChipComponent,
-	IgcBadgeComponent,
-	IgcCardComponent,
-	IgcIconComponent,
-	IgcDividerComponent,
-	IgcCircularProgressComponent,
+    defineComponents,
+    IgcChipComponent,
+    IgcBadgeComponent,
+    IgcCardComponent,
+    IgcIconComponent,
+    IgcDividerComponent,
+    IgcCircularProgressComponent,
 } from 'igniteui-webcomponents';
 import styles from './stream-preview.scss?inline';
+// ... existing code ...
 import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
 import foxGuitar from '../../assets/videos/AdobeStock_1269394798.mp4';
 import { repeat } from 'lit/directives/repeat.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
 
 defineComponents(
-	IgcChipComponent,
-	IgcBadgeComponent,
-	IgcCardComponent,
-	IgcIconComponent,
-	IgcDividerComponent,
-	IgcCircularProgressComponent,
+    IgcChipComponent,
+    IgcBadgeComponent,
+    IgcCardComponent,
+    IgcIconComponent,
+    IgcDividerComponent,
+    IgcCircularProgressComponent,
 );
 
-const LOADER_DELAY_MS = 0;
+/** Message shown in the loader while the video is initializing. */
 const LOADING_MESSAGE = 'Loading stream, please wait…';
+/** Message shown when the video element emits an error event. */
 const ERROR_MESSAGE = 'Sorry, we have technical difficulties, please try again later.';
+/** Label displayed when the stream is live. */
 const LIVE_LABEL = 'LIVE';
+/** Label appended after the followers value. */
 const FOLLOWERS_LABEL = 'followers';
+
 
 @customElement('app-stream-preview')
 export default class StreamPreview extends LitElement {
-	@state()
-	private previewData: IStreamPreviewData = mockStreamPreview;
+    /**
+     * Immutable preview data used to populate the card.
+     * Replace with real data source or make it a public @property if needed.
+     */
+    private readonly previewData: IStreamPreviewData = mockStreamPreview;
 
-	@state()
-	private isVideoLoading = true;
+    /** Video source URL. Defaults to the bundled asset but can be overridden for testing. */
+    @property({ type: String, attribute: 'src' })
+    videoSrc: string = foxGuitar;
 
-	@state()
-	private isVideoError = false;
+    /** Internal flag: true while the video is still loading/decoding. */
+    @state()
+    private isVideoLoading = true;
 
-	private handleVideoLoaded = () => {
-		setTimeout(() => {
-			this.isVideoLoading = false;
-			this.isVideoError = false;
-		}, LOADER_DELAY_MS);
-	};
+    /** Internal flag: true if the video failed to load. */
+    @state()
+    private isVideoError = false;
 
-	private handleVideoError = () => {
-		this.isVideoLoading = false;
-		this.isVideoError = true;
-	};
+    /**
+     * Whether the loader UI should be visible.
+     * Loader is shown only when loading and not in error state.
+     */
+    private get showLoader(): boolean {
+        return this.isVideoLoading && !this.isVideoError;
+    }
 
+    /**
+     * String form of the media region busy state for aria-busy attribute.
+     * Using a getter ensures it stays in sync with isVideoLoading.
+     */
+    private get mediaAriaBusy(): string {
+        return String(this.isVideoLoading);
+    }
 
-	render() {
-		return html`
+    /**
+     * Video loaded handler: hides loader and clears errors.
+     * Bound as an arrow function to preserve component context.
+     */
+    private handleVideoLoaded = (_ev: Event) => {
+        this.isVideoLoading = false;
+        this.isVideoError = false;
+    };
+
+    /**
+     * Video error handler: hides loader and shows error message.
+     * Bound as an arrow function to preserve component context.
+     */
+    private handleVideoError = (_ev: Event) => {
+        this.isVideoLoading = false;
+        this.isVideoError = true;
+    };
+
+    render() {
+        return html`
             <igc-card class="sm-stream-preview">
-                <igc-card-media class="sm-stream-preview__media">
-                    <div class="sm-stream-preview__loader ${ this.isVideoLoading && !this.isVideoError ? 'loading': '' }">
-                        ${ this.isVideoLoading && !this.isVideoError ? html`
-                            <igc-circular-progress indeterminate></igc-circular-progress>
-                            <p>${ LOADING_MESSAGE }</p>
-                        `: nothing }
-
-                        ${ this.isVideoError ? html`
-                            <p class="sm-stream-preview__error">
-                                ${ ERROR_MESSAGE }
-                            </p>`: nothing }
+                <igc-card-media
+                        class="sm-stream-preview__media"
+                        aria-busy="${this.mediaAriaBusy}">
+                    <div class=${classMap({
+                            'sm-stream-preview__loader': true,
+                            'loading': this.showLoader
+                        })}>
+                            ${ this.showLoader ? html`
+                                <igc-circular-progress indeterminate></igc-circular-progress>
+                                <p>${ LOADING_MESSAGE }</p>
+                                `: nothing
+                            }
+    
+                            ${ this.isVideoError ? html`
+                                <div class="sm-stream-preview__error">
+                                    <p role="alert">
+                                        ${ ERROR_MESSAGE }
+                                    </p>
+                                </div>
+                                `: nothing
+                            }
                     </div>
 
                     <video
-                        src="${ foxGuitar }"
+                        src="${this.videoSrc}"
                         aria-label="Streamer video"
-                        ?autoplay="${ this.isVideoLoading && !this.isVideoError}"
+                        autoplay
                         loop
                         muted
-                        type="video/webm"
-                        @loadeddata=${ this.handleVideoLoaded }
-                        @error=${ this.handleVideoError }
-                    </video>
+                        playsinline
+                        type="video/mp4"
+                        @loadeddata=${this.handleVideoLoaded}
+                        @error=${this.handleVideoError}
+                    ></video>
                 </igc-card-media>
 
                 <igc-card-header class="sm-stream-preview__header">
@@ -99,8 +167,11 @@ export default class StreamPreview extends LitElement {
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
                                 <igc-badge
-                                    variant="danger"
-                                    class="${ this.isVideoLoading && !this.isVideoError ? 'loading': 'sm-animation-live' }">
+                                        variant="danger"
+                                        class=${classMap({
+                                            'loading': this.showLoader,
+                                            'sm-animation-live': !this.showLoader
+                                        })}>
                                 </igc-badge> ${ LIVE_LABEL }`: nothing }
                         </div>
                     </h5>
@@ -133,8 +204,9 @@ export default class StreamPreview extends LitElement {
                     </div>
                 </igc-card-content>
             </igc-card>
-		`;
-	}
+        `;
+    }
 
-	static styles = unsafeCSS(styles);
+    /** Component-scoped styles compiled from SCSS. */
+    static styles = unsafeCSS(styles);
 }

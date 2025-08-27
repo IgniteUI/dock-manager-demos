@@ -8,6 +8,8 @@ import path from 'node:path';
 const BASE_PORT = 3001;
 const PORTS_FILE = path.resolve(process.cwd(), 'projects.ports.json');
 const ENV_MAP_VAR = 'PROJECTS_PORT_MAP';
+const LOG_PREFIX = '[main]';
+const isVerbose = process.env.VERBOSE === '1' || process.env.DEBUG_PROXY === '1';
 
 // Parse JSON safely (env/file), return undefined on failure.
 function safeParseJSON<T>(value?: string): T | undefined {
@@ -23,13 +25,20 @@ function safeParseJSON<T>(value?: string): T | undefined {
 // Read ports map from env (preferred) or file fallback.
 function readPortsMap(): Record<string, number> {
     const fromEnv = safeParseJSON<Record<string, number>>(process.env[ENV_MAP_VAR]);
-    if (fromEnv) return fromEnv;
+    if (fromEnv) {
+        console.log(`${LOG_PREFIX} Using projects port map from env ${ENV_MAP_VAR}`);
+        return fromEnv;
+    }
 
     if (fs.existsSync(PORTS_FILE)) {
         const fileContent = fs.readFileSync(PORTS_FILE, 'utf-8');
         const fromFile = safeParseJSON<Record<string, number>>(fileContent);
-        if (fromFile) return fromFile;
+        if (fromFile) {
+            console.log(`${LOG_PREFIX} Using projects port map from ${PORTS_FILE}`);
+            return fromFile;
+        }
     }
+    console.log(`${LOG_PREFIX} No explicit projects port map found (env/file). Using fallback allocation.`);
     return {};
 }
 
@@ -61,11 +70,13 @@ function buildProxyEntry(routeWithSlash: string, port: number): ProxyOptions {
         // No rewrite – child apps expect the full base prefix
         configure: (proxy) => {
             proxy.on('error', (err: Error) => {
-                console.error(`❌ Proxy error for ${routeWithSlash}:`, err.message);
+                console.error(`${LOG_PREFIX} Proxy error for ${routeWithSlash}: ${err.message}`);
             });
-            proxy.on('proxyReq', (_proxyReq: any, req: any) => {
-                console.log(`🔄 Proxying ${routeWithSlash}:`, req.url);
-            });
+            if (isVerbose) {
+                proxy.on('proxyReq', (_proxyReq: any, req: any) => {
+                    console.log(`${LOG_PREFIX} Proxy ${routeWithSlash}${req.url}`);
+                });
+            }
         }
     };
 }
@@ -81,9 +92,16 @@ function buildProjectsProxy(): Record<string, ProxyOptions> {
         return acc;
     }, {});
 
-    console.log('🔧 Projects proxy map:');
-    for (const [route, cfg] of Object.entries(proxy)) {
-        console.log(`  ${route} -> ${cfg.target}`);
+    // Structured summary
+    console.log(`${LOG_PREFIX} Projects proxy map:`);
+    for (const p of projects) {
+        const route = `/projects/${p.id}/`;
+        const envKey = `PORT_${p.id.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
+        const hasMap = Object.prototype.hasOwnProperty.call(readPortsMap(), p.id);
+        const hasEnv = !!process.env[envKey];
+        const source = hasMap ? 'map' : (hasEnv ? 'env' : 'fallback');
+        const port = resolveProjectPort(p.id, portsMap);
+        console.log(`${LOG_PREFIX}   ${route} -> http://localhost:${port} (source: ${source})`);
     }
     return proxy;
 }
@@ -91,9 +109,9 @@ function buildProjectsProxy(): Record<string, ProxyOptions> {
 export default defineConfig({
     base: './',
     server: {
-        port: parseInt(process.env.VITE_PORT || process.env.PORT || '5173', 10),
+        port: parseInt(process.env.VITE_PORT || process.env.PORT || '3000', 10),
         host: true,
-        strictPort: true,
+        strictPort: Boolean(process.env.VITE_PORT || process.env.PORT),
         watch: { usePolling: true },
         cors: true,
         proxy: buildProjectsProxy()

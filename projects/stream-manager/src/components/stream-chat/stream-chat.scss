@@ -4,17 +4,19 @@
 	overflow-x: hidden;
 	
 	igc-chat {
+		height: 100%;
+		
 		--background: var(--ig-gray-900-contrast);
 		--chat-input-border: transparent;
 		--ig-textarea-border-color: #{var(--ig-gray-300)};
 		--ig-textarea-placeholder-color: #{var(--ig-gray-300)};
-	}
-	
-	igc-chat::part(input-container) {
-		padding: 0;
+		--message-background: var(--sm-dark-purple);
+		--message-color: #fff;
+		
 	}
 }
 
+// TODO: No longer working
 igc-chat::part(text-input) {
 	--textarea-height: #{rem(38px)}
 }

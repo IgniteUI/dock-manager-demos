@@ -129,5 +129,4 @@ export default class App extends LitElement {
     }
 
     static styles = unsafeCSS(styles);
-
 }
