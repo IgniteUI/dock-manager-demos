@@ -1,5 +1,5 @@
 // Basic roles/badges
-export type Role = 'viewer' | 'broadcaster' | 'subscriber' | 'moderator' | 'bot' | 'streamer';
+export type Role = 'viewer' | 'broadcaster' | 'subscriber' | 'moderator' | 'bot' | 'streamer' | 'user' | 'igc-bot';
 export type Badge =  'music-note' |'verified' | 'crown' | 'diamond' | 'broadcaster' | 'subscriber' | 'moderator' | 'bot' | 'streamer' | 'VIP';
 
 export type StagedMsg = {
