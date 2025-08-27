@@ -49,13 +49,9 @@ export default class StreamChat extends LitElement {
         this.appendMessage(msg, isNew);
     }
 
-    /** ---- USER SEND → BOT REPLY (with typing) ---- */
-    private async onUserMessage(e: CustomEvent) {
-        const newMsg = e.detail as { text: string; sender: string };
-        if (!newMsg?.text?.trim()) return;
-
-        // clear input immediately
-        this.chat.draftMessage = { text: '', attachments: [] };
+    // Centralized bot reply logic so both Enter and custom Send use the same behavior
+    private async sendBotReply() {
+        await this.sleep(400); // brief "typing" delay
 
         const replyId = this.makeId();
         const reply: IgcMessage = {
@@ -69,8 +65,22 @@ export default class StreamChat extends LitElement {
         this.appendMessage(reply, true);
     }
 
+
+    /** ---- USER SEND → BOT REPLY (with typing) ---- */
+    private async onUserMessage(e: CustomEvent) {
+        const newMsg = e.detail as { text: string; sender: string };
+        if (!newMsg?.text?.trim()) return;
+
+        // clear input immediately
+        this.chat.draftMessage = { text: '', attachments: [] };
+
+        // Do NOT append the user message here; igcMessageCreated already added it.
+        await this.sendBotReply();
+    }
+
+
     /** ---- CUSTOM SEND BUTTON ---- */
-    private handleCustomSendClick = () => {
+    private handleCustomSendClick = async () => {
         const chat = this.chat;
         if (!chat) return;
 
@@ -88,13 +98,17 @@ export default class StreamChat extends LitElement {
 
         this.appendMessage(newMessage, /*isNew*/ true);
         chat.draftMessage = { text: '', attachments: [] };
+
+        // Trigger the same bot reply flow as pressing Enter
+        await this.sendBotReply();
     };
+
 
     protected async firstUpdated() {
         this.chat.options = {
             inputPlaceholder: 'Type your message...',
             suggestions: [],
-            disableAttachments: true,
+            disableInputAttachments: true,
             templates: {
                 messageActionsTemplate: () => nothing,
                 messageTemplate: (message: IgcMessage) => {
@@ -109,8 +123,8 @@ export default class StreamChat extends LitElement {
                     font-style: normal;
                     font-weight: 400;
                     line-height: 20px;
-                    margin-inline: 16px;
                 }
+                
                 .sm-message__time { color: var(--ig-gray-500); }
                 .sm-message__username { font-weight: 700; }
                 .sm-message--viewer { .sm-message__username { color: var(--ig-warn-700); } }
@@ -125,6 +139,7 @@ export default class StreamChat extends LitElement {
                     gap: 4px;
                     igc-icon { --ig-size: 1; color: var(--sm-dim-purple); }
                 }
+                
                 .sm-message__info {
                     float: left;
                     display: flex;
@@ -144,11 +159,6 @@ export default class StreamChat extends LitElement {
                     50% { transform: scale(1.1, 0.9); }
                     75% { transform: scale(0.95, 1.05); }
                 }
-
-                igc-chat::part(typing-indicator) {
-                    color: var(--ig-gray-700);
-                }
-
             </style>
             <div
               class="sm-message sm-message--${stagedData?.role || 'user'} ${isNew ? 'sm-message--new' : ''}"

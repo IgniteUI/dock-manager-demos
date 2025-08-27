@@ -12,11 +12,18 @@
 		--ig-textarea-placeholder-color: #{var(--ig-gray-300)};
 		--message-background: var(--sm-dark-purple);
 		--message-color: #fff;
-		
 	}
 }
 
-// TODO: No longer working
+igc-chat::part(chat-messages) {
+	padding-block-end: 0;
+}
+
+igc-chat::part(input-container) {
+	margin: 0;
+	padding-block: 0;
+}
+
 igc-chat::part(text-input) {
 	--textarea-height: #{rem(38px)}
 }
