@@ -58,12 +58,12 @@ stages:
           command: 'install'
 
       - task: Npm@1
-        displayName: 'npm run build:ci'
+        displayName: 'Build project'
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)/projects/stream-manager'
           verbose: ${{ parameters.isVerbose }}
-          customCommand: 'build'
+          customCommand: 'run build'
 
       - task: PublishPipelineArtifact@1
 
