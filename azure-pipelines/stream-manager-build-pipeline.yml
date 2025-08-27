@@ -38,12 +38,6 @@ stages:
           versionSpec: '20.x'
 
       - task: Npm@1
-        displayName: 'Npm install'
-        inputs:
-          workingDir: '$(Build.SourcesDirectory)/projects/stream-manager'
-          command: 'install'
-
-      - task: Npm@1
         displayName: 'Register licensed npm registry in .npmrc'
         inputs:
           verbose: ${{ parameters.isVerbose }}
@@ -55,6 +49,12 @@ stages:
         inputs:
           workingFile: '$(Build.SourcesDirectory)/.npmrc'
           customEndpoint: 'public proget'
+
+      - task: Npm@1
+        displayName: 'Npm install'
+        inputs:
+          workingDir: '$(Build.SourcesDirectory)/projects/stream-manager'
+          command: 'install'
 
       - task: Npm@1
         displayName: 'npm run build:ci'
