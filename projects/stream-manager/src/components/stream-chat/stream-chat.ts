@@ -164,7 +164,7 @@ export default class StreamChat extends LitElement {
             </div>
           `;
                 },
-                textAreaActionsTemplate: html`
+                textAreaActionsTemplate: () => html`
                     <style>
                         .sm-input-actions {
                             display: flex;

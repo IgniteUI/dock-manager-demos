@@ -26,7 +26,7 @@
     "concurrently": "^9.2.0",
     "fs-extra": "^11.3.0",
     "igniteui-theming": "v19.3.0-beta.3",
-    "igniteui-webcomponents": "6.3.0-alpha.0",
+    "igniteui-webcomponents": "6.3.0-alpha.1",
     "jszip": "^3.10.1",
     "lit": "3.2.1",
     "sass": "^1.89.2"

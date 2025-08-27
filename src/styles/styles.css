@@ -99,9 +99,6 @@ h1, h2, h3, h4, h5, h6 {
 :root {
   --ig-theme: indigo;
   --ig-theme-variant: dark;
-  --ig-spacing: 1;
-  --ig-spacing-inline: 1;
-  --ig-spacing-block: 1;
   --ig-size-small: 1;
   --ig-size-medium: 2;
   --ig-size-large: 3;
@@ -731,6 +728,20 @@ body[dir=rtl] {
   text-transform: var(--ig-overline-text-transform);
   margin-top: var(--ig-overline-margin-top);
   margin-bottom: var(--ig-overline-margin-bottom);
+}
+
+@property --ig-spacing {
+  syntax: "<number> | <integer>";
+  initial-value: 1;
+  inherits: true;
+}
+:root {
+  --ig-spacing-inline-small: var(--ig-spacing-inline, var(--ig-spacing-small));
+  --ig-spacing-inline-medium: var(--ig-spacing-inline, var(--ig-spacing-medium));
+  --ig-spacing-inline-large: var(--ig-spacing-inline, var(--ig-spacing-large));
+  --ig-spacing-block-small: var(--ig-spacing-block, var(--ig-spacing-small));
+  --ig-spacing-block-medium: var(--ig-spacing-block, var(--ig-spacing-medium));
+  --ig-spacing-block-large: var(--ig-spacing-block, var(--ig-spacing-large));
 }
 
 .dm-app-layout {
