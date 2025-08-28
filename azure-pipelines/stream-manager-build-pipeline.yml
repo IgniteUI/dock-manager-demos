@@ -69,7 +69,7 @@ stages:
 
         displayName: 'Publish app'
         inputs:
-          targetPath: '$(Build.SourcesDirectory)/projects/stream-manager/dist'
+          targetPath: '$(Build.SourcesDirectory)/projects/stream-manager/dist.dock-manager-demos'
           artifact: 'dist'
           publishLocation: 'pipeline'
 
