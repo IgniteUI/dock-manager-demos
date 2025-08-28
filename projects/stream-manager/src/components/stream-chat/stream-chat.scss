@@ -19,6 +19,15 @@ igc-chat::part(chat-messages) {
 	padding-block-end: 0;
 }
 
+igc-chat::part(message-item) {
+	margin-inline-start: 0;
+	margin-inline-end: auto;
+}
+
+igc-chat::part(message-container ) {
+	padding: 0 !important;
+}
+
 igc-chat::part(input-container) {
 	margin: 0;
 	padding-block: 0;

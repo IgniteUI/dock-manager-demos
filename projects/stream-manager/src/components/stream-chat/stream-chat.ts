@@ -307,18 +307,6 @@ export default class StreamChat extends LitElement {
                 }
 
                 .sm-message--user {
-                    &::after {
-                        content: '';
-                        z-index: 0;
-                        position: absolute;
-                        inset: -8px;
-                        width: calc(100% + 16px);
-                        height: calc(100% + 16px);
-                        background: var(--ig-gray-100);
-                        users-select: none;
-                        pointer-events: none;
-                    }
-
                     .sm-message__username {
                         color: #fff;
                     }
