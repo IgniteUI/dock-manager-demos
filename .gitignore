@@ -29,3 +29,4 @@ dist-ssr
 *.sw?
 .ideo
 public/downloads
+projects.ports.json
