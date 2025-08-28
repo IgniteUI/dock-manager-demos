@@ -1,7 +1,8 @@
 trigger:
-  branches:
+  tags:
     include:
-    - master
+      - '*-beta'
+      - '*-release'
 
 # This pipeline is meant to build specific branches for deployment. It's not meant to be a part of PR validation.
 pr: none
