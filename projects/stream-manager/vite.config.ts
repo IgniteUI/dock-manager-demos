@@ -2,6 +2,7 @@ import { createBaseViteConfig } from '../../scripts/vite.project-base';
 
 export default createBaseViteConfig(
     {
+        base: './',
         resolve: {
             alias: {
                 // Use a relative path to main node_modules
