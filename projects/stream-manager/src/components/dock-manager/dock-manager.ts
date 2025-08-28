@@ -1,7 +1,7 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
+import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
 import '../stream-schedule/stream-schedule.ts';
@@ -12,7 +12,7 @@ import {
 	IgcSplitPaneOrientation,
 	IgcDockManagerLayout,
 	IgcUnpinnedLocation,
-} from '@infragistics/igniteui-dockmanager';
+} from 'igniteui-dockmanager';
 import styles from './dock-manager.scss?inline';
 
 // Initialize the dock manager custom elements

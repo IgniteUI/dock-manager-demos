@@ -8,14 +8,14 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run watch-theme\"",
     "build": "npm run compile-theme && tsc && vite build",
-    "compile-theme": "sass --load-path=node_modules src/styles/theme.scss:src/styles/theme.css",
-    "watch-theme": "sass --watch --load-path=node_modules src/styles:src/styles src/styles/theme.scss:src/styles/theme.css"
+    "compile-theme": "sass --load-path=node_modules --quiet-deps src/styles/theme.scss:src/styles/theme.css",
+    "watch-theme": "sass --watch --load-path=node_modules --quiet-deps src/styles:src/styles src/styles/theme.scss:src/styles/theme.css"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
-    "@infragistics/igniteui-dockmanager": "^1.16.1",
     "@lit-labs/motion": "^1.0.9",
     "dompurify": "^3.2.6",
+    "igniteui-dockmanager": "^1.17.0",
     "igniteui-theming": "v19.3.0-beta.3",
     "igniteui-webcomponents": "6.3.0-alpha.1",
     "lit": "^3.2.1",

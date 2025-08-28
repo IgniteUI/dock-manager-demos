@@ -12,10 +12,10 @@
     "skipLibCheck": true,
     "paths": {
       "igniteui-dockmanager": [
-        "./node_modules/@infragistics/igniteui-dockmanager"
+        "./node_modules/igniteui-dockmanager"
       ],
       "igniteui-dockmanager/*": [
-        "./node_modules/@infragistics/igniteui-dockmanager/*"
+        "./node_modules/igniteui-dockmanager/*"
       ]
     },
     /* Bundler mode */

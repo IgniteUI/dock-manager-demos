@@ -187,7 +187,7 @@ projects/<your-project-id>/
   },
   "dependencies": {
     "lit": "3.2.1",
-    "@infragistics/igniteui-dockmanager": "^1.16.1"
+    "igniteui-dockmanager": "^1.17.0"
   },
   "devDependencies": {
     "vite": "^6.0.0",
@@ -216,7 +216,7 @@ projects/<your-project-id>/
 ```ts
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
+import { defineCustomElements } from 'igniteui-dockmanager/loader';
 
 defineCustomElements();
 

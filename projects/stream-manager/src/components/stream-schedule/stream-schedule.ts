@@ -1,7 +1,7 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
+import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import {
 	defineComponents, IgcListComponent,
 } from 'igniteui-webcomponents';

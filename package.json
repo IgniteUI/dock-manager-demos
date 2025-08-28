@@ -6,40 +6,30 @@
   "author": "infragistics",
   "description": "Dock manager - showcase sample apps",
   "scripts": {
-    "dev": "npm run prebuild && npm run install-projects && concurrently -n \"main,projects,styles\" -c \"cyan,magenta,gray\" \"npm run dev:main\" \"npm run dev:projects\" \"npm run watch-styles\"",
+    "dev": "npm run install-projects && concurrently -n \"main,projects,styles\" -c \"cyan,magenta,gray\" \"npm run dev:main\" \"npm run dev:projects\" \"npm run watch-styles\"",
     "dev:main": "vite",
     "dev:projects": "tsx scripts/project-manager.ts dev",
     "install-projects": "tsx scripts/project-manager.ts install",
-    "build": "npm run prebuild && npm run install-projects && npm run compile-styles && tsc && vite build",
-    "prebuild": "tsx scripts/downloads/index.ts",
+    "build": "npm run install-projects && npm run compile-styles && tsc && vite build && npm run build:projects",
+    "build:projects": "tsx scripts/project-manager.ts build",
     "build:ci": "tsc && vite build --mode ci",
-    "preview": "npm run prebuild && npm run build && vite preview",
-    "prepare-downloads": "npm run prebuild",
-    "compile-styles": "sass --load-path=node_modules src/styles/styles.scss:src/styles/styles.css",
-    "watch-styles": "sass --watch --load-path=node_modules src/styles:src/styles src/styles/styles.scss:src/styles/styles.css"
+    "preview": "npm run build && vite preview",
+    "compile-styles": "sass --load-path=node_modules --quiet-deps src/styles/styles.scss:src/styles/styles.css",
+    "watch-styles": "sass --watch --load-path=node_modules --quiet-deps src/styles:src/styles src/styles/styles.scss:src/styles/styles.css"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.6.13",
     "@igniteui/material-icons-extended": "^3.1.0",
     "@vaadin/router": "^2.0.0",
-    "archiver": "^7.0.1",
     "concurrently": "^9.2.0",
-    "fs-extra": "^11.3.0",
     "igniteui-theming": "v19.3.0-beta.3",
     "igniteui-webcomponents": "6.3.0-alpha.1",
-    "jszip": "^3.10.1",
     "lit": "3.2.1",
     "sass": "^1.89.2"
   },
   "devDependencies": {
-    "@types/archiver": "^6.0.3",
-    "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.1.0",
-    "marked": "^12.0.0",
-    "sass-embedded": "^1.86.0",
     "tsx": "^4.20.4",
     "typescript": "~5.7.2",
-    "vite": "^6.3.4",
-    "vite-plugin-static-copy": "^2.3.0"
+    "vite": "^6.3.4"
   }
 }

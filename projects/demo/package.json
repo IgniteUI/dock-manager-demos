@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "lit": "3.2.1",
-    "@infragistics/igniteui-dockmanager": "^1.16.1"
+    "igniteui-dockmanager": "^1.17.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

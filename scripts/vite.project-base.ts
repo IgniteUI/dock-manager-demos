@@ -37,6 +37,13 @@ export function createBaseViteConfig(extra?: UserConfig) {
             host: true,
             watch: { usePolling },
             cors: true
+        },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    quietDeps: true,
+                }
+            }
         }
     });
 

@@ -1,12 +1,12 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
+import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import {
     IgcDockManagerPaneType,
     IgcSplitPaneOrientation,
     IgcDockManagerLayout,
     IgcUnpinnedLocation,
-} from '@infragistics/igniteui-dockmanager';
+} from 'igniteui-dockmanager';
 
 defineCustomElements();
 

@@ -22,7 +22,7 @@
  */
 import { LitElement, html, unsafeCSS, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { defineCustomElements } from '@infragistics/igniteui-dockmanager/loader';
+import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import {
     defineComponents,
     IgcChipComponent,

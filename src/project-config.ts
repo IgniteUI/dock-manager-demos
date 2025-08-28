@@ -19,7 +19,7 @@ export const projects: ProjectConfig[] = [
     {
         id: 'demo',
         name: 'Demo',
-        icon: 'download',
+        icon: 'smanager',
         component: 'demo',
         route: '/projects/demo',
         description: 'Minimal demo project'

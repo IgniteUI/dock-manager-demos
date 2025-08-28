@@ -13,6 +13,7 @@ import {
 import styles from './header.scss?inline';
 import { InavbarAction, navbarActions } from '../../data/navbar-actions.ts';
 import { IqualityLevel, qualityLevels } from '../../data/quality-levels.ts';
+import profileImage from '../../assets/images/profile.png';
 
 // Initialize required Igniteui components
 defineComponents(
@@ -295,7 +296,7 @@ export default class Header extends LitElement {
                     <igc-icon slot="prefix" name="search" collection="material"></igc-icon>
                 </igc-input>
                 ${this.renderNavigation()}
-                <igc-avatar src="./src/assets/images/profile.png" shape="circle" name="more_vert">
+                <igc-avatar src="${profileImage}" shape="circle" name="more_vert">
                     <igc-icon name="user" collection="material"></igc-icon>
                 </igc-avatar>
             </div>
