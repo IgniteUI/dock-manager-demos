@@ -1,6 +1,6 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
@@ -24,7 +24,55 @@ export default class AppDockManager extends LitElement {
 	@property({ type: Object })
 	private dockLayout: IgcDockManagerLayout = this.getDefaultLayout();
 
-	/**
+    @state()
+    private showResetButton = false;
+
+    // Marks when the initial dock layout pass is done
+    private layoutInitialized = false;
+
+    // Suppress the next layoutChange that fires immediately after a programmatic reset
+    private ignoreNextLayoutChange = false;
+
+    private onPaneClose = () => {
+        if (!this.layoutInitialized) return;
+        this.showResetButton = true;
+    };
+
+    private onLayoutChange = () => {
+        if (!this.layoutInitialized) return;
+        if (this.ignoreNextLayoutChange) {
+            this.ignoreNextLayoutChange = false;
+            return;
+        }
+        this.showResetButton = true;
+    };
+
+    private resetLayout = () => {
+        this.ignoreNextLayoutChange = true;
+        this.dockLayout = this.getDefaultLayout();
+        this.showResetButton = false;
+        // the layout remains initialized; only the immediate programmatic change is ignored
+    };
+
+    protected firstUpdated() {
+        const dm = this.renderRoot.querySelector('igc-dockmanager') as HTMLElement | null;
+        if (!dm) return;
+
+        dm.addEventListener('paneClose', this.onPaneClose as EventListener);
+        dm.addEventListener('paneClosed', this.onPaneClose as EventListener);
+
+        // Consume the very first layoutChange (initialization) once, then attach the real handler.
+        const initHandler = () => {
+            this.layoutInitialized = true;
+            dm.addEventListener('layoutChange', this.onLayoutChange as EventListener);
+        };
+        dm.addEventListener('layoutChange', initHandler as EventListener, { once: true });
+    }
+
+    public disconnectedCallback() {
+    }
+
+    /**
 	 * Returns the default layout configuration for the dock manager
 	 */
 	private getDefaultLayout(): IgcDockManagerLayout {
@@ -114,7 +162,14 @@ export default class AppDockManager extends LitElement {
                     <app-stream-chat></app-stream-chat>
                 </div>
             </igc-dockmanager>
-		`;
+
+            ${this.showResetButton ? html`
+                <igc-button variant="fab" class="reset-fab" @click=${this.resetLayout} title="Reset layout" aria-label="Reset layout">
+                    <igc-icon name="reset" collection="material"></igc-icon>
+                    <span>Reset layout</span>
+                </igc-button>
+            ` : null}
+        `;
 	}
 
 	static styles = unsafeCSS(styles);

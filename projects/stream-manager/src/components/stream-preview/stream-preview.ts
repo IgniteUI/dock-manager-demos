@@ -35,7 +35,7 @@ import {
 import styles from './stream-preview.scss?inline';
 // ... existing code ...
 import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
-import foxGuitar from '../../assets/videos/AdobeStock_1269394798.mp4';
+import foxGuitar from '../../assets/videos/fox-guitar.webm';
 import { repeat } from 'lit/directives/repeat.js';
 import { classMap } from 'lit/directives/class-map.js';
 
@@ -118,9 +118,7 @@ export default class StreamPreview extends LitElement {
     render() {
         return html`
             <igc-card class="sm-stream-preview">
-                <igc-card-media
-                        class="sm-stream-preview__media"
-                        aria-busy="${this.mediaAriaBusy}">
+                <igc-card-media class="sm-stream-preview__media" aria-busy="${this.mediaAriaBusy}">
                     <div class=${classMap({
                             'sm-stream-preview__loader': true,
                             'loading': this.showLoader
@@ -148,7 +146,7 @@ export default class StreamPreview extends LitElement {
                         loop
                         muted
                         playsinline
-                        type="video/mp4"
+                        type="video/webm"
                         @loadeddata=${this.handleVideoLoaded}
                         @error=${this.handleVideoError}
                     ></video>
@@ -167,8 +165,8 @@ export default class StreamPreview extends LitElement {
                         <div class="sm-stream-preview__state">
                             ${ this.previewData.isLive ? html`
                                 <igc-badge
-                                        variant="danger"
-                                        class=${classMap({
+                                    variant="danger"
+                                    class=${classMap({
                                             'loading': this.showLoader,
                                             'sm-animation-live': !this.showLoader
                                         })}>

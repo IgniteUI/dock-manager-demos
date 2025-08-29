@@ -96,3 +96,18 @@
 ::part(docking-preview) {
 	backdrop-filter: blur(3px);
 }
+
+.reset-fab {
+	--ig-size: 1;
+	--background: var(--ig-gray-50);
+	--border-color: var(--sm-dark-purple);
+	
+	position: fixed;
+	inset-block-end: rem(20px);
+	inset-inline-start: rem(108px);
+	
+	igc-icon {
+		--size: 12px;
+		padding: 4px;
+	}
+}

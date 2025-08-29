@@ -6,7 +6,7 @@ import {
 	INBOX, INFO, USER, MORE, EDIT, CLIP, GOALS, RAID, STREAM_TOGETHER, ADD_NEW,
 	CROWN, MUSIC_NOTE, TAG_FACE,
 	VERIFIED, LOGO_TIKTOK, LOGO_INSTAGRAM, LOGO_YOUTUBE, LOGO_VIMEO,
-	HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND,
+	HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET
 } from '../assets/icons/icons.ts';
 
 /**
@@ -38,6 +38,7 @@ export function registerAppIcons(): void {
 
 	// 	Logo icons
 	registerIconFromText('smanager', SMANAGER, 'material');
+	registerIconFromText('reset', RESET, 'material');
 
 	// 	Activity feed
 	registerIconFromText('more', MORE, 'material');
