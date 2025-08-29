@@ -1,5 +1,5 @@
-import { execSync, spawn } from 'node:child_process';
-import { writeFileSync, readdirSync, statSync, existsSync, mkdirSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+import { readdirSync, statSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { cp } from 'node:fs/promises';
 
@@ -23,11 +23,6 @@ function listProjects(dir: string): string[] {
     }
 
     return result;
-}
-
-
-function npmCmd(): string {
-    return /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
 }
 
 async function runInstall() {
