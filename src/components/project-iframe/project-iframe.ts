@@ -68,9 +68,9 @@ export class ProjectIframe extends LitElement {
         // Respect <base href>, default to root
         const baseEl = document.querySelector('base');
         const baseRaw = baseEl?.getAttribute('href') || '/';
-        const base = baseRaw.replace(/\/+$/, ''); // trim trailing slash
+        const base = baseRaw.replace(/\/*$/, ''); // trim trailing slash
 
-        const id = this.projectPath.replace(/^\/+|\/+$/g, '');
+        const id = this.projectPath.replace(/^\/*|\/*$/g, '');
         const safeId = encodeURIComponent(id);
 
         return `${base}/projects/${safeId}/`;

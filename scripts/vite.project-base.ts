@@ -6,7 +6,7 @@ function getEnvPort(): number | undefined {
 }
 
 function normalizeBase(input: string): string {
-    // Ensure leading slash and single trailing slash
+    // Ensure a leading slash and single trailing slash
     let b = input.trim();
     if (!b.startsWith('/')) b = '/' + b;
     if (!b.endsWith('/')) b = b + '/';

@@ -25,12 +25,6 @@ function listProjects(dir: string): string[] {
     return result;
 }
 
-function buildPortMap(ids: string[], base = 3001): Map<string, number> {
-    const sorted = [...ids].sort((a, b) => a.localeCompare(b));
-    const map = new Map<string, number>();
-    sorted.forEach((id, idx) => map.set(id, base + idx));
-    return map;
-}
 
 function npmCmd(): string {
     return /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
@@ -39,10 +33,6 @@ function npmCmd(): string {
 async function runInstall() {
     const projects = listProjects(projectsDir);
     console.log('🚀 Discovered %d projects:', projects.length, projects);
-
-    const portMap = buildPortMap(projects);
-    console.log('📍 Port mapping:', Object.fromEntries(portMap));
-
     console.log('\n📦 Installing dependencies for all projects...');
 
     for (const id of projects) {
@@ -61,50 +51,61 @@ async function runInstall() {
     console.log('📦 All dependencies installed\n');
 }
 
+// Replace dev mode: instead of starting dev servers on specific ports,
+// build each project and copy its dist into the main app's public/projects/<id>,
+// so the main app can serve them statically without any proxy.
 async function runDev() {
     const projects = listProjects(projectsDir);
     console.log('🚀 Discovered %d projects:', projects.length, projects);
 
-    const portMap = buildPortMap(projects);
-    console.log('📍 Port mapping:', Object.fromEntries(portMap));
-
-    // Write a plain object ports map for the main app proxy
-    try {
-        const mapPath = join(process.cwd(), 'projects.ports.json');
-        const plain = Object.fromEntries(portMap);
-        writeFileSync(mapPath, JSON.stringify(plain, null, 2), 'utf-8');
-        console.log(`🗺️  Wrote ports map to ${mapPath}:`, plain);
-    } catch (e) {
-        console.warn('⚠️ Failed to write projects.ports.json:', e);
+// ... existing code ...
+    const publicProjectsDir = join(process.cwd(), 'public', 'projects');
+    if (!existsSync(publicProjectsDir)) {
+        mkdirSync(publicProjectsDir, { recursive: true });
     }
 
-    // Start child dev servers WITH BASE_PATH and PORT
+    console.log('\n🏗️  Building and copying all projects for static serving...');
     for (const id of projects) {
-        const port = portMap.get(id);
-        const cwd = join(process.cwd(), 'projects', id);
+        const projectPath = join(projectsDir, id);
+        const projectDistPath = join(projectPath, 'dist');
+        const targetPath = join(publicProjectsDir, id);
 
-        const env = {
-            ...process.env,
-            PORT: String(port),
-            BASE_PATH: `/projects/${id}/`,
-        };
+        console.log(`Building ${id}...`);
+        try {
+            // Force BASE_PATH for correct asset paths inside the iframe
+            const env = {
+                ...process.env,
+                BASE_PATH: `/projects/${id}/`,
+                NODE_ENV: 'development'
+            };
 
-        console.log(`📦 Starting ${id} on port ${port} with BASE_PATH=${env.BASE_PATH}...`);
+            execSync('npm run build', {
+                cwd: projectPath,
+                stdio: 'inherit',
+                env
+            });
 
-        const child = spawn(npmCmd(), ['run', 'dev'], {
-            cwd,
-            stdio: 'inherit',
-            env
-        });
-
-        child.on('exit', (code) => {
-            console.log(`ℹ️  ${id} dev exited with code ${code}`);
-        });
+            if (existsSync(projectDistPath)) {
+                // Ensure target exists and copy over
+                if (!existsSync(targetPath)) {
+                    mkdirSync(targetPath, { recursive: true });
+                }
+                await cp(projectDistPath, targetPath, { recursive: true });
+                console.log(`✅ ${id} built and copied to public/projects/${id}`);
+            } else {
+                console.warn(`⚠️  ${id} build completed but no dist folder found at ${projectDistPath}`);
+            }
+        } catch (error) {
+            console.error(`❌ Failed to build ${id}:`, (error as Error).message ?? error);
+        }
     }
 
-    console.log('✅ All projects started. Press Ctrl+C to stop.');
+    console.log('✅ All projects are available statically under /projects/<id>/');
+    console.log('ℹ️  Start the main app dev server separately: npm run dev:main');
 }
 
+
+// Keep build mode copying into dist/projects/<id> for production/preview
 async function runBuild() {
     const projects = listProjects(projectsDir);
     console.log('🚀 Building %d projects:', projects.length, projects);
@@ -156,6 +157,7 @@ async function runBuild() {
     console.log('🏗️  All projects built successfully\n');
 }
 
+
 // Entry point
 (async () => {
     const mode = process.argv[2]; // "install", "dev", or "build"
@@ -170,3 +172,4 @@ async function runBuild() {
         process.exit(1);
     }
 })();
+
