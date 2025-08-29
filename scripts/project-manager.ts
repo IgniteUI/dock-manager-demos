@@ -31,15 +31,15 @@ async function runInstall() {
     console.log('\n📦 Installing dependencies for all projects...');
 
     for (const id of projects) {
-        console.log(`Installing dependencies for ${id}...`);
+        console.log(`Installing dependencies for ${ id }...`);
         try {
             execSync('npm install', {
                 cwd: join(projectsDir, id),
-                stdio: 'inherit'
+                stdio: 'inherit',
             });
-            console.log(`✅ ${id} dependencies installed`);
+            console.log(`✅ ${ id } dependencies installed`);
         } catch (error) {
-            console.error(`❌ Failed to install dependencies for ${id}:`, (error as Error).message ?? error);
+            console.error(`❌ Failed to install dependencies for ${ id }:`, (error as Error).message ?? error);
         }
     }
 
@@ -53,31 +53,35 @@ async function runDev() {
     const projects = listProjects(projectsDir);
     console.log('🚀 Discovered %d projects:', projects.length, projects);
 
-// ... existing code ...
-    const publicProjectsDir = join(process.cwd(), 'public', 'projects');
-    if (!existsSync(publicProjectsDir)) {
-        mkdirSync(publicProjectsDir, { recursive: true });
+    const rootDistDir = join(process.cwd(), 'dist');
+    const devProjectsDir = join(rootDistDir, 'projects');
+    if (!existsSync(rootDistDir)) {
+        mkdirSync(rootDistDir, { recursive: true });
+    }
+    if (!existsSync(devProjectsDir)) {
+        mkdirSync(devProjectsDir, { recursive: true });
     }
 
-    console.log('\n🏗️  Building and copying all projects for static serving...');
+    console.log('\n🏗️  Building and copying all projects to dist/projects for static serving...');
+
     for (const id of projects) {
         const projectPath = join(projectsDir, id);
         const projectDistPath = join(projectPath, 'dist');
-        const targetPath = join(publicProjectsDir, id);
+        const targetPath = join(devProjectsDir, id);
 
-        console.log(`Building ${id}...`);
+        console.log(`Building ${ id }...`);
         try {
             // Force BASE_PATH for correct asset paths inside the iframe
             const env = {
                 ...process.env,
-                BASE_PATH: `/projects/${id}/`,
-                NODE_ENV: 'development'
+                BASE_PATH: `/projects/${ id }/`,
+                NODE_ENV: 'development',
             };
 
             execSync('npm run build', {
                 cwd: projectPath,
                 stdio: 'inherit',
-                env
+                env,
             });
 
             if (existsSync(projectDistPath)) {
@@ -86,16 +90,15 @@ async function runDev() {
                     mkdirSync(targetPath, { recursive: true });
                 }
                 await cp(projectDistPath, targetPath, { recursive: true });
-                console.log(`✅ ${id} built and copied to public/projects/${id}`);
+                console.log(`✅ ${ id } built and copied to dist/projects/${ id }`);
             } else {
-                console.warn(`⚠️  ${id} build completed but no dist folder found at ${projectDistPath}`);
+                console.warn(`⚠️  ${ id } build completed but no dist folder found at ${ projectDistPath }`);
             }
         } catch (error) {
-            console.error(`❌ Failed to build ${id}:`, (error as Error).message ?? error);
+            console.error(`❌ Failed to build ${ id }:`, (error as Error).message ?? error);
         }
     }
-
-    console.log('✅ All projects are available statically under /projects/<id>/');
+    console.log('✅ All projects are copied under dist/projects/<id>/');
     console.log('ℹ️  Start the main app dev server separately: npm run dev:main');
 }
 
@@ -122,30 +125,30 @@ async function runBuild() {
         const projectDistPath = join(projectPath, 'dist');
         const targetPath = join(projectsDistDir, id);
 
-        console.log(`Building ${id}...`);
+        console.log(`Building ${ id }...`);
         try {
             // Set BASE_PATH for the project build
             const env = {
                 ...process.env,
-                BASE_PATH: `/projects/${id}/`,
-                NODE_ENV: 'production'
+                BASE_PATH: `/projects/${ id }/`,
+                NODE_ENV: 'production',
             };
 
             execSync('npm run build', {
                 cwd: projectPath,
                 stdio: 'inherit',
-                env
+                env,
             });
 
             // Copy built files to root dist/projects/{id}
             if (existsSync(projectDistPath)) {
                 await cp(projectDistPath, targetPath, { recursive: true });
-                console.log(`✅ ${id} built and copied to dist/projects/${id}`);
+                console.log(`✅ ${ id } built and copied to dist/projects/${ id }`);
             } else {
-                console.warn(`⚠️  ${id} build completed but no dist folder found at ${projectDistPath}`);
+                console.warn(`⚠️  ${ id } build completed but no dist folder found at ${ projectDistPath }`);
             }
         } catch (error) {
-            console.error(`❌ Failed to build ${id}:`, (error as Error).message ?? error);
+            console.error(`❌ Failed to build ${ id }:`, (error as Error).message ?? error);
             process.exit(1);
         }
     }
@@ -156,11 +159,11 @@ async function runBuild() {
 // Entry point
 (async () => {
     const mode = process.argv[2]; // "install", "dev", or "build"
-    if (mode === 'install') {
+    if (mode==='install') {
         await runInstall();   // DO NOT start dev servers here
-    } else if (mode === 'dev') {
+    } else if (mode==='dev') {
         await runDev();
-    } else if (mode === 'build') {
+    } else if (mode==='build') {
         await runBuild();
     } else {
         console.error('Unknown mode. Use: tsx scripts/project-manager.ts install | dev | build');
