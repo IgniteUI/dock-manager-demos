@@ -338,17 +338,13 @@ export default class StreamChat extends LitElement {
                 }
 
                 @keyframes new-message-enter {
-                    from, to {
-                        transform: scale(1, 1);
+                    from {
+                        transform: translateY(-12px);
+                        opacity: 0;
                     }
-                    25% {
-                        transform: scale(0.9, 1.1);
-                    }
-                    50% {
-                        transform: scale(1.1, 0.9);
-                    }
-                    75% {
-                        transform: scale(0.95, 1.05);
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
                     }
                 }
             </style>
