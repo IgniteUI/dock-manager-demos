@@ -324,18 +324,18 @@ export default class Header extends LitElement {
                     <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
                     <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
                 </a>
+                
                 <igc-icon-button
-                        id="resetBtn"
-                        variant="flat"
-                        ?disabled=${!this.layoutDirty}
-                        @click=${this.onResetLayoutClick}
-                        title="Reset layout"
-                        aria-label="Reset layout">
+                    id="resetBtn"
+                    variant="flat"
+                    ?disabled=${!this.layoutDirty}
+                    @click=${this.onResetLayoutClick}
+                    aria-label="Reset layout">
                     <igc-icon name="reset" collection="material"></igc-icon>
                 </igc-icon-button>
 
                 <igc-tooltip anchor="resetBtn">
-                    Reset layout
+                    Reset Layout
                 </igc-tooltip>
             </div>
         `;

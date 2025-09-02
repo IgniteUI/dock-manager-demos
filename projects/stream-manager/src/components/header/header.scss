@@ -15,8 +15,11 @@
 	}
 }
 
+igc-navbar::part(base) {
+	padding-inline: rem(12px);
+}
+
 .sm-header__logo,
-.sm-header__info,
 .sm-header__actions,
 .sm-info-item,
 .sm-header__actions-nav {
@@ -25,7 +28,12 @@
 }
 
 .sm-header__info {
+	display: grid;
+	grid-template-columns: repeat(4, 145px);
 	justify-content: center;
+	gap: rem(8px)
+}
+.sm-header__info {
 	width: 100%;
 }
 
@@ -59,7 +67,6 @@
 	font-weight: 400;
 	gap: rem(2px);
 	padding: rem(8px) rem(16px);
-	min-width: rem(120px);
 }
 
 .sm-info-item__label {
@@ -83,6 +90,7 @@
 .sm-header__logo {
 	display: flex;
 	align-items: center;
+	gap: rem(8px);
 
 	&:focus-visible {
 		outline: rem(1px) solid var(--sm-outline-color);
@@ -98,10 +106,8 @@
 		display: flex;
 		align-items: center;
 		text-decoration: none;
-		
-		igc-icon {
-			margin-inline-end: rem(10px);
-		}
+		gap: rem(8px);
+		--ig-size: 3
 	}
 }
 
