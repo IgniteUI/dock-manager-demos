@@ -1,12 +1,13 @@
 @use 'igniteui-theming' as *;
 
 body {
+	--dm-navbar-height: #{rem(57px)};
+	
 	font-family: var(--ig-font-family);
 	
-	--dm-navbar-height: #{rem(56px)};
-	
-	> * {
-		height: calc(100vh - var(--dm-navbar-height));
-	}
+}
+
+app-root {
+	height: calc(100vh);
 }
 

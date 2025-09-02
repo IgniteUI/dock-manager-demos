@@ -5,7 +5,7 @@ igc-nav-drawer {
 }
 
 igc-navbar::part(base) {
-	min-height: var(--dm-navbar-height);
+	min-height: calc(var(--dm-navbar-height) - #{rem(1px)});
 }
 
 .dm-app-title {

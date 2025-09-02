@@ -1,6 +1,6 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
@@ -24,9 +24,6 @@ export default class AppDockManager extends LitElement {
 	@property({ type: Object })
 	private dockLayout: IgcDockManagerLayout = this.getDefaultLayout();
 
-    @state()
-    private showResetButton = false;
-
     // Marks when the initial dock layout pass is done
     private layoutInitialized = false;
 
@@ -35,7 +32,12 @@ export default class AppDockManager extends LitElement {
 
     private onPaneClose = () => {
         if (!this.layoutInitialized) return;
-        this.showResetButton = true;
+        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+            detail: { dirty: true },
+            bubbles: true,
+            composed: true
+        }));
+
     };
 
     private onLayoutChange = () => {
@@ -44,15 +46,26 @@ export default class AppDockManager extends LitElement {
             this.ignoreNextLayoutChange = false;
             return;
         }
-        this.showResetButton = true;
+        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+            detail: { dirty: true },
+            bubbles: true,
+            composed: true
+        }));
     };
 
-    private resetLayout = () => {
+
+    public resetLayout = () => {
         this.ignoreNextLayoutChange = true;
         this.dockLayout = this.getDefaultLayout();
-        this.showResetButton = false;
+        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+            detail: { dirty: false },
+            bubbles: true,
+            composed: true
+        }));
         // the layout remains initialized; only the immediate programmatic change is ignored
     };
+
+
 
     protected firstUpdated() {
         const dm = this.renderRoot.querySelector('igc-dockmanager') as HTMLElement | null;
@@ -65,11 +78,22 @@ export default class AppDockManager extends LitElement {
         const initHandler = () => {
             this.layoutInitialized = true;
             dm.addEventListener('layoutChange', this.onLayoutChange as EventListener);
+
+            // Ensure consumers start with a known state: not dirty
+            this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+                detail: { dirty: false },
+                bubbles: true,
+                composed: true
+            }));
         };
         dm.addEventListener('layoutChange', initHandler as EventListener, { once: true });
+
+        // Listen for global reset requests (cross-shadow-safe)
+        window.addEventListener('reset-layout-request', this.resetLayout as EventListener);
     }
 
     public disconnectedCallback() {
+        window.removeEventListener('reset-layout-request', this.resetLayout as EventListener);
     }
 
     /**
@@ -162,13 +186,6 @@ export default class AppDockManager extends LitElement {
                     <app-stream-chat></app-stream-chat>
                 </div>
             </igc-dockmanager>
-
-            ${this.showResetButton ? html`
-                <igc-button variant="fab" class="reset-fab" @click=${this.resetLayout} title="Reset layout" aria-label="Reset layout">
-                    <igc-icon name="reset" collection="material"></igc-icon>
-                    <span>Reset layout</span>
-                </igc-button>
-            ` : null}
         `;
 	}
 

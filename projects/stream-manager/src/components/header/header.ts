@@ -2,13 +2,13 @@ import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
-	defineComponents,
-	IgcNavbarComponent,
-	IgcIconComponent,
-	IgcInputComponent,
-	IgcAvatarComponent,
-	IgcLinearProgressComponent,
-	IgcTooltipComponent,
+    defineComponents,
+    IgcNavbarComponent,
+    IgcIconComponent,
+    IgcInputComponent,
+    IgcAvatarComponent,
+    IgcLinearProgressComponent,
+    IgcTooltipComponent, IgcIconButtonComponent,
 } from 'igniteui-webcomponents';
 import styles from './header.scss?inline';
 import { InavbarAction, navbarActions } from '../../data/navbar-actions.ts';
@@ -22,7 +22,8 @@ defineComponents(
 	IgcInputComponent,
 	IgcAvatarComponent,
 	IgcLinearProgressComponent,
-	IgcTooltipComponent
+	IgcTooltipComponent,
+    IgcIconButtonComponent
 );
 
 /**
@@ -70,12 +71,8 @@ export default class Header extends LitElement {
 	@state()
 	private navbarActions: InavbarAction[] = navbarActions;
 
-	private _logoTemplate = html`
-    <a href="#" slot="start" class="sm-header__logo">
-        <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
-        <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
-    </a>
-`;
+    @state()
+    private layoutDirty = false;
 
 	constructor() {
 		super();
@@ -99,17 +96,31 @@ export default class Header extends LitElement {
 	connectedCallback(): void {
 		super.connectedCallback();
 		this.setupTimers();
-	}
+        window.addEventListener('layout-dirty-change', this.onLayoutDirtyChange as EventListener);
+    }
 
 	/**
 	 * Cleanup timers when a component is disconnected
 	 */
-	disconnectedCallback(): void {
-		this.clearTimers();
-		super.disconnectedCallback();
-	}
+    disconnectedCallback(): void {
+        this.clearTimers();
+        window.removeEventListener('layout-dirty-change', this.onLayoutDirtyChange as EventListener);
+        super.disconnectedCallback();
+    }
 
-	/**
+    private onLayoutDirtyChange = (e: Event) => {
+        const ce = e as CustomEvent<{ dirty: boolean }>;
+        this.layoutDirty = !!ce.detail?.dirty;
+    };
+
+    private onResetLayoutClick = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Request reset across shadow DOM via a global event
+        window.dispatchEvent(new CustomEvent('reset-layout-request'));
+    };
+
+    /**
 	 * Calculate and update the session time display
 	 */
 	private updateSessionTime(): void {
@@ -307,8 +318,28 @@ export default class Header extends LitElement {
 	 * Render the logo section
 	 */
 	private renderLogo() {
-		return this._logoTemplate;
-	}
+        return html`
+            <div class="sm-header__logo" slot="start">
+                <a href="#">
+                    <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
+                    <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
+                </a>
+                <igc-icon-button
+                        id="resetBtn"
+                        variant="flat"
+                        ?disabled=${!this.layoutDirty}
+                        @click=${this.onResetLayoutClick}
+                        title="Reset layout"
+                        aria-label="Reset layout">
+                    <igc-icon name="reset" collection="material"></igc-icon>
+                </igc-icon-button>
+
+                <igc-tooltip anchor="resetBtn">
+                    Reset layout
+                </igc-tooltip>
+            </div>
+        `;
+    }
 
 	/**
 	 * Render the navigation icons

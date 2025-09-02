@@ -99,7 +99,6 @@ async function runDev() {
         }
     }
     console.log('✅ All projects are copied under dist/projects/<id>/');
-    console.log('ℹ️  Start the main app dev server separately: npm run dev:main');
 }
 
 

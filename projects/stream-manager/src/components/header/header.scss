@@ -81,12 +81,27 @@
 }
 
 .sm-header__logo {
-	text-decoration: none;
-	gap: rem(10px);
-	color: var(--sm-light-purple);
-	
+	display: flex;
+	align-items: center;
+
 	&:focus-visible {
 		outline: rem(1px) solid var(--sm-outline-color);
+	}
+	
+	igc-icon-button {
+		--ig-size: 1;
+		--foreground: var(--sm-dark-purple);
+		--disabled-foreground: var(--ig-gray-100);
+	}
+	
+	a  {
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		
+		igc-icon {
+			margin-inline-end: rem(10px);
+		}
 	}
 }
 
@@ -94,6 +109,8 @@
 	width: rem(24px);
 	height: rem(24px);
 	fill: var(--ig-secondary-900);
+	color: var(--sm-light-purple);
+	
 }
 
 .sm-header__logo-text {

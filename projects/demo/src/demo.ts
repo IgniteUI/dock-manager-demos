@@ -90,11 +90,11 @@ export class DemoApp extends LitElement {
     static styles = css`
         :host {
             display: block;
-            min-height: 100dvh;
+            margin: 0;
         }
         
         .wrap {
-            padding: 1rem;
+            padding-inline: 1rem;
         }
         
         igc-dockmanager {
