@@ -460,7 +460,9 @@ export default class StreamChat extends LitElement {
         try {
             for (const s of streamingMessages) {
                 await this.sleep(STREAM_STAGGER_MS, this.streamAbort.signal);
-                this.appendStaged(s, true);
+                // Ensure streaming messages use the current real time, not any dummy/staged time
+                const sNow: StagedMsg = { ...s, time: this.nowISO() };
+                this.appendStaged(sNow, true);
             }
         } catch (err) {
             if (!(err instanceof DOMException && err.name==='AbortError')) {
