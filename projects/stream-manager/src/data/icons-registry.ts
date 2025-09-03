@@ -1,12 +1,12 @@
 import { registerIconFromText } from 'igniteui-webcomponents';
 import {
-	ALERTS, ANALYTICS, BACK, COMMUNITY, FORWARD,
-	HOME, REWARDS, SETTINGS, SCHEDULE, STREAM,
-	TOOLS, SMANAGER, SEARCH, COMMENTS, LANGUAGES,
-	INBOX, INFO, USER, MORE, EDIT, CLIP, GOALS, RAID, STREAM_TOGETHER, ADD_NEW,
-	CROWN, MUSIC_NOTE, TAG_FACE,
-	VERIFIED, LOGO_TIKTOK, LOGO_INSTAGRAM, LOGO_YOUTUBE, LOGO_VIMEO,
-	HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET
+    ALERTS, ANALYTICS, BACK, COMMUNITY, FORWARD,
+    HOME, REWARDS, SETTINGS, SCHEDULE, STREAM,
+    TOOLS, SMANAGER, SEARCH, COMMENTS, LANGUAGES,
+    INBOX, INFO, USER, MORE, EDIT, CLIP, GOALS, RAID, STREAM_TOGETHER, ADD_NEW,
+    CROWN, MUSIC_NOTE, TAG_FACE,
+    VERIFIED, LOGO_TIKTOK, LOGO_INSTAGRAM, LOGO_YOUTUBE, LOGO_VIMEO,
+    HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET, REMOVE, SECURITY,
 } from '../assets/icons/icons.ts';
 
 /**
@@ -55,6 +55,8 @@ export function registerAppIcons(): void {
 	registerIconFromText('raid', RAID, 'material');
 	registerIconFromText('stream-together', STREAM_TOGETHER, 'material');
 	registerIconFromText('add-new', ADD_NEW, 'material');
+	registerIconFromText('remove', REMOVE, 'material');
+	registerIconFromText('security', SECURITY, 'material');
 
 	// Stream chat
 	registerIconFromText('crown', CROWN, 'material');
