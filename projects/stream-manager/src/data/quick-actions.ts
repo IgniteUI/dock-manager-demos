@@ -62,7 +62,7 @@ export const quickActions: IQuickAction[] = [
     {
 		label: 'Clear Chat History',
 		actionKey: 'chat-history',
-		icon: 'comments',
+		icon: 'chat-history',
         visibility: true,
         category: 'chat',
         description: 'Clear all chat messages from your channel.',
@@ -71,7 +71,7 @@ export const quickActions: IQuickAction[] = [
     {
 		label: 'Toggle Emote-Only Chat',
 		actionKey: 'emote-only',
-		icon: 'comments',
+		icon: 'emote-only',
         visibility: true,
         category: 'chat',
         description: 'Toggle emote-only mode in your channel.',
@@ -80,7 +80,7 @@ export const quickActions: IQuickAction[] = [
     {
 		label: 'Toggle Follower-Only Chat',
 		actionKey: 'follower-only',
-		icon: 'comments',
+		icon: 'person-check',
         visibility: true,
         category: 'chat',
         description: 'Toggle follower-only mode in your channel.',
@@ -89,7 +89,7 @@ export const quickActions: IQuickAction[] = [
     {
 		label: 'Shield Mode',
 		actionKey: 'shield-mode',
-		icon: 'security',
+		icon: 'shield-mode',
         visibility: true,
         category: 'safety',
         description: 'Enable shield mode to protect your channel.',
@@ -123,5 +123,5 @@ export const actionsCategory: Record<ActionCategory, IActionCategory> = {
         icon: 'security',
         label: 'Safety',
         description: 'Protect your channel and manage safety settings.',
-    },
+    }
 };

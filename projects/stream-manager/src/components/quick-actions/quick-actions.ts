@@ -76,6 +76,7 @@ export default class QuickActions extends LitElement {
                             </igc-switch>`: nothing }
                         <igc-icon-button
                                 class="sm-quick-actions-item__action-btn"
+                                tabindex="0"
                                 variant="contained"
                                 title="Remove action"
                                 @click=${(e: Event) => this.handleRemove(e, action.actionKey)}
@@ -91,7 +92,7 @@ export default class QuickActions extends LitElement {
             </div>
             <igc-dialog id="dialog" hide-default-action close-on-outside-click>
                 <div slot="title">
-                    Manage Quick Actions
+                   Quick Actions
 
                     <igc-icon-button class="sm-quick-actions__close-dialog" @click=${this.onCancelClick} variant="flat">
                         <igc-icon name="remove" collection="material"></igc-icon>
@@ -104,7 +105,7 @@ export default class QuickActions extends LitElement {
 
                         return html`
                             <igc-tab>
-                                <igc-icon slot="prefix" name="${ meta.icon }" collection="material"></igc-icon>
+                                <igc-icon slot="prefix" style="--ig-size: 1" name="${ meta.icon }" collection="material"></igc-icon>
                                 <span slot="label">
                                     ${ meta.label }
                                 </span>

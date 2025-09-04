@@ -6,7 +6,8 @@ import {
     INBOX, INFO, USER, MORE, EDIT, CLIP, GOALS, RAID, STREAM_TOGETHER, ADD_NEW,
     CROWN, MUSIC_NOTE, TAG_FACE,
     VERIFIED, LOGO_TIKTOK, LOGO_INSTAGRAM, LOGO_YOUTUBE, LOGO_VIMEO,
-    HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET, REMOVE, SECURITY,
+    HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET, REMOVE, SECURITY, SHIELD_MODE, CHAT_HISTORY, EMOTE_ONLY,
+    PERSON_CHECK,
 } from '../assets/icons/icons.ts';
 
 /**
@@ -57,6 +58,10 @@ export function registerAppIcons(): void {
 	registerIconFromText('add-new', ADD_NEW, 'material');
 	registerIconFromText('remove', REMOVE, 'material');
 	registerIconFromText('security', SECURITY, 'material');
+	registerIconFromText('shield-mode', SHIELD_MODE, 'material');
+	registerIconFromText('chat-history', CHAT_HISTORY, 'material');
+	registerIconFromText('emote-only', EMOTE_ONLY, 'material');
+	registerIconFromText('person-check', PERSON_CHECK, 'material');
 
 	// Stream chat
 	registerIconFromText('crown', CROWN, 'material');
