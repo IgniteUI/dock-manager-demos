@@ -20,7 +20,7 @@
 		--item-text-color: var(--ig-surface-500-contrast);
 		--item-hover-color: var(--sm-light-purple);
 		--item-active-color: var(--sm-light-purple);
-		--item-icon-color: var(--sm-light-purple);
+		--item-icon-color: var(--ig-surface-500-contrast);
 		--item-active-icon-color: var(--sm-light-purple);
 		--item-hover-icon-color: var(--sm-light-purple);
 		--indicator-color: red;
@@ -40,7 +40,7 @@
 	}
 	
 	igc-dialog::part(base) {
-		min-height: rem(717px);
+		min-height: rem(770px);
 	}
 	
 	igc-dialog {
@@ -49,8 +49,8 @@
 		--backdrop: rgba(0, 0, 0, 0.8);
 	}
 	
-	igc-dialog::part(title) {
-		background: var(--ig-gray-50);
+	igc-card {
+		--outline-color: transparent;
 	}
 }
 
@@ -153,12 +153,6 @@
 	};
 }
 
-.sm-quick-action__description {
-	@include type-style(caption) {
-		margin: 0;
-	};
-}
-
 .sm-quick-actions__close-dialog {
 	--ig-size: 1;
 	--foreground: var(--ig-gray-500);
@@ -170,10 +164,14 @@
 	inset-inline-end: rem(16px);
 }
 
-.sm-quick-actions-card {
-	display: grid;
-	gap: rem(16px);
-	padding: rem(16);
-	border-radius: rem(4px);
-	background: var(--ig-surface-600);
+.sm-quick-actions-item__dialog-action-btn {
+	--foreground: var(--sm-light-purple);
+	--icon-color: var(--sm-light-purple);
+	--border-color: var(--sm-light-purple);
+}
+
+.sm-quick-action__description {
+	@include type-style(caption);
+	
+	margin-block-start: rem(16px);
 }

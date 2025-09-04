@@ -3,7 +3,7 @@ import { LitElement, html, unsafeCSS, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import {
-	defineComponents, IgcSwitchComponent, IgcIconComponent, IgcDialogComponent, IgcTabsComponent,
+    defineComponents, IgcSwitchComponent, IgcIconComponent, IgcDialogComponent, IgcTabsComponent, IgcCardComponent,
 } from 'igniteui-webcomponents';
 import styles from './quick-actions.scss?inline';
 import { ActionCategory, actionsCategory, IQuickAction, quickActions } from '../../data/quick-actions.ts';
@@ -11,7 +11,7 @@ import { ActionCategory, actionsCategory, IQuickAction, quickActions } from '../
 // Initialize the dock manager custom elements
 defineCustomElements();
 
-defineComponents(IgcSwitchComponent, IgcIconComponent, IgcDialogComponent, IgcTabsComponent);
+defineComponents(IgcSwitchComponent, IgcIconComponent, IgcDialogComponent, IgcTabsComponent, IgcCardComponent);
 
 @customElement('app-quick-actions')
 export default class QuickActions extends LitElement {
@@ -114,38 +114,43 @@ export default class QuickActions extends LitElement {
                                     <div class="sm-quick-actions__grid">
                                         ${ categoryActions.length
                                             ? categoryActions.map(a => html`
-                                                    <div class="sm-quick-actions-card">
-                                                        <a href="#" class="sm-quick-actions-item"
-                                                           tabindex="${ a.toggle ? -1: nothing }">
-                                                            <igc-icon class="sm-quick-actions-item__icon" name="${ a.icon }"
-                                                                      collection="material"></igc-icon>
-                                                            ${ a.label && !a.toggle ? html`
+                                                    <igc-card>
+                                                        <igc-card-content>
+                                                            <a href="#" class="sm-quick-actions-item"
+                                                               tabindex="${ a.toggle ? -1: nothing }">
+                                                                <igc-icon class="sm-quick-actions-item__icon" name="${ a.icon }"
+                                                                          collection="material"></igc-icon>
+                                                                ${ a.label && !a.toggle ? html`
                                                                 <span class="sm-quick-actions-item__label">${ a.label }</span>
                                                             `: nothing }
-                                                            ${ a.toggle ? html`
+                                                                ${ a.toggle ? html`
                                                                 <igc-switch class="sm-quick-actions-item__switch">
                                                                     ${ a.label }
                                                                 </igc-switch>`: nothing }
-                                                        </a>
-                                                        
-                                                        <p class="sm-quick-action__description">
-                                                            ${a.description}
-                                                        </p>
-    
-                                                        <igc-button
+                                                            </a>
+
+                                                            <p class="sm-quick-action__description">
+                                                                ${a.description}
+                                                            </p>
+                                                        </igc-card-content>
+
+                                                        <igc-card-actions>
+                                                            <igc-button
+                                                                slot="end"
                                                                 class="sm-quick-actions-item__dialog-action-btn"
-                                                                variant="flat"
+                                                                variant="outlined"
                                                                 title="${ a.added ? 'Remove action': 'Add action' }"
                                                                 @click=${ (e: Event) => a.added
                                                                         ? this.handleRemove(e, a.actionKey)
                                                                         : this.handleAdd(e, a.actionKey)
                                                                 }
-                                                        >
-                                                            ${ !a.added ? html`
-                                                            <igc-icon name="add-new" collection="material"></igc-icon>` : nothing }
-                                                            ${ a.added ? 'Remove': 'Add' }
-                                                        </igc-button>
-                                                    </div>
+                                                            >
+                                                               
+                                                                <igc-icon name="${!a.added ? 'add-new': 'remove' }" collection="material"></igc-icon>
+                                                                ${ a.added ? 'Remove': 'Add' }
+                                                            </igc-button>
+                                                        </igc-card-actions>
+                                                    </igc-card>
                                                 `)
                                             : html`<span class="sm-quick-actions__empty">No actions in this category.</span>`
                                         }
