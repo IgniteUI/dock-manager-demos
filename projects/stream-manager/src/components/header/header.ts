@@ -277,7 +277,7 @@ export default class Header extends LitElement {
                         value="${percent}">
                 </igc-linear-progress>
             </div>
-            <igc-tooltip anchor="bitrateValue">
+            <igc-tooltip anchor="bitrateValue" with-arrow>
 	            Bitrate Quality: ${formattedBitrate} Mbps (${this.qualityInfo.label})
             </igc-tooltip>
 		`;
@@ -334,7 +334,7 @@ export default class Header extends LitElement {
                     <igc-icon name="reset" collection="material"></igc-icon>
                 </igc-icon-button>
 
-                <igc-tooltip anchor="resetBtn">
+                <igc-tooltip anchor="resetBtn" with-arrow>
                     Reset Layout
                 </igc-tooltip>
             </div>
