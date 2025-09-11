@@ -79,6 +79,13 @@ stages:
             
             echo "All sample projects have been compressed and saved to the artifacts directory."
 
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Samples Sources zips'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'samplesSourcesZips'
+          publishLocation: 'pipeline'
+
 
       - task: Npm@1
         displayName: 'Register licensed npm registry in .npmrc'
