@@ -126,6 +126,8 @@ stages:
 
       - task: Npm@1
         displayName: 'Build all projects'
+        env:
+          NPM_CONFIG_USERCONFIG: $(Build.SourcesDirectory)/.npmrc
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
