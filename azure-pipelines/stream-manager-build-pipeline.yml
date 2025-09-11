@@ -118,6 +118,24 @@ stages:
               fi
             done
 
+      - task: Bash@3
+        displayName: 'Replace igniteui-dockmanager imports with licensed ones'
+        inputs:
+          targetType: 'inline'
+          script: |
+            set -eo pipefail
+            echo "Replacing igniteui-dockmanager imports with @infragistics equivalents..."
+
+            find . -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
+            while IFS= read -r -d '' file; do
+              echo "Processing $file"
+              sed -i -E \
+                -e 's/([[:space:]]*(from|import)[[:space:]]+["'\''])(igniteui-dockmanager[^"'\'']*)(["'\''])/\1@infragistics\/\3\4/g' \
+                "$file"
+            done
+
+            echo "All references updated."
+
       - task: Npm@1
         displayName: 'Npm install'
         inputs:
