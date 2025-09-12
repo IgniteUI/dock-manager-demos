@@ -12,7 +12,6 @@ export interface IStreamPreviewData {
 	genres: string[];
 	socialMedia: ISocialMediaPlatform[];
 	followers: string;
-	thumbnailUrl: string;
 }
 
 export const mockStreamPreview: IStreamPreviewData = {
@@ -43,6 +42,5 @@ export const mockStreamPreview: IStreamPreviewData = {
 			accountName: 'Vimeo',
 		},
 	],
-	followers: '6.5k',
-	thumbnailUrl: 'fox-guitar.mp4',
+	followers: '6.5k'
 };
