@@ -86,6 +86,11 @@
 	gap: rem(16px);
 	padding: rem(16px);
 	
+	@media (max-width: 950px) {
+		gap: rem(8px);
+		padding: rem(8px);
+	}
+	
 	@include type-style(body-2);
 }
 
@@ -174,8 +179,21 @@
 	grid-template-columns: minmax(rem(106px), 1fr) minmax(rem(106px), 1fr);
 	gap: rem(16px);
 	
+	@media (max-width: 950px) {
+		gap: rem(8px);
+		
+		igc-card-actions,
+		igc-card-content {
+			padding: rem(8px);
+		}
+	}
+	
 	.sm-quick-actions-item {
 		padding: rem(16px);
+		
+		@media (max-width: 950px) {
+			padding: rem(8px);
+		}
 	}
 }
 
@@ -207,4 +225,12 @@
 	@include type-style(caption);
 	
 	margin-block-start: rem(16px);
+}
+
+igc-switch::part(label),
+.sm-quick-actions-item__label {
+	@include type-style(caption) {
+		font-size: 13px;
+		font-weight: 500;
+	};
 }

@@ -4,6 +4,7 @@
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	height: 100%;
+	overflow: hidden;
 }
 
 .sm-main {
@@ -13,7 +14,6 @@
 	@media (max-width: 960px) {
 		flex-direction: column;
 	}
-	
 	
 	position: relative;
 	overflow: hidden;

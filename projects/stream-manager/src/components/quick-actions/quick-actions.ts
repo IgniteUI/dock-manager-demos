@@ -97,7 +97,7 @@ export default class QuickActions extends LitElement {
                         `: nothing }
 
                         ${ action.toggle ? html`
-                            <igc-switch class="sm-quick-actions-item__switch">
+                            <igc-switch label-position="before" class="sm-quick-actions-item__switch">
                                 ${ action.label }
                             </igc-switch>`: nothing }
                         <igc-icon-button
@@ -147,8 +147,8 @@ export default class QuickActions extends LitElement {
                                                                 <span class="sm-quick-actions-item__label">${ a.label }</span>
                                                             `: nothing }
                                                                 ${ a.toggle ? html`
-                                                                <igc-switch class="sm-quick-actions-item__switch">
-                                                                    ${ a.label }
+                                                                <igc-switch label-position="before" class="sm-quick-actions-item__switch">
+                                                                    <span class="sm-quick-actions-item__label">${ a.label }</span>
                                                                 </igc-switch>`: nothing }
                                                             </a>
 

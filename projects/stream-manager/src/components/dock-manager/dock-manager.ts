@@ -80,7 +80,6 @@ export default class AppDockManager extends LitElement {
         const dm = this.renderRoot.querySelector('igc-dockmanager') as HTMLElement | null;
         if (!dm) return;
 
-        // NO container observation: viewport only
         dm.addEventListener('paneClose', this.onPaneClose as EventListener);
         dm.addEventListener('paneClosed', this.onPaneClose as EventListener);
 
@@ -120,7 +119,6 @@ export default class AppDockManager extends LitElement {
             }));
         }
     }
-
 
     private getDefaultLayout(): IgcDockManagerLayout {
         const bp = this.currentBreakpoint ?? responsiveService.current;
@@ -264,43 +262,65 @@ export default class AppDockManager extends LitElement {
             rootPane: {
                 type: IgcDockManagerPaneType.splitPane,
                 orientation: IgcSplitPaneOrientation.vertical,
+                floatingResizable: false,
+                allowEmpty: false,
                 useFixedSize: true,
                 panes: [
                     {
+                        allowMaximize: false,
+                        allowPinning: false,
+                        allowFloating: false,
+                        allowDocking: false,
                         type: IgcDockManagerPaneType.contentPane,
                         contentId: 'streamPreview',
                         header: 'Stream Preview',
                         unpinnedLocation: IgcUnpinnedLocation.right,
-                        size: 660
+                        size: 520
                     },
                     {
+                        allowMaximize: false,
+                        allowPinning: false,
+                        allowFloating: false,
+                        allowDocking: false,
                         type: IgcDockManagerPaneType.contentPane,
                         contentId: 'streamChat',
                         header: 'Stream Chat',
                         unpinnedLocation: IgcUnpinnedLocation.right,
-                        size: 700
+                        size: 400
                     },
                     {
+                        allowMaximize: false,
+                        allowPinning: false,
+                        allowFloating: false,
+                        allowDocking: false,
                         type: IgcDockManagerPaneType.contentPane,
                         contentId: 'activityFeed',
                         header: 'Activity Feed',
                         unpinnedLocation: IgcUnpinnedLocation.right,
-                        size: 450
+                        size: 470
                     },
                     {
+                        allowMaximize: false,
+                        allowPinning: false,
+                        allowFloating: false,
+                        allowDocking: false,
                         type: IgcDockManagerPaneType.contentPane,
                         contentId: 'quickActions',
                         header: 'Quick Actions',
                         unpinnedLocation: IgcUnpinnedLocation.right,
-                        size: 420
+                        size: 410
                     },
                     {
+                        allowMaximize: false,
+                        allowPinning: false,
+                        allowFloating: false,
+                        allowDocking: false,
                         type: IgcDockManagerPaneType.contentPane,
                         contentId: 'streamSchedule',
                         header: 'Stream Schedule',
                         unpinnedSize: 290,
                         unpinnedLocation: IgcUnpinnedLocation.right,
-                        size: 400
+                        size: 420
                     },
                 ],
             },

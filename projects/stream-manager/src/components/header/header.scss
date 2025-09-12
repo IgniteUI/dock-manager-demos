@@ -1,5 +1,19 @@
 @use 'igniteui-theming' as *;
 
+
+igc-tooltip {
+	--text-color: var(--ig-gray-800);
+	--background: var(--ig-gray-50);
+}
+
+igc-tooltip::part(bottom) {
+	border-bottom-color: var(--ig-gray-100);
+}
+
+igc-tooltip::part(base) {
+	border: 1px solid var(--ig-gray-100);
+}
+
 .sm-header {
 	--background: var(--sm-special-black);
 	--border-color: var(--sm-border-color);
@@ -14,6 +28,10 @@
 		position: sticky;
 		top: 0;
 		z-index: 9999;
+	}
+	
+	@media only screen and (max-width: 950px) {
+		--ig-avatar-size: #{rem(32px)};
 	}
 }
 
@@ -67,7 +85,6 @@ igc-avatar {
 		outline: rem(1px) solid var(--sm-outline-color);
 	}
 }
-
 .sm-header__logomark {
 	width: rem(24px);
 	height: rem(24px);
