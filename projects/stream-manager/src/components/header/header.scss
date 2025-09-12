@@ -57,6 +57,11 @@ igc-navbar::part(base) {
 }
 .sm-header__info {
 	width: 100%;
+	justify-content: space-evenly;
+	
+	@media only screen and (max-width: 1280px) {
+		background: var(--sm-special-black);
+	}
 }
 
 .sm-info-item {

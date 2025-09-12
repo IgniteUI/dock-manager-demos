@@ -389,7 +389,7 @@ export default class Header extends LitElement {
 	/**
 	 * Render the header component UI
 	 */
-	render() {
+    render() {
         const isSmall = this.breakpoint === 'sm';
         return html`
             <igc-navbar class="sm-header">
@@ -404,8 +404,11 @@ export default class Header extends LitElement {
                     <igc-icon name="user" collection="material"></igc-icon>
                 </igc-avatar>
             </igc-navbar>
+
+            ${isSmall ? html`${this.renderMetrics()}` : nothing}
         `;
     }
 
-	static styles = unsafeCSS(styles);
+
+    static styles = unsafeCSS(styles);
 }

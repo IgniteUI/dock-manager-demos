@@ -10,28 +10,28 @@ export const headerMetrics: IHeaderMetric[] = [
     {
         key: 'session',
         label: 'Session',
-        iconName: 'schedule',
+        iconName: 'Session',
         collection: 'material',
         type: 'text'
     },
     {
         key: 'viewers',
         label: 'Viewers',
-        iconName: 'user',
+        iconName: 'viewers',
         collection: 'material',
         type: 'text'
     },
     {
         key: 'followers',
         label: 'Followers',
-        iconName: 'community',
+        iconName: 'followers',
         collection: 'material',
         type: 'text'
     },
     {
         key: 'bitrate',
         label: 'Bitrate',
-        iconName: 'analytics',
+        iconName: 'bitrate',
         collection: 'material',
         type: 'progress'
     }
