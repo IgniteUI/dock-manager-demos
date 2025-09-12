@@ -126,6 +126,27 @@ stages:
             done
 
       - task: Bash@3
+        displayName: "Use licensed fox video from the CDN"
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            # Find .ts and .tsx files containing the string
+            matches=$(grep -rl --include="*.ts" --include="*.tsx" "fox-guitar-free.webm" . || true)
+
+            if [ -z "$matches" ]; then
+              echo "❌ No occurrences of 'fox-guitar-free.webm' found in .ts/.tsx files."
+              exit 1
+            fi
+
+            echo "✅ Found occurrences in:"
+            echo "$matches"
+
+            # Replace in-place
+            echo "$matches" | xargs sed -i 's/fox-guitar-free\.webm/fox-guitar.webm/g'
+
+      - task: Bash@3
         displayName: 'Replace igniteui-dockmanager imports with licensed ones'
         inputs:
           targetType: 'inline'
@@ -167,9 +188,10 @@ stages:
 
       - task: PublishPipelineArtifact@1
 
+        #NB: For now we are intentionally distributing the stream manager only
         displayName: 'Publish app'
         inputs:
-          targetPath: '$(Build.SourcesDirectory)/dist'
+          targetPath: '$(Build.SourcesDirectory)/stream-manager/dist'
           artifact: 'dist'
           publishLocation: 'pipeline'
 
