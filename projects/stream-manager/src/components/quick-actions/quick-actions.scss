@@ -42,6 +42,17 @@
 	
 	igc-dialog::part(base) {
 		min-height: rem(770px);
+		
+		@media (max-width: 768px) {
+			min-height: revert;
+		}
+	}
+	
+	igc-dialog::part(title) {
+		position: sticky;
+		background: var(--background);
+		z-index: 9999;
+		top: 0;
 	}
 	
 	igc-dialog {

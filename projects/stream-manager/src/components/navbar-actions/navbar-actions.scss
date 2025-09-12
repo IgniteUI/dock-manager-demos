@@ -44,6 +44,10 @@
 		border-top: 1px solid var(--sm-border-color);
 		padding: rem(12px);
 		justify-content: space-evenly;
+		
+		a {
+			padding: 0;
+		}
 	}
 }
 
