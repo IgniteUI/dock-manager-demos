@@ -1,7 +1,5 @@
 @use 'igniteui-theming' as *;
 
-
-
 .sm-actions {
 	display: flex;
 	align-items: center;
@@ -34,8 +32,8 @@
 		}
 	}
 	
-	@media only screen and (max-width: 768px) {
-		min-height: rem(56px);
+	@media only screen and (max-width: 950px) {
+		max-height: rem(56px);
 		grid-row: 3;
 		inset-block-end: 0;
 		inset-inline-start: 0;
@@ -57,7 +55,7 @@
 	justify-content: center;
 	position: relative;
 	
-	@media only screen and (max-width: 768px) {
+	@media only screen and (max-width: 950px) {
 		align-self: center;
 	}
 }
@@ -76,5 +74,3 @@
 .sm-actions__action--active {
 	color: var(--sm-light-purple);
 }
-
-

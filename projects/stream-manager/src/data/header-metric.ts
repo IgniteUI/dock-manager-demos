@@ -10,7 +10,7 @@ export const headerMetrics: IHeaderMetric[] = [
     {
         key: 'session',
         label: 'Session',
-        iconName: 'Session',
+        iconName: 'session',
         collection: 'material',
         type: 'text'
     },

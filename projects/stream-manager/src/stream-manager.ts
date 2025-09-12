@@ -7,6 +7,7 @@ import { registerAppIcons } from './data/icons-registry.ts';
 import styles from './stream-manager.scss?inline';
 import { Breakpoint, responsiveService } from './services/responsive.service.ts';
 import './components/navbar-actions/navbar-actions.ts';
+import './components/header-metric-itmes/header-metric-items.ts';
 
 @customElement('app-stream-manager')
 export default class StreamManager extends LitElement {
@@ -45,6 +46,11 @@ export default class StreamManager extends LitElement {
             <app-header></app-header>
 
             <main class="sm-main">
+                
+                ${isSmall ? html`
+                    <app-header-metric-items></app-header-metric-items>
+                ` : null }
+                
                 <app-navigation-drawer></app-navigation-drawer>
                 <app-dock-manager></app-dock-manager>
             </main>
@@ -52,7 +58,7 @@ export default class StreamManager extends LitElement {
             ${isSmall ? html`
                 <!-- Render actions outside the header on mobile -->
                 <app-navbar-actions></app-navbar-actions>
-            ` : null}
+            ` : null }
         `;
     }
 

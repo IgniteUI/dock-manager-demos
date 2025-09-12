@@ -43,7 +43,7 @@
 	igc-dialog::part(base) {
 		min-height: rem(770px);
 		
-		@media (max-width: 768px) {
+		@media (max-width: 950px) {
 			min-height: revert;
 		}
 	}

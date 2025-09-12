@@ -10,11 +10,15 @@
 		padding-inline: 0;
 	}
 	
-	@media only screen and (min-width: 768px) {
+	@media only screen and (min-width: 950px) {
 		position: sticky;
 		top: 0;
 		z-index: 9999;
 	}
+}
+
+igc-navbar::part(middle) {
+	justify-content: center;
 }
 
 igc-tooltip {
@@ -36,65 +40,9 @@ igc-navbar::part(base) {
 
 .sm-header__logo,
 .sm-header__actions,
-.sm-info-item,
 .sm-header__actions-nav {
 	display: flex;
 	align-items: center;
-}
-
-.sm-header__info {
-	@include type-style(body-2);
-	
-	display: grid;
-	grid-template-columns: repeat(4, 145px);
-	justify-content: center;
-	gap: rem(8px);
-	
-	@media only screen and (max-width: 1280px) {
-		gap: rem(16px);
-		grid-template-columns: repeat(4, min-content);
-	}
-}
-.sm-header__info {
-	width: 100%;
-	justify-content: space-evenly;
-	
-	@media only screen and (max-width: 1280px) {
-		background: var(--sm-special-black);
-	}
-}
-
-.sm-info-item {
-	font-size: rem(14px);
-	font-weight: 400;
-	gap: rem(2px);
-	padding: rem(8px) rem(16px);
-	
-	&:focus-visible {
-		outline: rem(1px) solid var(--sm-outline-color);
-	}
-	
-	@media only screen and (max-width: 1280px) {
-		padding-inline: 0;
-	}
-}
-
-.sm-info-item__label {
-	color: var(--ig-gray-300);
-}
-
-.sm-info-item__value {
-	color: var(--ig-gray-900);
-	padding-inline: rem(8px);
-}
-
-.sm-info-item__value--progress {
-	--track-size: #{rem(4px)};
-	--track-border-radius: 0;
-	--track-color: #{var(--ig-gray-700)};
-	--fill-color-default: #{var(--sm-dark-purple)};
-	
-	min-width: rem(80px);
 }
 
 .sm-header__logo {

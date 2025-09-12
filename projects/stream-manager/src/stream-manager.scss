@@ -9,6 +9,12 @@
 .sm-main {
 	display: flex;
 	grid-row: 2;
+	
+	@media (max-width: 960px) {
+		flex-direction: column;
+	}
+	
+	
 	position: relative;
 	overflow: hidden;
 }
