@@ -191,7 +191,7 @@ stages:
         #NB: For now we are intentionally distributing the stream manager only
         displayName: 'Publish app'
         inputs:
-          targetPath: '$(Build.SourcesDirectory)/stream-manager/dist'
+          targetPath: '$(Build.SourcesDirectory)/dist'
           artifact: 'dist'
           publishLocation: 'pipeline'
 
