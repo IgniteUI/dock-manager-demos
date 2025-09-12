@@ -6,6 +6,10 @@
 	padding: var(--sm-dock-manager-gutter);
 	width: calc(100% - (var(--sm-dock-manager-gutter) * 2));
 	height: calc(100% - (var(--sm-dock-manager-gutter) * 2));;
+	
+	@media only screen and (max-width: 768px) {
+		--sm-dock-manager-gutter: 0;
+	}
 }
 
 .app-dock-manager {
@@ -17,7 +21,6 @@
 	--igc-pane-content-text: #fff;
 	--igc-splitter-handle: var(--ig-gray-300);
 	--igc-splitter-background: var(--ig-gray-100);
-	
 	--igc-floating-pane-border-color: var(--ig-gray-50);
 	--igc-joystick-icon-color: var(--ig-primary-100);
 	--igc-joystick-icon-color-active: orange;

@@ -73,7 +73,7 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(rem(173px), 1fr));
 	gap: rem(16px);
-	padding: var(--sm-dock-manager-gutter);
+	padding: rem(16px);
 	
 	@include type-style(body-2);
 }

@@ -6,12 +6,14 @@
 	
 	gap: rem(16px);
 	
-	igc-input {
-		--input-prefix-background: var(--ig-gray-50);
-		--input-prefix-background--filled: var(--ig-gray-50);
-		--input-prefix-background--focused: var(--ig-gray-50);
-		--border-color: var(--ig-gray-100);
-		--border-color--filled: var(--ig-gray-100);
+	@media only screen and (max-width: 1000px) {
+		padding-inline: 0;
+	}
+	
+	@media only screen and (min-width: 768px) {
+		position: sticky;
+		top: 0;
+		z-index: 9999;
 	}
 }
 
@@ -41,38 +43,20 @@ igc-navbar::part(base) {
 }
 
 .sm-header__info {
+	@include type-style(body-2);
+	
 	display: grid;
 	grid-template-columns: repeat(4, 145px);
 	justify-content: center;
-	gap: rem(8px)
+	gap: rem(8px);
+	
+	@media only screen and (max-width: 1280px) {
+		gap: rem(16px);
+		grid-template-columns: repeat(4, min-content);
+	}
 }
 .sm-header__info {
 	width: 100%;
-}
-
-.sm-header__actions {
-	gap: rem(16px);
-}
-
-.sm-header__actions-nav {
-	gap: inherit;
-	
-	> * {
-		display: inline-flex;
-		align-items: center;
-		color: var(--ig-gray-900);
-		padding: rem(3px);
-		
-		&:hover,
-		&:focus {
-			color: var(--ig-primary-300);
-		}
-		
-		&:focus-visible {
-			color: var(--ig-gray-900);
-			outline: rem(1px) solid var(--sm-outline-color);
-		}
-	}
 }
 
 .sm-info-item {
@@ -80,6 +64,14 @@ igc-navbar::part(base) {
 	font-weight: 400;
 	gap: rem(2px);
 	padding: rem(8px) rem(16px);
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
+	
+	@media only screen and (max-width: 1280px) {
+		padding-inline: 0;
+	}
 }
 
 .sm-info-item__label {
@@ -104,10 +96,6 @@ igc-navbar::part(base) {
 	display: flex;
 	align-items: center;
 	gap: rem(8px);
-
-	&:focus-visible {
-		outline: rem(1px) solid var(--sm-outline-color);
-	}
 	
 	igc-icon-button {
 		--ig-size: 1;
@@ -115,12 +103,28 @@ igc-navbar::part(base) {
 		--disabled-foreground: var(--ig-gray-100);
 	}
 	
+	.sm-header__drawer-btn {
+		--foreground: var(--gray-900-contrast);
+		--hover-foreground: var(--sm-light-purple);
+	}
+	
 	a  {
+		--ig-size: 3;
+		
 		display: flex;
 		align-items: center;
 		text-decoration: none;
 		gap: rem(8px);
-		--ig-size: 3
+		
+		&:focus-visible {
+			outline: rem(1px) solid var(--sm-outline-color);
+		}
+	}
+}
+
+igc-avatar {
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
 	}
 }
 
@@ -129,7 +133,6 @@ igc-navbar::part(base) {
 	height: rem(24px);
 	fill: var(--ig-secondary-900);
 	color: var(--sm-light-purple);
-	
 }
 
 .sm-header__logo-text {

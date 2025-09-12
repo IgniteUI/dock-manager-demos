@@ -18,6 +18,24 @@ export default class QuickActions extends LitElement {
 	@state()
 	private actions: IQuickAction[] = quickActions;
 
+    connectedCallback(): void {
+        super.connectedCallback?.();
+        window.addEventListener('reset-app-request', this.resetApp as EventListener);
+    }
+
+    disconnectedCallback(): void {
+        window.removeEventListener('reset-app-request', this.resetApp as EventListener);
+        super.disconnectedCallback?.();
+    }
+
+    private resetApp = () => {
+        // Restore the initial actions list
+        this.actions = quickActions.map(a => ({ ...a }));
+        // Optionally close the dialog if open
+        const dialog = this.renderRoot?.querySelector('igc-dialog') as any;
+        dialog?.hide?.();
+    };
+
     private onAddClick = (e: Event) => {
         e.preventDefault();
         const dialog = this.renderRoot.querySelector('igc-dialog') as IgcDialogComponent | null;
@@ -39,6 +57,9 @@ export default class QuickActions extends LitElement {
         const updated = [...this.actions];
         updated[idx] = { ...updated[idx], added: false };
         this.actions = updated;
+
+        // Mark the app as dirty when an action is removed
+        window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
     };
 
     // Add from the dialog: set added = true
@@ -51,12 +72,17 @@ export default class QuickActions extends LitElement {
         const updated = [...this.actions];
         updated[idx] = { ...updated[idx], added: true };
         this.actions = updated;
-    };
 
+        // Mark app as dirty when an action is added
+        window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
+    };
 
     render() {
         return html`
             <div class="sm-quick-actions">
+                <a href="#" class="sm-quick-actions-item sm-quick-actions-item--add" @click=${this.onAddClick}>
+                    <igc-icon class="sm-quick-actions-item__icon" name="add-new" collection="material"></igc-icon>
+                </a>
                 ${ this.actions
                 .filter(action => action.added)
                 .map(action => html`
@@ -85,10 +111,6 @@ export default class QuickActions extends LitElement {
                         </igc-icon-button>
                     </a>
                 `)}
-
-                <a href="#" class="sm-quick-actions-item sm-quick-actions-item--add" @click=${this.onAddClick}>
-                    <igc-icon class="sm-quick-actions-item__icon" name="add-new" collection="material"></igc-icon>
-                </a>
             </div>
             <igc-dialog id="dialog" hide-default-action close-on-outside-click>
                 <div slot="title">

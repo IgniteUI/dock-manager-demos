@@ -10,6 +10,7 @@ import {
 
 import { navigationItems, INavItem } from '../../data/navigation-items.ts';
 import styles from './navigation-drawer.scss?inline';
+import { Breakpoint, responsiveService } from '../../services/responsive.service.ts';
 
 defineComponents(
 	IgcNavDrawerComponent,
@@ -34,7 +35,37 @@ export default class NavigationDrawer extends LitElement {
 	@state()
 	open = false;
 
-	private toggleNavDrawer() {
+    // In the class
+    @state()
+    private breakpoint: Breakpoint = responsiveService.current;
+
+    private unsubscribeBp?: () => void;
+
+    private onGlobalToggle = () => {
+        this.toggleNavDrawer();
+    };
+
+    connectedCallback(): void {
+        super.connectedCallback?.();
+        window.addEventListener('app-toggle-nav-drawer', this.onGlobalToggle as EventListener);
+        this.unsubscribeBp = responsiveService.addListener(({ current }) => {
+            if (this.breakpoint !== current) {
+                this.breakpoint = current;
+                this.requestUpdate();
+            }
+        });
+    }
+
+    disconnectedCallback(): void {
+        window.removeEventListener('app-toggle-nav-drawer', this.onGlobalToggle as EventListener);
+        if (this.unsubscribeBp) {
+            this.unsubscribeBp();
+            this.unsubscribeBp = undefined;
+        }
+        super.disconnectedCallback?.();
+    }
+
+    private toggleNavDrawer() {
 		if (this.navDrawer) {
 			this.open = !this.open;
 			this.navDrawer.open = this.open;
@@ -43,10 +74,12 @@ export default class NavigationDrawer extends LitElement {
 	}
 
 	render() {
-		return html`
+        const isSmall = this.breakpoint === 'sm';
+
+        return html`
             <igc-nav-drawer
                     .open=${ this.open }
-                    position="relative"
+                    position="${ isSmall ? 'start' : 'relative' }"
                     class="sm-nav"
             >
                 <igc-nav-drawer-header-item 
@@ -74,32 +107,34 @@ export default class NavigationDrawer extends LitElement {
                     </igc-nav-drawer-item>
                 `) }
 
-                <div slot="mini">
-                    <igc-nav-drawer-header-item
-	                    class="sm-nav__header-item sm-nav__header-item--toggle"
-                        @click=${ (e: Event) => {
-                            e.stopPropagation();
-                            this.toggleNavDrawer();
-                        } }
-                    >
-                        <igc-icon
-                                class="sm-menu-toggle-button"
-                                name="forward"
-                                collection="material"
-                        ></igc-icon>
-                    </igc-nav-drawer-header-item>
-                    ${ this.items.map(item => html`
-                        <igc-nav-drawer-item
-                                ?active=${ item.route===this.activePath }
+                ${ isSmall ? null : html`
+                    <div slot="mini">
+                        <igc-nav-drawer-header-item
+                            class="sm-nav__header-item sm-nav__header-item--toggle"
+                            @click=${ (e: Event) => {
+                                e.stopPropagation();
+                                this.toggleNavDrawer();
+                            } }
                         >
                             <igc-icon
-                                    slot="icon" name="${ item.icon }"
-                                    collection="${ item.collection }">
-                            </igc-icon>
-                        </igc-nav-drawer-item>
-                    `) }
-                </div>
-            </igc-nav-drawer>
+                                    class="sm-menu-toggle-button"
+                                    name="forward"
+                                    collection="material"
+                            ></igc-icon>
+                        </igc-nav-drawer-header-item>
+                        ${ this.items.map(item => html`
+                            <igc-nav-drawer-item
+                                    ?active=${ item.route===this.activePath }
+                            >
+                                <igc-icon
+                                        slot="icon" name="${ item.icon }"
+                                        collection="${ item.collection }">
+                                </igc-icon>
+                            </igc-nav-drawer-item>
+                        `) }
+                    </div>
+                `}
+                </igc-nav-drawer>
 		`;
 	}
 

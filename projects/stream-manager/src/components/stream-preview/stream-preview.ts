@@ -38,6 +38,7 @@ import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview
 import foxGuitar from '../../assets/videos/fox-guitar.webm';
 import { repeat } from 'lit/directives/repeat.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { Breakpoint, responsiveService } from '../../services/responsive.service.ts';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
@@ -81,6 +82,11 @@ export default class StreamPreview extends LitElement {
     @state()
     private isVideoError = false;
 
+    @state()
+    private breakpoint: Breakpoint = responsiveService.current;
+
+    private _unsubscribeBp?: () => void;
+
     /**
      * Whether the loader UI should be visible.
      * Loader is shown only when loading and not in error state.
@@ -114,6 +120,24 @@ export default class StreamPreview extends LitElement {
         this.isVideoLoading = false;
         this.isVideoError = true;
     };
+
+    connectedCallback(): void {
+        super.connectedCallback?.();
+        this._unsubscribeBp = responsiveService.addListener(({ current }) => {
+            if (this.breakpoint !== current) {
+                this.breakpoint = current;
+                this.requestUpdate();
+            }
+        });
+    }
+
+    disconnectedCallback(): void {
+        if (this._unsubscribeBp) {
+            this._unsubscribeBp();
+            this._unsubscribeBp = undefined;
+        }
+        super.disconnectedCallback?.();
+    }
 
     render() {
         return html`
@@ -189,7 +213,9 @@ export default class StreamPreview extends LitElement {
                             ${ repeat(this.previewData.socialMedia, (p) => p.accountName, (platform) => html`
                                 <a href="${ platform.url }" aria-label="Go to ${ platform.accountName } profile">
                                     <igc-icon name="${ platform.icon }" collection="material"></igc-icon>
-                                    <span class="sm-stream-preview__social-channels-name">${ platform.accountName }</span>
+                                    ${ this.breakpoint !== 'sm' ? html`
+                                        <span class="sm-stream-preview__social-channels-name">${ platform.accountName }</span>
+                                    ` : nothing }
                                 </a>
                             `) }
                         </div>

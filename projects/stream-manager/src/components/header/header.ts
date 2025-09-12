@@ -1,6 +1,5 @@
-import { LitElement, html, unsafeCSS } from 'lit';
+import { LitElement, html, unsafeCSS, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { repeat } from 'lit/directives/repeat.js';
 import {
     defineComponents,
     IgcNavbarComponent,
@@ -8,12 +7,15 @@ import {
     IgcInputComponent,
     IgcAvatarComponent,
     IgcLinearProgressComponent,
-    IgcTooltipComponent, IgcIconButtonComponent,
+    IgcTooltipComponent,
+    IgcIconButtonComponent,
 } from 'igniteui-webcomponents';
 import styles from './header.scss?inline';
-import { InavbarAction, navbarActions } from '../../data/navbar-actions.ts';
 import { IqualityLevel, qualityLevels } from '../../data/quality-levels.ts';
 import profileImage from '../../assets/images/profile.png';
+import { Breakpoint, responsiveService } from '../../services/responsive.service.ts';
+import { IHeaderMetric, headerMetrics } from '../../data/header-metric.ts';
+import '../navbar-actions/navbar-actions.ts';
 
 // Initialize required Igniteui components
 defineComponents(
@@ -50,10 +52,31 @@ export default class Header extends LitElement {
 	private bitrateDirection = 1;
 
 	private readonly startTime: number;
-	private intervals: { [key: string]: number } = {};
 
-	// State Properties
-	@state()
+    private intervals: { [key: string]: number } = {};
+
+    @state()
+    private headerMetrics: IHeaderMetric[] = headerMetrics;
+
+    /**
+     * Get the value for a specific metric
+     */
+    private getMetricValue(metricKey: string): string {
+        switch (metricKey) {
+            case 'session':
+                return this.sessionTime;
+            case 'viewers':
+                return this.formatThousands(this.viewers);
+            case 'followers':
+                return this.formatThousands(this.followers);
+            case 'bitrate':
+                return (this.bitrate / 1000).toFixed(1); // For tooltip
+            default:
+                return '';
+        }
+    }
+
+    @state()
 	private sessionTime = '1:00:00';
 
 	@state()
@@ -68,13 +91,17 @@ export default class Header extends LitElement {
 	@state()
 	private qualityInfo: IqualityLevel = qualityLevels[0];
 
-	@state()
-	private navbarActions: InavbarAction[] = navbarActions;
-
     @state()
     private layoutDirty = false;
 
-	constructor() {
+    // In the class
+    @state()
+    private breakpoint: Breakpoint = responsiveService.current;
+
+    // Add the missing property
+    private _unsubscribeBp?: () => void;
+
+    constructor() {
 		super();
 		this.startTime = Date.now();
 		this.qualityInfo = this.calculateQualityInfo(this.bitrate);
@@ -93,31 +120,49 @@ export default class Header extends LitElement {
 	/**
 	 * Set up timers for updating metrics when a component is connected
 	 */
-	connectedCallback(): void {
-		super.connectedCallback();
-		this.setupTimers();
-        window.addEventListener('layout-dirty-change', this.onLayoutDirtyChange as EventListener);
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.setupTimers();
+        window.addEventListener('app-dirty-change', this.onAppDirtyChange as EventListener);
+        this._unsubscribeBp = responsiveService.addListener(({ current }) => {
+            if (this.breakpoint !== current) {
+                this.breakpoint = current;
+                this.requestUpdate();
+            }
+        });
     }
 
-	/**
+    /**
 	 * Cleanup timers when a component is disconnected
 	 */
     disconnectedCallback(): void {
         this.clearTimers();
-        window.removeEventListener('layout-dirty-change', this.onLayoutDirtyChange as EventListener);
+        window.removeEventListener('app-dirty-change', this.onAppDirtyChange as EventListener);
+        if (this._unsubscribeBp) {
+            this._unsubscribeBp();
+            this._unsubscribeBp = undefined;
+        }
         super.disconnectedCallback();
     }
 
-    private onLayoutDirtyChange = (e: Event) => {
+
+    private onAppDirtyChange = (e: Event) => {
         const ce = e as CustomEvent<{ dirty: boolean }>;
         this.layoutDirty = !!ce.detail?.dirty;
     };
 
-    private onResetLayoutClick = (e: Event) => {
+    private onResetAppClick = (e: Event) => {
         e.preventDefault();
         e.stopPropagation();
         // Request reset across shadow DOM via a global event
-        window.dispatchEvent(new CustomEvent('reset-layout-request'));
+        window.dispatchEvent(new CustomEvent('reset-app-request'));
+    };
+
+    private onToggleNavDrawerClick = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Global event for any navigation drawer instance to listen for
+        window.dispatchEvent(new CustomEvent('app-toggle-nav-drawer', { bubbles: true, composed: true }));
     };
 
     /**
@@ -135,49 +180,48 @@ export default class Header extends LitElement {
 	/**
 	 * Set up all interval timers for metrics
 	 */
-	private setupTimers(): void {
-		// Initial update
-		this.updateSessionTime();
+    private setupTimers(): void {
+        // Initial update
+        this.updateSessionTime();
 
-		// Set intervals for regular updates with different frequencies
-		this.intervals = {
-			// Session time updates most frequently (every second)
-			sessionTime: window.setInterval(() => this.updateSessionTime(), this.timeUpdateInterval),
+        // Set intervals for regular updates with different frequencies
+        this.intervals = {
+            // Session time updates most frequently (every second)
+            sessionTime: window.setInterval(() => this.updateSessionTime(), this.timeUpdateInterval),
 
-			// Viewers update every 2 seconds
-			viewers: window.setInterval(() => {
-				// Update viewers with random increments
-				const randomViewerIncrement = Math.floor(Math.random() * 300);
-				this.viewers += randomViewerIncrement;
+            // Viewers update every 2 seconds
+            viewers: window.setInterval(() => {
+                // Update viewers with random increments
+                const randomViewerIncrement = Math.floor(Math.random() * 300);
+                this.viewers += randomViewerIncrement;
 
-				// Reset viewers if they exceed a max threshold
-				if (this.viewers > Header.MAX_VIEWERS) {
-					this.viewers = Header.MIN_VIEWERS;
-				}
-			}, this.updateInterval),
+                // Reset viewers if they exceed a max threshold
+                if (this.viewers > Header.MAX_VIEWERS) {
+                    this.viewers = Header.MIN_VIEWERS;
+                }
+            }, this.updateInterval),
 
-			// Followers update with a slight offset (every 3 seconds)
-			followers: window.setInterval(() => {
-				// Update followers with small random increments
-				const randomFollowerIncrement = Math.floor(Math.random() * 500);
-				this.followers += randomFollowerIncrement;
-			}, this.updateInterval + 1000),
+            // Followers update with a slight offset (every 3 seconds)
+            followers: window.setInterval(() => {
+                // Update followers with small random increments
+                const randomFollowerIncrement = Math.floor(Math.random() * 500);
+                this.followers += randomFollowerIncrement;
+            }, this.updateInterval + 1000),
 
-			// Bitrate updates with its own interval (every 3 seconds)
-			bitrate: window.setInterval(() => this.updateBitrate(), this.bitrateUpdateInterval)
-		};
+            // Bitrate updates with its own interval (every 3 seconds)
+            bitrate: window.setInterval(() => this.updateBitrate(), this.bitrateUpdateInterval)
+        };
+    }
 
-	}
+    /**
+     * Clear all timers to prevent memory leaks
+     */
+    private clearTimers(): void {
+        Object.values(this.intervals).forEach(clearInterval);
+        this.intervals = {};
+    }
 
-	/**
-	 * Clear all timers to prevent memory leaks
-	 */
-	private clearTimers(): void {
-		Object.values(this.intervals).forEach(clearInterval);
-		this.intervals = {};
-	}
-
-	/**
+    /**
 	 * Pad a number with a leading zero if needed
 	 */
 	private padZero(num: number): string {
@@ -197,7 +241,7 @@ export default class Header extends LitElement {
 	}
 
 	/**
-	 * Calculate the percentage for the progress bar based on current bitrate quality level
+	 * Calculate the percentage for the progress bar based on the current bitrate quality level
 	 */
 	private get bitratePercentage(): number {
 		const [minPercent, maxPercent] = this.qualityInfo.percentRange;
@@ -251,123 +295,117 @@ export default class Header extends LitElement {
 	/**
 	 * Render a standard metric item
 	 */
-	private renderMetricItem(label: string, value: string) {
-		return html`
-            <div class="sm-info-item">
-                <span class="sm-info-item__label">${label}</span>
-                <span class="sm-info-item__value">${value}</span>
+    private renderMetricItem(metric: IHeaderMetric) {
+        const isLarge = this.breakpoint === 'lg';
+        const value = this.getMetricValue(metric.key);
+
+        return html`
+            <div 
+                tabindex="0" 
+                aria-label="${metric.label}"
+                class="sm-info-item"
+                id="${metric.key}Value"
+            >
+                ${isLarge ? html`
+                    <span class="sm-info-item__label">${metric.label}</span>
+                ` : html`
+                    <igc-icon
+                        class="sm-info-item__icon" 
+                        name="${metric.iconName}" 
+                        collection="${metric.collection}">
+                    </igc-icon>
+                `}
+
+                ${metric.type === 'progress' ? html`
+                    <igc-linear-progress
+                            hide-label
+                            class="sm-info-item__value sm-info-item__value--progress"
+                            value="${this.bitratePercentage}">
+                    </igc-linear-progress>
+                ` : html`
+                    <span class="sm-info-item__value">${value}</span>
+                `}
             </div>
-		`;
-	}
 
-	/**
-	 * Render the bitrate metric with the progress bar
-	 */
-	private renderBitrateItem() {
-		// Convert to Mbps
-		const formattedBitrate = (this.bitrate / 1000).toFixed(1);
-		const percent = this.bitratePercentage;
+            ${metric.key === 'bitrate' ? html`
+                <igc-tooltip anchor="${metric.key}Value" with-arrow>
+                    Bitrate Quality: ${value} Mbps (${this.qualityInfo.label})
+                </igc-tooltip>
+            ` : nothing}
+        `;
+    }
 
-		return html`
-            <div class="sm-info-item" id="bitrateValue">
-                <span class="sm-info-item__label">Bitrate</span>
-                <igc-linear-progress
-                        hide-label
-                        class="sm-info-item__value sm-info-item__value--progress"
-                        value="${percent}">
-                </igc-linear-progress>
-            </div>
-            <igc-tooltip anchor="bitrateValue" with-arrow>
-	            Bitrate Quality: ${formattedBitrate} Mbps (${this.qualityInfo.label})
-            </igc-tooltip>
-		`;
-	}
-
-	/**
-	 * Render the metrics section
-	 */
-	private renderMetrics() {
-		return html`
+    /**
+     * Render the metrics section
+     */
+    private renderMetrics() {
+        return html`
             <div class="sm-header__info">
-                ${this.renderMetricItem('Session', this.sessionTime)}
-                ${this.renderMetricItem('Viewers', this.formatThousands(this.viewers))}
-                ${this.renderMetricItem('Followers', this.formatThousands(this.followers))}
-                ${this.renderBitrateItem()}
+                ${this.headerMetrics.map(metric => this.renderMetricItem(metric))}
             </div>
         `;
-	}
+    }
 
-	/**
-	 * Render the actions section
-	 */
-	private renderActions() {
-		return html`
-            <div class="sm-header__actions" slot="end">
-                <igc-input type="search" placeholder="Search">
-                    <igc-icon slot="prefix" name="search" collection="material"></igc-icon>
-                </igc-input>
-                ${this.renderNavigation()}
-                <igc-avatar src="${profileImage}" shape="circle" name="more_vert">
-                    <igc-icon name="user" collection="material"></igc-icon>
-                </igc-avatar>
-            </div>
-		`;
-	}
 
-	/**
+    /**
 	 * Render the logo section
 	 */
 	private renderLogo() {
+        const isSmall = this.breakpoint === 'sm';
         return html`
             <div class="sm-header__logo" slot="start">
+                ${isSmall ? html`
+                    <igc-icon-button
+                        class="sm-header__drawer-btn"
+                        variant="flat"
+                        aria-label="Open navigation"
+                        @click=${this.onToggleNavDrawerClick}
+                    >
+                        <igc-icon name="hamburger" collection="material"></igc-icon>
+                    </igc-icon-button>
+                ` : null}
+
                 <a href="#">
                     <igc-icon name="smanager" collection="material" class="sm-header__logomark"></igc-icon>
                     <h1 class="sm-header__logo-text">STREAM MANAGER</h1>
                 </a>
-                
+
                 <igc-icon-button
-                    id="resetBtn"
-                    variant="flat"
-                    ?disabled=${!this.layoutDirty}
-                    @click=${this.onResetLayoutClick}
-                    aria-label="Reset layout">
+                        id="resetBtn"
+                        variant="flat"
+                        ?disabled=${!this.layoutDirty}
+                        @click=${this.onResetAppClick}
+                        aria-label="Reset layout">
                     <igc-icon name="reset" collection="material"></igc-icon>
                 </igc-icon-button>
 
                 <igc-tooltip anchor="resetBtn" with-arrow>
-                    Reset Layout
+                    Reset App
                 </igc-tooltip>
             </div>
         `;
     }
 
 	/**
-	 * Render the navigation icons
-	 */
-	private renderNavigation() {
-		return html`
-            <nav class="sm-header__actions-nav">
-                ${ repeat(this.navbarActions, action => action.name, action => html`
-                    <a href="#" aria-label="${action.label}">
-                        <igc-icon name="${action.name}" collection="${action.collection}"></igc-icon>
-                    </a>
-                `)}
-            </nav>
-        `;
-	}
-
-	/**
 	 * Render the header component UI
 	 */
 	render() {
-		return html`
+        const isSmall = this.breakpoint === 'sm';
+        return html`
             <igc-navbar class="sm-header">
                 ${this.renderLogo()}
-                ${this.renderMetrics()}
-                ${this.renderActions()}
+
+                ${!isSmall ? html`
+                    ${this.renderMetrics()}
+                    <app-navbar-actions slot="end"></app-navbar-actions>
+                ` : nothing}
+
+                <igc-avatar tabindex="0" slot="end" src="${profileImage}" shape="circle" name="more_vert">
+                    <igc-icon name="user" collection="material"></igc-icon>
+                </igc-avatar>
             </igc-navbar>
         `;
-	}
+    }
 
 	static styles = unsafeCSS(styles);
 }

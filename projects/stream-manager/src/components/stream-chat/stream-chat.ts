@@ -194,6 +194,10 @@ export default class StreamChat extends LitElement {
         const text = this.extractText(e);
         if (!text) return;
         this.setDraftEmpty();
+
+        // User produced a message -> app is dirty
+        window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
+
         await this.sendBotReply();
     };
 
@@ -204,6 +208,9 @@ export default class StreamChat extends LitElement {
 
         const text = chat.draftMessage?.text?.trim() ?? '';
         if (!text) return;
+
+        // User explicitly sends -> app is dirty
+        window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
 
         const id = this.makeId();
         this.storeMeta(id, this.buildStaged('user', 'user', text, true));
@@ -457,19 +464,12 @@ export default class StreamChat extends LitElement {
         for (const s of preloadedMessages) this.appendStaged(s, false);
 
         // Stream staged messages gradually (abort-safe)
-        try {
-            for (const s of streamingMessages) {
-                await this.sleep(STREAM_STAGGER_MS, this.streamAbort.signal);
-                // Ensure streaming messages use the current real time, not any dummy/staged time
-                const sNow: StagedMsg = { ...s, time: this.nowISO() };
-                this.appendStaged(sNow, true);
-            }
-        } catch (err) {
-            if (!(err instanceof DOMException && err.name==='AbortError')) {
-                // eslint-disable-next-line no-console
-                console.error('Streaming failed:', err);
-            }
-        }
+        await this.startStreamingFlow();
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback?.();
+        window.addEventListener('reset-app-request', this.handleAppReset as EventListener);
     }
 
     disconnectedCallback(): void {
@@ -479,9 +479,53 @@ export default class StreamChat extends LitElement {
         super.disconnectedCallback();
     }
 
+    private handleAppReset = async () => {
+        // Abort any current streaming
+        this.streamAbort.abort();
+        this.resetAbort();
+
+        // Clear client-side state
+        this.messageData.clear();
+        this.newMessageIds.clear();
+
+        // If chat is not yet ready, do nothing; firstUpdated will initialize it
+        if (!this.chat) return;
+
+        // Reset UI state
+        this.chat.messages = [];
+        this.chat.draftMessage = { ...EMPTY_DRAFT };
+
+        // Preload historical messages (not marked as new)
+        for (const s of preloadedMessages) this.appendStaged(s, false);
+
+        // Restart staged streaming
+        this.startStreamingFlow().catch(() => {});
+
+        // Let the rest of the app know we are no longer dirty
+        window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: false } }));
+    };
+
+
+    private async startStreamingFlow(): Promise<void> {
+        try {
+            for (const s of streamingMessages) {
+                await this.sleep(STREAM_STAGGER_MS, this.streamAbort.signal);
+                const sNow: StagedMsg = { ...s, time: this.nowISO() };
+                this.appendStaged(sNow, true);
+            }
+        } catch (err) {
+            if (!(err instanceof DOMException && err.name === 'AbortError')) {
+                // eslint-disable-next-line no-console
+                console.error('Streaming failed:', err);
+            }
+        }
+    }
+
+
     render() {
         return html`
-            <igc-chat @igcMessageCreated=${ this.onUserMessage }></igc-chat>`;
+            <igc-chat @igcMessageCreated=${ this.onUserMessage }></igc-chat>
+        `;
     }
 
     static styles = unsafeCSS(styles);

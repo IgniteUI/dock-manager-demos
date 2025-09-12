@@ -7,7 +7,7 @@ import {
     CROWN, MUSIC_NOTE, TAG_FACE,
     VERIFIED, LOGO_TIKTOK, LOGO_INSTAGRAM, LOGO_YOUTUBE, LOGO_VIMEO,
     HEART, MONETIZATION, STAR, ETHERIUM, DIAMOND, RESET, REMOVE, SECURITY, SHIELD_MODE, CHAT_HISTORY, EMOTE_ONLY,
-    PERSON_CHECK,
+    PERSON_CHECK, HAMBURGER_MENU, SESSION, VIEWERS, FOLLOWERS, BITRATE,
 } from '../assets/icons/icons.ts';
 
 /**
@@ -17,6 +17,8 @@ export function registerAppIcons(): void {
 	// Nav toggle icons
 	registerIconFromText('back', BACK, 'material');
 	registerIconFromText('forward', FORWARD, 'material');
+	registerIconFromText('hamburger', HAMBURGER_MENU, 'material');
+
 
 	// Main navigation icons
 	registerIconFromText('home', HOME, 'material');
@@ -36,6 +38,12 @@ export function registerAppIcons(): void {
 	registerIconFromText('info', INFO, 'material');
 	registerIconFromText('inbox', INBOX, 'material');
 	registerIconFromText('user', USER, 'material');
+
+    // Header info block
+    registerIconFromText('session', SESSION, 'material');
+    registerIconFromText('viewers', VIEWERS, 'material');
+    registerIconFromText('followers', FOLLOWERS, 'material');
+    registerIconFromText('bitrate', BITRATE, 'material');
 
 	// 	Logo icons
 	registerIconFromText('smanager', SMANAGER, 'material');

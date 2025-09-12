@@ -1,6 +1,6 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
@@ -14,15 +14,23 @@ import {
 	IgcUnpinnedLocation,
 } from 'igniteui-dockmanager';
 import styles from './dock-manager.scss?inline';
+import {
+    Breakpoint,
+    responsiveService,
+} from '../../services/responsive.service.ts';
 
 // Initialize the dock manager custom elements
 defineCustomElements();
 
 @customElement('app-dock-manager')
 export default class AppDockManager extends LitElement {
-	// Define a property for the layout
-	@property({ type: Object })
-	private dockLayout: IgcDockManagerLayout = this.getDefaultLayout();
+    // Define a property for the layout
+    @property({ type: Object })
+    private dockLayout!: IgcDockManagerLayout;
+
+    // Add a version counter to force re-render
+    @state()
+    private layoutVersion = 0;
 
     // Marks when the initial dock layout pass is done
     private layoutInitialized = false;
@@ -30,14 +38,18 @@ export default class AppDockManager extends LitElement {
     // Suppress the next layoutChange that fires immediately after a programmatic reset
     private ignoreNextLayoutChange = false;
 
+    // Track the current breakpoint from the unified responsive service
+    private currentBreakpoint: Breakpoint = responsiveService.current;
+
+    private unsubscribeBp?: () => void;
+
     private onPaneClose = () => {
         if (!this.layoutInitialized) return;
-        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+        this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: true },
             bubbles: true,
             composed: true
         }));
-
     };
 
     private onLayoutChange = () => {
@@ -46,18 +58,17 @@ export default class AppDockManager extends LitElement {
             this.ignoreNextLayoutChange = false;
             return;
         }
-        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+        this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: true },
             bubbles: true,
             composed: true
         }));
     };
 
-
     public resetLayout = () => {
         this.ignoreNextLayoutChange = true;
         this.dockLayout = this.getDefaultLayout();
-        this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+        this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: false },
             bubbles: true,
             composed: true
@@ -65,22 +76,18 @@ export default class AppDockManager extends LitElement {
         // the layout remains initialized; only the immediate programmatic change is ignored
     };
 
-
-
     protected firstUpdated() {
         const dm = this.renderRoot.querySelector('igc-dockmanager') as HTMLElement | null;
         if (!dm) return;
 
+        // NO container observation: viewport only
         dm.addEventListener('paneClose', this.onPaneClose as EventListener);
         dm.addEventListener('paneClosed', this.onPaneClose as EventListener);
 
-        // Consume the very first layoutChange (initialization) once, then attach the real handler.
         const initHandler = () => {
             this.layoutInitialized = true;
             dm.addEventListener('layoutChange', this.onLayoutChange as EventListener);
-
-            // Ensure consumers start with a known state: not dirty
-            this.dispatchEvent(new CustomEvent('layout-dirty-change', {
+            this.dispatchEvent(new CustomEvent('app-dirty-change', {
                 detail: { dirty: false },
                 bubbles: true,
                 composed: true
@@ -88,86 +95,275 @@ export default class AppDockManager extends LitElement {
         };
         dm.addEventListener('layoutChange', initHandler as EventListener, { once: true });
 
-        // Listen for global reset requests (cross-shadow-safe)
-        window.addEventListener('reset-layout-request', this.resetLayout as EventListener);
+        window.addEventListener('reset-app-request', this.resetLayout as EventListener);
+
+        // Initial sync based on viewport
+        const w = window.innerWidth || 0;
+        const computed = responsiveService.compute(w);
+        if (!this.dockLayout || computed !== this.currentBreakpoint) {
+            this.currentBreakpoint = computed;
+            this.ignoreNextLayoutChange = true;
+            this.dockLayout = this.getDefaultLayout();
+            this.layoutVersion = (this.layoutVersion || 0) + 1;
+            this.requestUpdate();
+
+            // Ensure DM applies the new layout immediately
+            this.updateComplete.then(() => {
+                const dmEl = this.renderRoot.querySelector('igc-dockmanager') as any;
+                if (dmEl) dmEl.layout = this.dockLayout;
+            });
+
+            this.dispatchEvent(new CustomEvent('app-dirty-change', {
+                detail: { dirty: false },
+                bubbles: true,
+                composed: true
+            }));
+        }
+    }
+
+
+    private getDefaultLayout(): IgcDockManagerLayout {
+        const bp = this.currentBreakpoint ?? responsiveService.current;
+        switch (bp) {
+            case 'lg':
+                return this.getLargeLayout();
+            case 'md':
+                return this.getMediumLayout();
+            case 'sm':
+            default:
+                return this.getSmallLayout();
+        }
+    }
+
+    private getLargeLayout(): IgcDockManagerLayout {
+        return {
+            rootPane: {
+                type: IgcDockManagerPaneType.splitPane,
+                orientation: IgcSplitPaneOrientation.horizontal,
+                panes: [
+                    {
+                        type: IgcDockManagerPaneType.splitPane,
+                        orientation: IgcSplitPaneOrientation.vertical,
+                        size: 729,
+                        panes: [
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamPreview',
+                                header: 'Stream Preview',
+                                unpinnedSize: 700,
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            }
+                        ],
+                    },
+                    {
+                        type: IgcDockManagerPaneType.splitPane,
+                        orientation: IgcSplitPaneOrientation.vertical,
+                        size: 400,
+                        panes: [
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'activityFeed',
+                                header: 'Activity Feed',
+                                unpinnedSize: 378,
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'quickActions',
+                                header: 'Quick Actions',
+                                unpinnedSize: 400,
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamSchedule',
+                                header: 'Stream Schedule',
+                                unpinnedSize: 330,
+                                isPinned: false,
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                        ],
+                    },
+                    {
+                        type: IgcDockManagerPaneType.splitPane,
+                        orientation: IgcSplitPaneOrientation.vertical,
+                        size: 378,
+                        panes: [
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamChat',
+                                header: 'Stream chat',
+                                unpinnedLocation: IgcUnpinnedLocation.right,
+                                unpinnedSize: 344,
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+    }
+
+    private getMediumLayout(): IgcDockManagerLayout {
+        return {
+            rootPane: {
+                type: IgcDockManagerPaneType.splitPane,
+                orientation: IgcSplitPaneOrientation.horizontal,
+                panes: [
+                    {
+                        type: IgcDockManagerPaneType.splitPane,
+                        orientation: IgcSplitPaneOrientation.vertical,
+                        size: 700,
+                        panes: [
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamPreview',
+                                header: 'Stream Preview',
+                                unpinnedLocation: IgcUnpinnedLocation.right,
+                                size: 500
+                            },
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'quickActions', header: 'Quick Actions',
+                                unpinnedLocation: IgcUnpinnedLocation.right,
+                                size: 200
+                            },
+                        ],
+                    },
+                    {
+                        type: IgcDockManagerPaneType.splitPane,
+                        orientation: IgcSplitPaneOrientation.vertical,
+                        size: 420,
+                        panes: [
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamChat', header: 'Stream chat',
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'activityFeed', header: 'Activity Feed',
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                            {
+                                type: IgcDockManagerPaneType.contentPane,
+                                contentId: 'streamSchedule',
+                                header: 'Stream Schedule',
+                                isPinned: false,
+                                unpinnedSize: 290,
+                                unpinnedLocation: IgcUnpinnedLocation.right
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+    }
+
+    private getSmallLayout(): IgcDockManagerLayout {
+        return {
+            rootPane: {
+                type: IgcDockManagerPaneType.splitPane,
+                orientation: IgcSplitPaneOrientation.vertical,
+                useFixedSize: true,
+                panes: [
+                    {
+                        type: IgcDockManagerPaneType.contentPane,
+                        contentId: 'streamPreview',
+                        header: 'Stream Preview',
+                        unpinnedLocation: IgcUnpinnedLocation.right,
+                        size: 660
+                    },
+                    {
+                        type: IgcDockManagerPaneType.contentPane,
+                        contentId: 'streamChat',
+                        header: 'Stream Chat',
+                        unpinnedLocation: IgcUnpinnedLocation.right,
+                        size: 700
+                    },
+                    {
+                        type: IgcDockManagerPaneType.contentPane,
+                        contentId: 'activityFeed',
+                        header: 'Activity Feed',
+                        unpinnedLocation: IgcUnpinnedLocation.right,
+                        size: 450
+                    },
+                    {
+                        type: IgcDockManagerPaneType.contentPane,
+                        contentId: 'quickActions',
+                        header: 'Quick Actions',
+                        unpinnedLocation: IgcUnpinnedLocation.right,
+                        size: 420
+                    },
+                    {
+                        type: IgcDockManagerPaneType.contentPane,
+                        contentId: 'streamSchedule',
+                        header: 'Stream Schedule',
+                        unpinnedSize: 290,
+                        unpinnedLocation: IgcUnpinnedLocation.right,
+                        size: 400
+                    },
+                ],
+            },
+        };
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback?.();
+        // Subscribe to viewport-only changes
+        this.currentBreakpoint = responsiveService.current;
+        this.unsubscribeBp = responsiveService.addListener(({ current }: { current: Breakpoint }) => {
+            if (current === this.currentBreakpoint) return;
+            this.currentBreakpoint = current;
+            this.applyResponsiveLayout();
+        });
     }
 
     public disconnectedCallback() {
-        window.removeEventListener('reset-layout-request', this.resetLayout as EventListener);
+        window.removeEventListener('reset-app-request', this.resetLayout as EventListener);
+        if (this.unsubscribeBp) {
+            this.unsubscribeBp();
+            this.unsubscribeBp = undefined;
+        }
+        super.disconnectedCallback?.();
     }
 
-    /**
-	 * Returns the default layout configuration for the dock manager
-	 */
-	private getDefaultLayout(): IgcDockManagerLayout {
-		return {
-			rootPane: {
-				type: IgcDockManagerPaneType.splitPane,
-				orientation: IgcSplitPaneOrientation.horizontal,
-				panes: [
-					{
-						type: IgcDockManagerPaneType.splitPane,
-						orientation: IgcSplitPaneOrientation.vertical,
-						size: 723,
-						panes: [
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'streamPreview',
-								header: 'Stream Preview',
-								unpinnedSize: 713,
-								unpinnedLocation: IgcUnpinnedLocation.right
-							}
-						],
-					},
-					{
-						type: IgcDockManagerPaneType.splitPane,
-						orientation: IgcSplitPaneOrientation.vertical,
-						size: 378,
-						panes: [
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'activityFeed',
-								header: 'Activity Feed',
-								unpinnedSize: 378,
-								unpinnedLocation: IgcUnpinnedLocation.right
-							},
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'quickActions',
-								header: 'Quick Actions',
-								unpinnedSize: 378,
-								unpinnedLocation: IgcUnpinnedLocation.right
-							},
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'streamSchedule',
-								header: 'Stream Schedule',
-								isPinned: false,
-								unpinnedSize: 378,
-								unpinnedLocation: IgcUnpinnedLocation.right
-							},
-						],
-					},
-					{
-						type: IgcDockManagerPaneType.splitPane,
-						orientation: IgcSplitPaneOrientation.vertical,
-						size: 378,
-						panes: [
-							{
-								type: IgcDockManagerPaneType.contentPane,
-								contentId: 'streamChat',
-								header: 'Stream chat',
-								unpinnedLocation: IgcUnpinnedLocation.right,
-								unpinnedSize: 344,
-							},
-						],
-					},
-				],
-			},
-		};
-	}
 
-	render() {
+    private applyResponsiveLayout(): void {
+        console.log(`DockManager: applyResponsiveLayout() called for breakpoint ${this.currentBreakpoint}`);
+
+        // Programmatically switch to the baseline for the current breakpoint
+        this.ignoreNextLayoutChange = true;
+        try {
+            const oldLayout = this.dockLayout;
+            this.dockLayout = this.getDefaultLayout();
+
+            console.log(`DockManager: Layout changed from`, oldLayout, `to`, this.dockLayout);
+
+            // Force a complete re-render by adding a key that changes
+            this.layoutVersion = (this.layoutVersion || 0) + 1;
+            this.requestUpdate('dockLayout', oldLayout);
+
+            // Ensure the igc-dockmanager instance applies the new layout
+            this.updateComplete.then(() => {
+                const dm = this.renderRoot.querySelector('igc-dockmanager') as any;
+                if (dm) {
+                    dm.layout = this.dockLayout;
+                }
+            });
+
+            // This becomes the new default for this screen size; not dirty
+            this.dispatchEvent(new CustomEvent('app-dirty-change', {
+                detail: { dirty: false },
+                bubbles: true,
+                composed: true
+            }));
+        } finally {
+            // ignoreNextLayoutChange prevents onLayoutChange from marking dirty.
+        }
+    }
+
+
+    render() {
 		return html`
             <igc-dockmanager id="dockManager" class="app-dock-manager dark-theme" .layout=${ this.dockLayout }>
                 <div slot="streamPreview">

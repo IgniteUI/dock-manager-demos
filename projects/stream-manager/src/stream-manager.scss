@@ -2,7 +2,7 @@
 
 :host {
 	display: grid;
-	grid-template-rows: auto 1fr;
+	grid-template-rows: auto 1fr auto;
 	height: 100%;
 }
 
@@ -10,4 +10,5 @@
 	display: flex;
 	grid-row: 2;
 	position: relative;
+	overflow: hidden;
 }
