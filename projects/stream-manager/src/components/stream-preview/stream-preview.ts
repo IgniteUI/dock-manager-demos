@@ -35,7 +35,6 @@ import {
 import styles from './stream-preview.scss?inline';
 // ... existing code ...
 import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
-import foxGuitar from '../../assets/videos/fox-guitar.webm';
 import { repeat } from 'lit/directives/repeat.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { Breakpoint, responsiveService } from '../../services/responsive.service.ts';
@@ -72,7 +71,6 @@ export default class StreamPreview extends LitElement {
 
     /** Video source URL. Defaults to the bundled asset but can be overridden for testing. */
     @property({ type: String, attribute: 'src' })
-    videoSrc: string = foxGuitar;
 
     /** Internal flag: true while the video is still loading/decoding. */
     @state()
@@ -164,7 +162,7 @@ export default class StreamPreview extends LitElement {
                     </div>
 
                     <video
-                        src="${this.videoSrc}"
+                        src="https://dl.infragistics.com/marketing/Videos/fox-guitar-free.webm"
                         aria-label="Streamer video"
                         autoplay
                         loop
