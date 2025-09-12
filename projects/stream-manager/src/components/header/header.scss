@@ -21,19 +21,6 @@ igc-navbar::part(middle) {
 	justify-content: center;
 }
 
-igc-tooltip {
-	--text-color: var(--ig-gray-800);
-	--background: var(--ig-gray-50);
-}
-
-igc-tooltip::part(bottom) {
-	border-bottom-color: var(--ig-gray-100);
-}
-
-igc-tooltip::part(base) {
-	border: 1px solid var(--ig-gray-100);
-}
-
 igc-navbar::part(base) {
 	padding-inline: rem(12px);
 }
