@@ -10,7 +10,7 @@
  *
  * Accessibility:
  * - The media wrapper uses aria-busy to announce loading to assistive tech.
- * - Error message is marked with role="alert" for immediate announcement.
+ * - Error message is marked with role="alert" for an immediate announcement.
  * - A loader region is presentational and removed from the tree once ready.
  *
  * Usage:
@@ -33,7 +33,6 @@ import {
     IgcCircularProgressComponent,
 } from 'igniteui-webcomponents';
 import styles from './stream-preview.scss?inline';
-// ... existing code ...
 import { mockStreamPreview, IStreamPreviewData } from '../../data/stream-preview.ts';
 import { repeat } from 'lit/directives/repeat.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -54,7 +53,7 @@ defineComponents(
 /** Message shown in the loader while the video is initializing. */
 const LOADING_MESSAGE = 'Loading stream, please wait…';
 /** Message shown when the video element emits an error event. */
-const ERROR_MESSAGE = 'Sorry, we have technical difficulties, please try again later.';
+const ERROR_MESSAGE = 'Sorry, we have technical difficulties loading the stream, please wait a moment or refresh the page.'
 /** Label displayed when the stream is live. */
 const LIVE_LABEL = 'LIVE';
 /** Label appended after the followers value. */
