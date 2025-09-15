@@ -1,19 +1,199 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+  tags:
+    include:
+    - '*'
 
-pool:
-  vmImage: ubuntu-latest
+# This pipeline is meant to build & deploy upon tagging. It's not meant to be a part of PR validation.
+pr: none
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+parameters:
+- name: isVerbose
+  displayName: 'Get verbose output from steps - where configurable'
+  type: boolean
+  default: false
+- name: shouldCleanPostExecution
+  displayName: 'Clean all pipeline dirs after the pipeline finishes?'
+  type: boolean
+  default: true
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
+name: $(Year:yyyy).$(Month).$(DayOfMonth)-r$(Rev:.r)
+
+stages:
+- stage: Build
+  pool:
+    vmImage: ubuntu-latest
+
+    demands: npm
+  jobs:
+  - job: BuildSamples
+    steps:
+      - checkout: 'self' 
+        clean: true
+
+      - task: NodeTool@0
+        displayName: 'Install Node'
+        inputs:
+          versionSource: 'spec'
+          versionSpec: '20.x'
+
+      - task: Bash@3
+        displayName: 'Create download artifact per sample (Shell)'
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Define the root path where projects are located
+            rootPath="$(Build.SourcesDirectory)/projects"
+            
+            # Get all first-level subdirectories in the specified root path
+            subdirectories=$(find "$rootPath" -mindepth 1 -maxdepth 1 -type d)
+            
+            for subdirectory in $subdirectories; do
+                # Extract the directory name from the path
+                dirName=$(basename "$subdirectory")
+
+                # Give each sample a version in its package.json file - for traceability
+                cd "$subdirectory"
+                echo "Calling npm version command"
+                npm version $(Build.BuildNumber) --no-git-tag-version
+
+                # Check if the directory name is already camel-case
+                if [[ "$dirName" =~ ^[A-Z]+[a-z]+([A-Z][a-z]*)*$ ]]; then
+                    # If already camel-case, print it as is
+                    echo "$dirName"
+                else
+                    # Convert to camel-case (capitalize first letters and remove hyphens)
+                    dirName=$(echo "$dirName" | sed -E 's/(^|-)([a-z])/\U\2/g')
+
+                fi
+                
+                echo "Processing directory: $dirName"
+                
+                # Define the name for the zip file
+                zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_DockManager_${dirName}_Source.zip"
+                echo "Creating ZIP: $zipName"
+                
+                # Compress the directory into a ZIP file
+                (cd "$subdirectory" && zip -r "$zipName" .)
+            done
+            
+            echo "All sample projects have been compressed and saved to the artifacts directory."
+
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Samples Sources zips'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'samplesSourcesZips'
+          publishLocation: 'pipeline'
+
+
+      - task: Npm@1
+        displayName: 'Register licensed npm registry in .npmrc'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: 'custom'
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'config -L project set @infragistics:registry=https://packages.infragistics.com/npm/js-licensed/'
+
+      - task: npmAuthenticate@0
+        displayName: '[IG Production ProGet] npm authenticate'
+        inputs:
+          workingFile: '$(Build.SourcesDirectory)/.npmrc'
+          customEndpoint: 'public proget'
+
+      - task: Npm@1
+        displayName: 'Install Ignite UI CLI globally'
+        inputs:
+          verbose: ${{ parameters.isVerbose }}
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          customCommand: 'install -g igniteui-cli'
+
+      - task: Bash@3
+        displayName: 'Run Ignite UI Upgrade in Root and All Project Subdirectories'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "Running Ignite UI package upgrade at root level..."
+            npx ig upgrade-packages --skip-install
+
+            echo "Running Ignite UI package upgrade in all project subdirectories..."
+            for dir in $(Build.SourcesDirectory)/projects/*/; do
+              if [ -d "$dir" ]; then
+                echo "Processing: $dir"
+                (cd "$dir" && npx ig upgrade-packages --skip-install)
+              fi
+            done
+
+      - task: Bash@3
+        displayName: "Use licensed fox video from the CDN"
+        inputs:
+          targetType: inline
+          script: |
+            set -euo pipefail
+
+            # Find .ts and .tsx files containing the string
+            matches=$(grep -rl --include="*.ts" --include="*.tsx" "fox-guitar-free.webm" . || true)
+
+            if [ -z "$matches" ]; then
+              echo "❌ No occurrences of 'fox-guitar-free.webm' found in .ts/.tsx files."
+              exit 1
+            fi
+
+            echo "✅ Found occurrences in:"
+            echo "$matches"
+
+            # Replace in-place
+            echo "$matches" | xargs sed -i 's/fox-guitar-free\.webm/fox-guitar.webm/g'
+
+      - task: Bash@3
+        displayName: 'Replace igniteui-dockmanager imports with licensed ones'
+        inputs:
+          targetType: 'inline'
+          script: |
+            set -eo pipefail
+            echo "Replacing igniteui-dockmanager imports with @infragistics equivalents..."
+
+            find . -type f \( -name "*.ts" -o -name "*.tsx" \) ! -path "*/node_modules/*" -print0 |
+            while IFS= read -r -d '' file; do
+              echo "Processing $file"
+              sed -i -E \
+                -e 's/([[:space:]]*(from|import)[[:space:]]+["'\''])(igniteui-dockmanager[^"'\'']*)(["'\''])/\1@infragistics\/\3\4/g' \
+                "$file"
+            done
+
+            echo "All references updated."
+
+      - script: |
+          echo "Copying root .npmrc into all project folders..."
+          for d in $(Build.SourcesDirectory)/projects/*; do
+            cp "$(Build.SourcesDirectory)/.npmrc" "$d/.npmrc"
+          done
+        displayName: "Copy .npmrc to projects"
+
+      - task: Npm@1
+        displayName: 'Npm install'
+        inputs:
+          workingDir: '$(Build.SourcesDirectory)'
+          command: 'install'
+
+      - task: Npm@1
+        displayName: 'Build all projects'
+        inputs:
+          command: custom
+          workingDir: '$(Build.SourcesDirectory)'
+          verbose: ${{ parameters.isVerbose }}
+          customCommand: 'run build'
+          
+
+      - task: PublishPipelineArtifact@1
+
+        #NB: For now we are intentionally distributing the stream manager only
+        displayName: 'Publish app'
+        inputs:
+          targetPath: '$(Build.SourcesDirectory)/dist'
+          artifact: 'dist'
+          publishLocation: 'pipeline'
+
+      - ${{ if eq(parameters.shouldCleanPostExecution, true) }}:
+        - task: PostBuildCleanup@4

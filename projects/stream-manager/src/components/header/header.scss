@@ -1,0 +1,101 @@
+@use 'igniteui-theming' as *;
+
+
+igc-tooltip {
+	--text-color: var(--ig-gray-800);
+	--background: var(--ig-gray-50);
+}
+
+igc-tooltip::part(bottom) {
+	border-bottom-color: var(--ig-gray-100);
+}
+
+igc-tooltip::part(base) {
+	border: 1px solid var(--ig-gray-100);
+}
+
+.sm-header {
+	--background: var(--sm-special-black);
+	--border-color: var(--sm-border-color);
+	
+	gap: rem(16px);
+	
+	@media only screen and (max-width: 1000px) {
+		padding-inline: 0;
+	}
+	
+	@media only screen and (min-width: 950px) {
+		position: sticky;
+		top: 0;
+		z-index: 9999;
+	}
+	
+	@media only screen and (max-width: 950px) {
+		--ig-avatar-size: #{rem(32px)};
+	}
+}
+
+igc-navbar::part(middle) {
+	justify-content: center;
+}
+
+igc-navbar::part(base) {
+	padding-inline: rem(12px);
+}
+
+.sm-header__logo,
+.sm-header__actions,
+.sm-header__actions-nav {
+	display: flex;
+	align-items: center;
+}
+
+.sm-header__logo {
+	display: flex;
+	align-items: center;
+	gap: rem(8px);
+	
+	igc-icon-button {
+		--ig-size: 1;
+		--foreground: var(--sm-dark-purple);
+		--disabled-foreground: var(--ig-gray-100);
+	}
+	
+	.sm-header__drawer-btn {
+		--foreground: var(--gray-900-contrast);
+		--hover-foreground: var(--sm-light-purple);
+	}
+	
+	a  {
+		--ig-size: 3;
+		
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		gap: rem(8px);
+		
+		&:focus-visible {
+			outline: rem(1px) solid var(--sm-outline-color);
+		}
+	}
+}
+
+igc-avatar {
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
+}
+.sm-header__logomark {
+	width: rem(24px);
+	height: rem(24px);
+	fill: var(--ig-secondary-900);
+	color: var(--sm-light-purple);
+}
+
+.sm-header__logo-text {
+	color: var(--ig-gray-900);
+	font-size: rem(14px);
+	text-transform: uppercase;
+	font-weight: 700;
+	white-space: nowrap;
+}

@@ -1,0 +1,8 @@
+@use 'reset';
+@forward 'igniteui-theming';
+@use 'igniteui-webcomponents/themes/dark/indigo.css' as *;
+@use 'igniteui-theming/sass/typography/presets/indigo' as *;
+@use 'igniteui-theming/sass/elevations/presets' as *;
+@use 'igniteui-theming/sass/color/presets/dark/indigo' as *;
+@use 'layout';
+@use 'shared';

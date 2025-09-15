@@ -1,0 +1,90 @@
+@use 'igniteui-theming' as *;
+
+:host {
+	grid-row: 2;
+}
+
+igc-tooltip {
+	--text-color: var(--ig-gray-800);
+	--background: var(--ig-gray-50);
+}
+
+igc-tooltip::part(bottom) {
+	border-bottom-color: var(--ig-gray-100);
+}
+
+igc-tooltip::part(base) {
+	border: 1px solid var(--ig-gray-100);
+}
+
+.sm-info-item {
+	display: flex;
+	align-items: center;
+}
+
+.sm-header__info {
+	@include type-style(body-2);
+	
+	display: grid;
+	grid-template-columns: repeat(4, 145px);
+	justify-content: center;
+	gap: rem(8px);
+	
+	
+	@media only screen and (max-width: 960px) {
+		height: rem(56px);
+	}
+	
+	@media only screen and (max-width: 1280px) {
+		background: var(--sm-special-black);
+		padding-inline: rem(16px);
+		gap: rem(16px);
+		justify-content: space-evenly;
+		grid-template-columns: repeat(4, min-content);
+		
+		igc-icon {
+			--ig-size: 1;
+		}
+	}
+}
+
+.sm-info-item {
+	font-size: rem(14px);
+	font-weight: 400;
+	padding: rem(8px) rem(16px);
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
+	
+	@media only screen and (max-width: 1280px) {
+		padding-inline: 0;
+	}
+}
+
+.sm-info-item__label {
+	color: var(--ig-gray-300);
+}
+
+.sm-info-item__icon {
+	padding: rem(3px);
+}
+
+.sm-info-item__value {
+	color: var(--ig-gray-900);
+	padding-inline: rem(4px);
+	padding-block-start: rem(3px);
+}
+
+.sm-info-item__value--progress {
+	--track-size: #{rem(4px)};
+	--track-border-radius: 0;
+	--track-color: #{var(--ig-gray-700)};
+	--fill-color-default: #{var(--sm-dark-purple)};
+	
+	min-width: rem(80px);
+	
+	@media only screen and (max-width: 960px) {
+		min-width: rem(50px);
+	}
+}

@@ -1,0 +1,76 @@
+@use 'igniteui-theming' as *;
+
+.sm-activity-feed {
+	--border-width: 0;
+	--border-radius: 0;
+
+	
+	padding: rem(16px);
+}
+
+.sm-activity-feed__item {
+	padding-block: rem(8px);
+	
+	&--tipped,
+	&--contributed {
+		--ig-list-item-thumbnail-color: var(--sm-activity-special);
+		--ig-list-item-thumbnail-color-hover: var(--sm-activity-special);
+		--ig-list-item-thumbnail-color-active: var(--sm-activity-special);
+	}
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.sm-activity-feed__header {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: space-between;
+	
+	igc-button[variant="flat"] {
+		--foreground: var(--sm-special-white);
+	}
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.sm-activity-feed__message {
+	font-size: rem(12px);
+	color: var(--ig-gray-300);
+	margin-block-start: rem(2px);
+}
+
+.sm-activity-feed__username {
+	font-size: rem(16px);
+	line-height: rem(24px);
+	margin: 0;
+	font-weight: 400;
+}
+
+.sm-activity-feed__filter {
+	@include type-style(button);
+	
+	color: var(--sm-dark-purple);
+	text-decoration: none;
+	background: transparent;
+	border: transparent;
+	
+	&:focus-visible {
+		outline: rem(1px) solid var(--sm-outline-color);
+	}
+}
+
+.sm-activity-feed__more-button {
+	--foreground: var(--sm-special-white);
+	--hover-foreground: var(--sm-special-white);
+	--active-foreground: var(--sm-special-white);
+	--focus-foreground: var(--sm-special-white);
+}

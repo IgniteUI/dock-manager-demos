@@ -1,0 +1,53 @@
+@use 'igniteui-theming' as *;
+
+.sm-nav {
+	--background: var(--sm-special-black);
+	--border-color: var(--sm-border-color);
+	--item-hover-background: var(--ig-gray-50);
+	--item-hover-icon-color: var(--ig-gray-900);
+	--item-active-background: var(--sm-dark-purple);
+	
+	height: 100%;
+	
+	&::part(mini),
+	&::part(main) {
+		padding-block-start: 0;
+	}
+}
+
+igc-nav-drawer::part(overlay) {
+	--background-color: rgba(0, 0, 0, 0.7);
+	z-index: 4;
+	backdrop-filter: blur(10px);
+}
+
+.sm-nav__header-item {
+	@include type-style(body-2);
+	
+	justify-content: space-between;
+	
+	&::after {
+		content: '';
+		position: absolute;
+		inset-inline-start: rem(-16px);
+		inset-block-end: 0;
+		border-block-end: rem(1px) solid var(--sm-border-color);
+		width: calc(100% + #{rem(32px)});
+	}
+}
+
+.sm-nav__header-item--toggle {
+	cursor: pointer;
+	padding: rem(16px);
+	margin-block-end: rem(16px);
+	
+	&:hover {
+		igc-icon {
+			--color: #{var(--ig-primary-300)}
+		}
+	}
+}
+
+.sm-nav__title {
+	user-select: none;
+}

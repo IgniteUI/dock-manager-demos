@@ -1,0 +1,33 @@
+{
+  "name": "stream-manager",
+  "private": true,
+  "version": "0.0.0",
+  "description": "This project provides example of Dock Manager Web component",
+  "author": "Infragistics",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"npm run watch-theme\"",
+    "build": "npm run compile-theme && tsc && vite build",
+    "compile-theme": "sass --load-path=node_modules --quiet-deps src/styles/theme.scss:src/styles/theme.css",
+    "watch-theme": "sass --watch --load-path=node_modules --quiet-deps src/styles:src/styles src/styles/theme.scss:src/styles/theme.css"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.13",
+    "@lit-labs/motion": "^1.0.9",
+    "dompurify": "^3.2.6",
+    "igniteui-dockmanager": "^1.17.0",
+    "igniteui-theming": "v19.3.0-beta.3",
+    "igniteui-webcomponents": "6.3.0-alpha.1",
+    "lit": "^3.2.1",
+    "marked": "^12.0.0",
+    "marked-shiki": "^1.2.1",
+    "sass": "^1.89.2",
+    "shiki": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "concurrently": "^9.2.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1"
+  }
+}

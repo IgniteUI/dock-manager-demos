@@ -1,0 +1,118 @@
+@use 'igniteui-theming' as *;
+@use '../../styles/palette' as *;
+
+:host {
+	display: block;
+	padding: var(--sm-dock-manager-gutter);
+	width: calc(100% - (var(--sm-dock-manager-gutter) * 2));
+	height: calc(100% - (var(--sm-dock-manager-gutter) * 2));;
+	
+	@media only screen and (max-width: 950px) {
+		overflow: hidden;
+		
+		--sm-dock-manager-gutter: 0;
+	}
+}
+
+.app-dock-manager {
+	--igc-button-text: var(--ig-gray-500);
+	--igc-dock-background: var(--ig-gray-50);
+	--igc-pane-header-text: var(--ig-gray-500);
+	--igc-pane-header-background: var(--ig-gray-50);
+	--igc-pane-content-background: #000;
+	--igc-pane-content-text: #fff;
+	--igc-splitter-handle: var(--ig-gray-300);
+	--igc-splitter-background: var(--ig-gray-100);
+	--igc-floating-pane-border-color: var(--ig-gray-50);
+	--igc-joystick-icon-color: var(--ig-primary-100);
+	--igc-joystick-icon-color-active: orange;
+	--igc-joystick-background: var(--ig-gray-50);
+	--igc-joystick-background-active: black;
+	--igc-joystick-border-color: var(--ig-primary-700);
+	--igc-drop-shadow-background: #{color($sm-palette, primary, 500, .3)};
+	--igc-tab-background: var(--ig-secondary-900);
+	--igc-tab-border-color: var(--ig-secondary-900);
+	--igc-tab-text: var(--ig-gray-400);
+	--igc-tab-background-active: var(--ig-secondary-900);
+	--igc-tab-border-color-active: var(--ig-secondary-900);
+	--igc-tab-text-active: var(--ig-gray-900);
+	--igc-active-color: var(--ig-gray-200);
+	
+	width: 100%;
+	height: 100%;
+	
+	> * {
+		height: 100%;
+	}
+}
+
+::part(unpinned-pane-header) {
+	padding-inline: rem(8px);
+	
+	--igc-pinned-header-background: var(--ig-secondary-900);
+	--igc-pinned-header-text: var(--ig-gray-400);
+	
+	box-shadow: inset rem(2px) 0 0 0 var(--ig-gray-300);
+	
+	&:hover,
+	&:focus {
+		--igc-pinned-header-background: var(--ig-secondary-900);
+		--igc-pinned-header-text: var(--ig-gray-900);
+	}
+}
+
+::part(unpinned-pane-header active) {
+	--igc-pinned-header-background: var(--ig-secondary-900);
+	--igc-pinned-header-text: var(--ig-gray-400);
+	--igc-text-color: var(--ig-gray-900);
+	
+	box-shadow: inset rem(2px) 0 0 0 #{var(--sm-light-purple)};
+}
+
+::part(tab-header active),
+::part(unpinned-pane-header active),
+::part(pane-header active) {
+	--igc-active-color: #{var(--sm-light-purple)};
+}
+
+::part(splitter) {
+	flex: 0 0 rem(8px);
+}
+
+::part(splitter-base) {
+	&:focus-within {
+		background: var(--ig-gray-100);
+	}
+}
+
+::part(splitter-ghost) {
+	background: var(--ig-gray-200);
+}
+
+::part(pane-header-unpin-button),
+::part(pane-header-maximize-button),
+::part(pane-header-close-button),
+::part(pane-header-pin-button),
+{
+	--igc-accent-color: transparent;
+	outline-color: var(--sm-outline-color);
+}
+
+::part(docking-preview) {
+	backdrop-filter: blur(3px);
+}
+
+.reset-fab {
+	--ig-size: 1;
+	--background: var(--ig-gray-50);
+	--border-color: var(--sm-dark-purple);
+	
+	position: fixed;
+	inset-block-end: rem(20px);
+	inset-inline-start: rem(108px);
+	
+	igc-icon {
+		--size: 12px;
+		padding: 4px;
+	}
+}

@@ -1,0 +1,11 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	height: 100%;
+	color: var(--sm-special-white);
+	background: var(--ig-gray-100);
+	overflow: hidden;
+}

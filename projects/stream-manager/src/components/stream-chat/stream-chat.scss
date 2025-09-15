@@ -1,0 +1,40 @@
+@use 'igniteui-theming' as *;
+
+:host {
+	overflow-x: hidden;
+	--ig-button-background: var(--sm-light-purple);
+	
+	igc-chat {
+		height: 100%;
+		
+		--background: var(--ig-gray-900-contrast);
+		--chat-input-border: transparent;
+		--ig-textarea-border-color: #{var(--ig-gray-300)};
+		--ig-textarea-placeholder-color: #{var(--ig-gray-300)};
+		--message-background: trasparent;
+		--message-color: #fff;
+	}
+}
+
+igc-chat::part(chat-messages) {
+	padding-block-end: 0;
+}
+
+igc-chat::part(message-item) {
+	margin-inline-start: 0;
+	margin-inline-end: auto;
+}
+
+igc-chat::part(message-container ) {
+	padding: 0 !important;
+}
+
+igc-chat::part(input-container) {
+	margin: 0;
+	padding-block: 0;
+}
+
+igc-chat::part(text-input) {
+	--textarea-height: #{rem(38px)}
+}
+

@@ -1,0 +1,20 @@
+@use 'styles/theme' as *;
+
+:host {
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	height: 100%;
+	overflow: hidden;
+}
+
+.sm-main {
+	display: flex;
+	grid-row: 2;
+	
+	@media (max-width: 960px) {
+		flex-direction: column;
+	}
+	
+	position: relative;
+	overflow: hidden;
+}

@@ -1,0 +1,76 @@
+@use 'igniteui-theming' as *;
+
+.sm-actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
+	gap: rem(8px);
+	
+	igc-input {
+		--input-prefix-background: var(--ig-gray-50);
+		--input-prefix-background--filled: var(--ig-gray-50);
+		--input-prefix-background--focused: var(--ig-gray-50);
+		--border-color: var(--ig-gray-100);
+		--border-color--filled: var(--ig-gray-100);
+		
+		margin-inline-end: rem(8px);
+	}
+	
+	a {
+		display: inline-flex;
+		color: var(--ig-gray-900);
+		padding: rem(3px);
+		
+		&:hover,
+		&:focus {
+			color: var(--ig-primary-300);
+		}
+		
+		&:focus-visible {
+			color: var(--ig-gray-900);
+			outline: rem(1px) solid var(--sm-outline-color);
+		}
+	}
+	
+	@media only screen and (max-width: 950px) {
+		max-height: rem(56px);
+		grid-row: 3;
+		inset-block-end: 0;
+		inset-inline-start: 0;
+		min-width: 100%;
+		background: var(--ig-surface-500);
+		border-top: 1px solid var(--sm-border-color);
+		padding: rem(12px);
+		justify-content: space-evenly;
+		
+		a {
+			padding: 0;
+		}
+	}
+}
+
+.sm-actions__action {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	
+	@media only screen and (max-width: 950px) {
+		align-self: center;
+	}
+}
+
+.sm-actions__badge {
+	--background-color: var(--sm-light-purple);
+	--icon-color: var(--ig-gray-50);
+	--size: #{rem(15px)};
+	
+	position: absolute;
+	inset-block-start: rem(-4px);
+	inset-inline-end: rem(-4px);
+	z-index: 1;
+}
+
+.sm-actions__action--active {
+	color: var(--sm-light-purple);
+}

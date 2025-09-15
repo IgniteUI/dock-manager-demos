@@ -1,0 +1,65 @@
+@use 'sass:map';
+@use 'sass:list';
+@forward 'igniteui-theming';
+@use 'igniteui-webcomponents/themes/dark/bootstrap.css' as *;
+@use 'igniteui-theming' as ig;
+@use 'igniteui-theming/sass/typography/presets/bootstrap' as *;
+@use 'igniteui-theming/sass/elevations/presets' as *;
+@use 'igniteui-theming/sass/color/presets/dark/bootstrap' as *;
+@use 'global' as *;
+@use 'palette' as *;
+
+[dir='rtl'],
+:root:dir(rtl),
+:dir(rtl) {
+	--ig-dir: -1;
+}
+
+@include ig.palette($sm-palette);
+@include ig.typography($font-family: $typeface, $type-scale: $type-scale);
+
+:root {
+	--ig-spacing: 1;
+	--ig-spacing-inline: 1;
+	--ig-spacing-block: 1;
+	--ig-size-small: 1;
+	--ig-size-medium: 2;
+	--ig-size-large: 3;
+	
+	--ig-font-family: 'Roboto', sans-serif;
+	--sm-dock-manager-gutter: #{ig.rem(8px)};
+	
+	--sm-special-black: #000;
+	--sm-special-white: #{ig.adaptive-contrast(var(--sm-special-black))};
+	--sm-border-color: var(--ig-gray-100);
+	
+	/* GLOBAL IGC-LIST THEME */
+	--ig-list-background: var(--sm-special-black);
+	--ig-list-item-background-hover: var(--ig-gray-50);
+	--ig-list-foreground: var(--sm-special-white);
+	--ig-list-item-background: var(--sm-special-black);
+	--ig-list-header-background: var(--sm-special-black);
+	--ig-list-header-foreground: var(--sm-special-white);
+	--ig-list-item-foreground: var(--sm-special-white);
+	--ig-avatar-background: var(--ig-primary-500);
+	--ig-list-item-subtitle-color: var(--ig-gray-300);
+	--ig-list-item-subtitle-color-hover: var(--ig-gray-300);
+	--ig-list-item-thumbnail-color: var(--sm-special-purple);
+	--ig-list-item-thumbnail-color-hover: var(--sm-special-purple);
+	--ig-list-item-thumbnail-color-active: var(--sm-special-purple);
+	
+	--ig-scrollbar-track-background: #{var(--ig-gray-50)};
+	--ig-scrollbar-thumb-background: #{var(--ig-gray-200)};
+	
+	// ACTIVITY
+	--sm-dim-purple: #{list.nth(ig.$brushes-regular, 2)};
+	--sm-activity-special: #{list.nth(ig.$brushes-regular, 4)};
+	--sm-special-purple: #{list.nth(ig.$brushes-color-blind, 5)};
+	--sm-outline-color: var(--ig-primary-300);
+	
+	// CUSTOM COLORS
+	--sm-light-purple: #DA64FF;
+	--sm-dark-purple: #9C27B0;
+}
+
+

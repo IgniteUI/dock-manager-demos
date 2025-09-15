@@ -1,0 +1,29 @@
+@use 'igniteui-theming' as *;
+@use 'igniteui-theming/sass/typography' as *;
+
+.sm-schedule-list {
+	--ig-size: 3;
+	--border-width: 0;
+	--border-radius: 0;
+	
+	padding: rem(16px);
+	
+}
+
+.sm-schedule-item {
+	min-height: rem(40px);
+	
+	&:focus,
+	&:focus-within,
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+.sm-schedule-item__label,
+.sm-schedule-item__value {
+	@include type-style(overline);
+	
+	--ig-overline-font-size: #{rem(12px)};
+}
+

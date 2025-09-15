@@ -1,0 +1,23 @@
+@use 'igniteui-theming' as *;
+
+igc-nav-drawer {
+	height: 100%;
+}
+
+igc-navbar::part(base) {
+	min-height: calc(var(--dm-navbar-height) - #{rem(1px)});
+}
+
+.dm-app-title {
+	display: flex;
+	gap: rem(16px);
+	align-items: center;
+	
+	igc-icon {
+		--ig-size: 2;
+	}
+}
+
+.dm-app-title__text {
+	font-size: rem(16px);
+}
