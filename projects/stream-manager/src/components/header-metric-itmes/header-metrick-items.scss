@@ -17,11 +17,6 @@ igc-tooltip::part(base) {
 	border: 1px solid var(--ig-gray-100);
 }
 
-.sm-info-item {
-	display: flex;
-	align-items: center;
-}
-
 .sm-header__info {
 	@include type-style(body-2);
 	
@@ -49,6 +44,10 @@ igc-tooltip::part(base) {
 }
 
 .sm-info-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: rem(4px);
 	font-size: rem(14px);
 	font-weight: 400;
 	padding: rem(8px) rem(16px);
@@ -70,10 +69,16 @@ igc-tooltip::part(base) {
 	padding: rem(3px);
 }
 
+.sm-info-item__label,
+.sm-info-item__value {
+	line-height: 1;
+}
+
 .sm-info-item__value {
 	color: var(--ig-gray-900);
-	padding-inline: rem(4px);
-	padding-block-start: rem(3px);
+	@media only screen and (max-width: 1280px) {
+		padding-block-start: rem(3px);
+	}
 }
 
 .sm-info-item__value--progress {

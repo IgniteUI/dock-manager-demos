@@ -10,11 +10,10 @@
 .sm-main {
 	display: flex;
 	grid-row: 2;
+	position: relative;
+	overflow: hidden;
 	
 	@media (max-width: 960px) {
 		flex-direction: column;
 	}
-	
-	position: relative;
-	overflow: hidden;
 }

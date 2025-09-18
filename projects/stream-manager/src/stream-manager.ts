@@ -26,7 +26,6 @@ export default class StreamManager extends LitElement {
         this.unsubscribeBp = responsiveService.addListener(({ current }) => {
             if (this.breakpoint !== current) {
                 this.breakpoint = current;
-                this.requestUpdate();
             }
         });
     }

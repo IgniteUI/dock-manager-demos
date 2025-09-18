@@ -1,6 +1,6 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
@@ -27,10 +27,6 @@ export default class AppDockManager extends LitElement {
     // Define a property for the layout
     @property({ type: Object })
     private dockLayout!: IgcDockManagerLayout;
-
-    // Add a version counter to force re-render
-    @state()
-    private layoutVersion = 0;
 
     // Marks when the initial dock layout pass is done
     private layoutInitialized = false;
@@ -93,31 +89,6 @@ export default class AppDockManager extends LitElement {
             }));
         };
         dm.addEventListener('layoutChange', initHandler as EventListener, { once: true });
-
-        window.addEventListener('reset-app-request', this.resetLayout as EventListener);
-
-        // Initial sync based on viewport
-        const w = window.innerWidth || 0;
-        const computed = responsiveService.compute(w);
-        if (!this.dockLayout || computed !== this.currentBreakpoint) {
-            this.currentBreakpoint = computed;
-            this.ignoreNextLayoutChange = true;
-            this.dockLayout = this.getDefaultLayout();
-            this.layoutVersion = (this.layoutVersion || 0) + 1;
-            this.requestUpdate();
-
-            // Ensure DM applies the new layout immediately
-            this.updateComplete.then(() => {
-                const dmEl = this.renderRoot.querySelector('igc-dockmanager') as any;
-                if (dmEl) dmEl.layout = this.dockLayout;
-            });
-
-            this.dispatchEvent(new CustomEvent('app-dirty-change', {
-                detail: { dirty: false },
-                bubbles: true,
-                composed: true
-            }));
-        }
     }
 
     private getDefaultLayout(): IgcDockManagerLayout {
@@ -336,6 +307,31 @@ export default class AppDockManager extends LitElement {
             this.currentBreakpoint = current;
             this.applyResponsiveLayout();
         });
+
+        // Initial sync based on viewport BEFORE first render
+        const w = window.innerWidth || 0;
+        const computed = responsiveService.compute(w);
+        if (!this.dockLayout || computed !== this.currentBreakpoint) {
+            this.currentBreakpoint = computed;
+            this.ignoreNextLayoutChange = true;
+            this.dockLayout = this.getDefaultLayout();
+            // No explicit requestUpdate() or version counter needed
+
+            // Ensure DM applies the new layout after the first render
+            this.updateComplete.then(() => {
+                const dmEl = this.renderRoot.querySelector('igc-dockmanager') as any;
+                if (dmEl) dmEl.layout = this.dockLayout;
+            });
+
+            this.dispatchEvent(new CustomEvent('app-dirty-change', {
+                detail: { dirty: false },
+                bubbles: true,
+                composed: true
+            }));
+        }
+
+        // Handle reset requests (moved from firstUpdated)
+        window.addEventListener('reset-app-request', this.resetLayout as EventListener);
     }
 
     public disconnectedCallback() {
@@ -347,21 +343,13 @@ export default class AppDockManager extends LitElement {
         super.disconnectedCallback?.();
     }
 
-
     private applyResponsiveLayout(): void {
         console.log(`DockManager: applyResponsiveLayout() called for breakpoint ${this.currentBreakpoint}`);
 
         // Programmatically switch to the baseline for the current breakpoint
         this.ignoreNextLayoutChange = true;
         try {
-            const oldLayout = this.dockLayout;
             this.dockLayout = this.getDefaultLayout();
-
-            console.log(`DockManager: Layout changed from`, oldLayout, `to`, this.dockLayout);
-
-            // Force a complete re-render by adding a key that changes
-            this.layoutVersion = (this.layoutVersion || 0) + 1;
-            this.requestUpdate('dockLayout', oldLayout);
 
             // Ensure the igc-dockmanager instance applies the new layout
             this.updateComplete.then(() => {
