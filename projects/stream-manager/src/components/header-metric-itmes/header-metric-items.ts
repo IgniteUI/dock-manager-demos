@@ -38,9 +38,6 @@ export class AppHeaderMetricItems extends LitElement {
     @state()
     private bitrate = AppHeaderMetricItems.MIN_BITRATE;
 
-    @state()
-    private qualityInfo: IqualityLevel = qualityLevels[0];
-
     // Internal
     private readonly startTime = Date.now();
     private bitrateDirection = 1;
@@ -65,7 +62,6 @@ export class AppHeaderMetricItems extends LitElement {
         this._unsubscribeBp = responsiveService.addListener(({ current }) => {
             if (this.breakpoint !== current) {
                 this.breakpoint = current;
-                this.requestUpdate();
             }
         });
     }
@@ -79,10 +75,8 @@ export class AppHeaderMetricItems extends LitElement {
         super.disconnectedCallback();
     }
 
-    protected updated(changed: Map<string, unknown>) {
-        if (changed.has('bitrate')) {
-            this.qualityInfo = this.calculateQualityInfo(this.bitrate);
-        }
+    private get qualityInfo(): IqualityLevel {
+        return this.calculateQualityInfo(this.bitrate);
     }
 
     // Timers

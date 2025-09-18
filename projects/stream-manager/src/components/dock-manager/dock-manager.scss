@@ -12,6 +12,12 @@
 		
 		--sm-dock-manager-gutter: 0;
 	}
+	
+	igc-dockmanager::part(floating-window) {
+		box-shadow:
+			0 9px 46px 8px rgba(0, 0, 0, 0.8),
+			0 60px 32px 10px rgba(0, 0, 0, 0.12);
+	}
 }
 
 .app-dock-manager {

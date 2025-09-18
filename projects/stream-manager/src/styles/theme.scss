@@ -48,8 +48,20 @@
 	--ig-list-item-thumbnail-color-hover: var(--sm-special-purple);
 	--ig-list-item-thumbnail-color-active: var(--sm-special-purple);
 	
-	--ig-scrollbar-track-background: #{var(--ig-gray-50)};
-	--ig-scrollbar-thumb-background: #{var(--ig-gray-200)};
+	// Chat component scrollbar
+	--ig-scrollbar-size: #{ig.rem(12px)};
+	--ig-scrollbar-track-background: var(--ig-gray-50);
+	--ig-scrollbar-thumb-background: var(--ig-gray-200);
+	
+	// Dock manager scrollbars
+	--sb-size: #{ig.rem(12px)};
+	--sb-track-bg-color: var(--ig-gray-50);
+	--sb-thumb-bg-color: var(--ig-gray-200);
+	--sb-track-bg-color-hover: var(--ig-gray-50);
+	--sb-thumb-bg-color-hover: var(--ig-gray-200);
+	--sb-thumb-border-radius: #{ig.rem(32px)};
+	--sb-thumb-border-size: #{ig.rem(3px)};
+	
 	
 	// ACTIVITY
 	--sm-dim-purple: #{list.nth(ig.$brushes-regular, 2)};
