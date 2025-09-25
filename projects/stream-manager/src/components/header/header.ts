@@ -42,7 +42,6 @@ export default class Header extends LitElement {
         this._unsubscribeBp = responsiveService.addListener(({ current }) => {
             if (this.breakpoint!==current) {
                 this.breakpoint = current;
-                this.requestUpdate();
             }
         });
     }
@@ -79,10 +78,10 @@ export default class Header extends LitElement {
             <div class="sm-header__logo" slot="start">
                 ${ isSmall ? html`
                     <igc-icon-button
-                            class="sm-header__drawer-btn"
-                            variant="flat"
-                            aria-label="Open navigation"
-                            @click=${ this.onToggleNavDrawerClick }
+                        class="sm-header__drawer-btn"
+                        variant="flat"
+                        aria-label="Open navigation"
+                        @click=${ this.onToggleNavDrawerClick }
                     >
                         <igc-icon name="hamburger" collection="material"></igc-icon>
                     </igc-icon-button>

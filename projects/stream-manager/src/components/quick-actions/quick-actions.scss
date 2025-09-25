@@ -2,18 +2,23 @@
 
 :host {
 	igc-switch {
-		--thumb-off-color: #{adaptive-contrast(var(--ig-primary-800))};
+		--thumb-off-color: #{var(--sm-light-purple)};
+		--thumb-off-hover-color: #{var(--sm-light-purple)};
+		
 		--thumb-on-color: #{adaptive-contrast(var(--ig-primary-800))};
+		--thumb-on-hover-color: #{adaptive-contrast(var(--ig-primary-800))};
 		
-		--track-off-color: #{var(--ig-primary-800)};
-		--track-off-hover-color: #{var(--ig-primary-800)};
+		--track-off-color: #{var(--ig-primary-400)};
+		--track-off-hover-color: #{var(--ig-primary-400)};
 		
-		--track-on-color: #{var(--ig-primary-800)};
-		--track-on-hover-color: #{var(--ig-primary-800)};
+		--track-on-color: #{var(--ig-primary-500)};
+		--track-on-hover-color: #{var(--ig-primary-500)};
 		
 		
-		--border-color: #{var(--ig-primary-800)};
-		--border-hover-color: #{var(--ig-primary-800)};
+		--border-color: transparent;
+		--border-hover-color: transparent;
+		--focus-fill-color: #{var(--sm-light-purple)};
+		--focus-outline-color: rgba(0, 0, 0, 0.12);
 	}
 	
 	igc-tabs {

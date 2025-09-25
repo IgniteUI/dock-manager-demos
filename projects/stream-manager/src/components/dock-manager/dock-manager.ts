@@ -1,6 +1,6 @@
 // dock-manager.ts
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { defineCustomElements } from 'igniteui-dockmanager/loader';
 import '../stream-chat/stream-chat.ts';
 import '../stream-preview/stream-preview.ts';
@@ -28,15 +28,9 @@ export default class AppDockManager extends LitElement {
     @property({ type: Object })
     private dockLayout!: IgcDockManagerLayout;
 
-    // Add a version counter to force re-render
-    @state()
-    private layoutVersion = 0;
-
-    // Marks when the initial dock layout pass is done
-    private layoutInitialized = false;
-
-    // Suppress the next layoutChange that fires immediately after a programmatic reset
-    private ignoreNextLayoutChange = false;
+    // Keep a counter for programmatic layout updates.
+    // Each time we set the layout programmatically, increment this; consume on layoutChange.
+    private suppressLayoutChangeCount = 0;
 
     // Track the current breakpoint from the unified responsive service
     private currentBreakpoint: Breakpoint = responsiveService.current;
@@ -44,7 +38,6 @@ export default class AppDockManager extends LitElement {
     private unsubscribeBp?: () => void;
 
     private onPaneClose = () => {
-        if (!this.layoutInitialized) return;
         this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: true },
             bubbles: true,
@@ -53,11 +46,13 @@ export default class AppDockManager extends LitElement {
     };
 
     private onLayoutChange = () => {
-        if (!this.layoutInitialized) return;
-        if (this.ignoreNextLayoutChange) {
-            this.ignoreNextLayoutChange = false;
+        // Consume programmatic layout changes first
+        if (this.suppressLayoutChangeCount > 0) {
+            this.suppressLayoutChangeCount -= 1;
             return;
         }
+
+        // Any other layout change is user-driven (resize, move, pin/unpin, etc.)
         this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: true },
             bubbles: true,
@@ -66,58 +61,26 @@ export default class AppDockManager extends LitElement {
     };
 
     public resetLayout = () => {
-        this.ignoreNextLayoutChange = true;
+        // Programmatic change -> expect one layoutChange
+        this.suppressLayoutChangeCount += 1;
         this.dockLayout = this.getDefaultLayout();
+
         this.dispatchEvent(new CustomEvent('app-dirty-change', {
             detail: { dirty: false },
             bubbles: true,
             composed: true
         }));
-        // the layout remains initialized; only the immediate programmatic change is ignored
     };
 
-    protected firstUpdated() {
+    protected async firstUpdated() {
         const dm = this.renderRoot.querySelector('igc-dockmanager') as HTMLElement | null;
         if (!dm) return;
 
         dm.addEventListener('paneClose', this.onPaneClose as EventListener);
         dm.addEventListener('paneClosed', this.onPaneClose as EventListener);
 
-        const initHandler = () => {
-            this.layoutInitialized = true;
-            dm.addEventListener('layoutChange', this.onLayoutChange as EventListener);
-            this.dispatchEvent(new CustomEvent('app-dirty-change', {
-                detail: { dirty: false },
-                bubbles: true,
-                composed: true
-            }));
-        };
-        dm.addEventListener('layoutChange', initHandler as EventListener, { once: true });
-
-        window.addEventListener('reset-app-request', this.resetLayout as EventListener);
-
-        // Initial sync based on viewport
-        const w = window.innerWidth || 0;
-        const computed = responsiveService.compute(w);
-        if (!this.dockLayout || computed !== this.currentBreakpoint) {
-            this.currentBreakpoint = computed;
-            this.ignoreNextLayoutChange = true;
-            this.dockLayout = this.getDefaultLayout();
-            this.layoutVersion = (this.layoutVersion || 0) + 1;
-            this.requestUpdate();
-
-            // Ensure DM applies the new layout immediately
-            this.updateComplete.then(() => {
-                const dmEl = this.renderRoot.querySelector('igc-dockmanager') as any;
-                if (dmEl) dmEl.layout = this.dockLayout;
-            });
-
-            this.dispatchEvent(new CustomEvent('app-dirty-change', {
-                detail: { dirty: false },
-                bubbles: true,
-                composed: true
-            }));
-        }
+        // Listen to layoutChange exactly once here
+        dm.addEventListener('layoutChange', this.onLayoutChange as EventListener);
     }
 
     private getDefaultLayout(): IgcDockManagerLayout {
@@ -336,6 +299,32 @@ export default class AppDockManager extends LitElement {
             this.currentBreakpoint = current;
             this.applyResponsiveLayout();
         });
+
+        // Initial baseline BEFORE first render
+        const w = window.innerWidth || 0;
+        const computed = responsiveService.compute(w);
+        if (!this.dockLayout || computed !== this.currentBreakpoint) {
+            this.currentBreakpoint = computed;
+
+            // Programmatic initial set -> expect one layoutChange
+            this.suppressLayoutChangeCount += 1;
+            this.dockLayout = this.getDefaultLayout();
+
+            // Ensure DM applies the new layout after the first render
+            this.updateComplete.then(() => {
+                const dmEl = this.renderRoot.querySelector('igc-dockmanager') as any;
+                if (dmEl) dmEl.layout = this.dockLayout;
+            });
+
+            // Not dirty after initial baseline
+            this.dispatchEvent(new CustomEvent('app-dirty-change', {
+                detail: { dirty: false },
+                bubbles: true,
+                composed: true
+            }));
+        }
+
+        window.addEventListener('reset-app-request', this.resetLayout as EventListener);
     }
 
     public disconnectedCallback() {
@@ -347,41 +336,26 @@ export default class AppDockManager extends LitElement {
         super.disconnectedCallback?.();
     }
 
-
     private applyResponsiveLayout(): void {
-        console.log(`DockManager: applyResponsiveLayout() called for breakpoint ${this.currentBreakpoint}`);
+        // Programmatic responsive baseline -> expect one layoutChange
+        this.suppressLayoutChangeCount += 1;
 
-        // Programmatically switch to the baseline for the current breakpoint
-        this.ignoreNextLayoutChange = true;
-        try {
-            const oldLayout = this.dockLayout;
-            this.dockLayout = this.getDefaultLayout();
+        this.dockLayout = this.getDefaultLayout();
 
-            console.log(`DockManager: Layout changed from`, oldLayout, `to`, this.dockLayout);
+        this.updateComplete.then(() => {
+            const dm = this.renderRoot.querySelector('igc-dockmanager') as any;
+            if (dm) {
+                dm.layout = this.dockLayout;
+            }
+        });
 
-            // Force a complete re-render by adding a key that changes
-            this.layoutVersion = (this.layoutVersion || 0) + 1;
-            this.requestUpdate('dockLayout', oldLayout);
-
-            // Ensure the igc-dockmanager instance applies the new layout
-            this.updateComplete.then(() => {
-                const dm = this.renderRoot.querySelector('igc-dockmanager') as any;
-                if (dm) {
-                    dm.layout = this.dockLayout;
-                }
-            });
-
-            // This becomes the new default for this screen size; not dirty
-            this.dispatchEvent(new CustomEvent('app-dirty-change', {
-                detail: { dirty: false },
-                bubbles: true,
-                composed: true
-            }));
-        } finally {
-            // ignoreNextLayoutChange prevents onLayoutChange from marking dirty.
-        }
+        // Not dirty when snapping to responsive baseline
+        this.dispatchEvent(new CustomEvent('app-dirty-change', {
+            detail: { dirty: false },
+            bubbles: true,
+            composed: true
+        }));
     }
-
 
     render() {
 		return html`

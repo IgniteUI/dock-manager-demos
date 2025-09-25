@@ -9,6 +9,7 @@ export type StagedMsg = {
     time: string;
     message: string;
     isSelf?: boolean;
+    avatar?: boolean;
 };
 
 export const staged: StagedMsg[] = [
@@ -53,10 +54,11 @@ export const staged: StagedMsg[] = [
     },
     {
         username: 'FoxyOnAir',
-        role: 'streamer',
-        badges: ['verified'],
+        role: 'user',
+        badges: ['diamond'],
         time: '1:31',
         message: 'Yeah I got a looper pedal running—I\'ll break it down after this tune',
+        avatar: true
     },
     {
         username: 'JazzJack',
@@ -80,10 +82,11 @@ export const staged: StagedMsg[] = [
     },
     {
         username: 'FoxyOnAir',
-        role: 'streamer',
+        role: 'user',
         badges: ['diamond'],
         time: '1:54',
         message: 'Thank you for following me',
+        avatar: true
     },
     {
         username: 'GuitarNerd',
@@ -104,13 +107,6 @@ export const staged: StagedMsg[] = [
         badges: ['subscriber'],
         time: '2:05',
         message: 'That slide work is incredible! How long have you been playing?',
-    },
-    {
-        username: 'FoxyOnAir',
-        role: 'streamer',
-        badges: ['diamond'],
-        time: '2:07',
-        message: 'Thanks! Been playing for about 15 years, picked up slide about 5 years ago',
     },
     {
         username: 'VinylCat',
@@ -135,6 +131,6 @@ export const staged: StagedMsg[] = [
 ];
 
 // Split the messages for preloading and streaming
-export const preloadedMessages = staged.slice(0, 12);
-export const streamingMessages = staged.slice(12);
+export const preloadedMessages = staged.slice(0, 13);
+export const streamingMessages = staged.slice(13);
 

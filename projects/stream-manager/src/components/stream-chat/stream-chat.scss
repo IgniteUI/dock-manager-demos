@@ -1,8 +1,10 @@
 @use 'igniteui-theming' as *;
 
 :host {
-	overflow-x: hidden;
+	overflow: hidden;
+	position: relative;
 	--ig-button-background: var(--sm-light-purple);
+	
 	
 	igc-chat {
 		height: 100%;
@@ -16,6 +18,14 @@
 	}
 }
 
+igc-chat-input {
+	padding: 0;
+}
+
+igc-chat::part(input-actions-end) {
+	width: 100%;
+}
+
 igc-chat::part(chat-messages) {
 	padding-block-end: 0;
 }
@@ -25,13 +35,26 @@ igc-chat::part(message-item) {
 	margin-inline-end: auto;
 }
 
-igc-chat::part(message-container ) {
-	padding: 0 !important;
+igc-chat::part(message-container) {
+	--igc-chat-sent-message-start-margin: 0;
+	
+	padding-block: 0;
+	padding-inline-end: rem(24px);
+	padding-inline-start: 0;
+	
+	@container(max-width: 400px) {
+		padding-inline-end: rem(16px);
+	}
 }
 
-igc-chat::part(input-container) {
+igc-chat::part(input-area-container) {
 	margin: 0;
 	padding-block: 0;
+	padding-inline: rem(24px);
+	
+	@container(max-width: 400px) {
+		padding-inline: rem(16px);
+	}
 }
 
 igc-chat::part(text-input) {

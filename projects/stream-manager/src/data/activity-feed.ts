@@ -32,7 +32,7 @@ export const activityFeed: IActivityFeedItem[] = [
 		type: 'subscribed',
 		icon: 'star',
 		message: 'Subscribed to your channel',
-		timeAgo: '2 minute ago',
+		timeAgo: '2 min ago',
 	},
 	{
 		id: 'contributed',
@@ -48,6 +48,6 @@ export const activityFeed: IActivityFeedItem[] = [
 		type: 'cheered',
 		icon: 'diamond',
 		message: 'Cheered 100 Bits',
-		timeAgo: '3 minute ago',
+		timeAgo: '3 min ago',
 	},
 ];
