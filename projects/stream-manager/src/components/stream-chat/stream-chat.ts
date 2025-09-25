@@ -1,21 +1,22 @@
 import { LitElement, html, unsafeCSS, nothing } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import {
     defineComponents,
     IgcChatComponent,
-    IgcMessage,
 } from 'igniteui-webcomponents';
 import styles from './stream-chat.scss?inline';
 import {
     preloadedMessages,
     streamingMessages,
-    type StagedMsg,
+    type StagedMsg, Badge,
 } from '../../data/stream-chat.ts';
+import profileImage from '../../assets/images/profile.png';
 
 defineComponents(IgcChatComponent);
 
+type ChatMessage = NonNullable<IgcChatComponent['messages']>[number];
 type MessageEventDetail = { text: string; sender: string };
-type Draft = { text: string; attachments: NonNullable<IgcMessage['attachments']> };
+type Draft = { text: string; attachments: NonNullable<ChatMessage['attachments']> };
 type StagedWithTs = StagedMsg & { ts: Date };
 
 const TYPING_DELAY_MS = 400;
@@ -25,6 +26,10 @@ const EMPTY_DRAFT: Draft = { text: '', attachments: [] };
 @customElement('app-stream-chat')
 export default class StreamChat extends LitElement {
     @query('igc-chat') private chat!: IgcChatComponent;
+
+    // Configurable display name and badges for the local user
+    @property({ type: String, attribute: 'user-name' }) userName = 'FoxyOnAir';
+    @property({ type: Array }) userBadges: Badge[] = ['diamond'];
 
     // Holds per-message metadata (role, username, etc.) normalized with a Date
     private readonly messageData = new Map<string, StagedWithTs>();
@@ -124,15 +129,15 @@ export default class StreamChat extends LitElement {
 
     // ---------- message builders ----------
 
-    // Centralized builder for IgcMessage, ensures consistent shape
+    // Centralized builder for IgcMessage ensures a consistent shape
     private buildIgcMessage(
-        partial: Pick<IgcMessage, 'text' | 'sender'> & Partial<IgcMessage>,
-    ): IgcMessage {
+        partial: Pick<ChatMessage, 'text' | 'sender'> & Partial<ChatMessage>,
+    ): ChatMessage {
         return {
             id: partial.id ?? this.makeId(),
             text: partial.text,
             sender: partial.sender,
-            timestamp: partial.timestamp ?? this.now(),
+            timestamp: partial.timestamp ?? this.nowISO(),
             attachments: partial.attachments ?? [],
         };
     }
@@ -155,7 +160,7 @@ export default class StreamChat extends LitElement {
 
     // ---------- append helpers ----------
 
-    private appendMessage(msg: IgcMessage, isNew = true): void {
+    private appendMessage(msg: ChatMessage, isNew = true): void {
         if (!this.chat) return;
         if (isNew) this.newMessageIds.add(msg.id);
         this.chat.messages = [...(this.chat.messages ?? []), msg]; // immutable update
@@ -168,7 +173,7 @@ export default class StreamChat extends LitElement {
             id,
             text: s.message,
             sender: s.isSelf ? 'user': s.username,
-            timestamp: this.messageData.get(id)!.ts,
+            timestamp: this.messageData.get(id)!.ts.toISOString(),
         });
         this.appendMessage(msg, isNew);
     }
@@ -183,8 +188,8 @@ export default class StreamChat extends LitElement {
         const text = 'This is an igc-chat component demo, for more info visit:';
         const id = this.makeId();
 
-        this.storeMeta(id, this.buildStaged('🤖 Auto Replay ', 'igc-bot', text, false));
-        this.appendMessage(this.buildIgcMessage({ id, text, sender: '🤖 Auto Replay ' }), true);
+        this.storeMeta(id, this.buildStaged('🤖 Auto-reply ', 'igc-bot', text, false));
+        this.appendMessage(this.buildIgcMessage({ id, text, sender: '🤖 Auto-reply ' }), true);
     }
 
     // ---------- user flows ----------
@@ -194,6 +199,14 @@ export default class StreamChat extends LitElement {
         const text = this.extractText(e);
         if (!text) return;
         this.setDraftEmpty();
+
+        // Attach metadata (including badges) to the just-added message
+        const msgs = this.chat?.messages ?? [];
+        const last = msgs[msgs.length - 1];
+        if (last && last.text === text && last.sender === 'user') {
+            const meta = this.buildStaged(this.userName, 'user', text, true);
+            this.storeMeta(last.id, { ...meta, badges: this.userBadges });
+        }
 
         // User produced a message -> app is dirty
         window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
@@ -213,7 +226,8 @@ export default class StreamChat extends LitElement {
         window.dispatchEvent(new CustomEvent('app-dirty-change', { detail: { dirty: true } }));
 
         const id = this.makeId();
-        this.storeMeta(id, this.buildStaged('user', 'user', text, true));
+        const meta = this.buildStaged(this.userName, 'user', text, true);
+        this.storeMeta(id, { ...meta, badges: this.userBadges });
         this.appendMessage(
             this.buildIgcMessage({
                 id,
@@ -229,15 +243,17 @@ export default class StreamChat extends LitElement {
 
     // ---------- templates ----------
 
-    private renderMessage = (message: IgcMessage) => {
+    private renderMessage = (message: ChatMessage) => {
         const stagedData = this.messageData.get(message.id);
         const isNew = this.newMessageIds.has(message.id);
         const role = stagedData?.role || 'user';
-        const author = stagedData?.username || message.sender;
-        const badge = stagedData?.badges;
-        const tsMsg = (!Number.isNaN(message.timestamp.getTime())) ? message.timestamp : undefined;
-        const tsMeta = (stagedData?.ts instanceof Date && !Number.isNaN(stagedData.ts.getTime())) ? stagedData.ts : undefined;
-        const ts = tsMsg ?? tsMeta;
+        const author = stagedData?.username || (message.sender === 'user' ? this.userName : message.sender);
+        const badges = stagedData?.badges ?? [];
+
+        // Normalize timestamps from either the message or staged metadata
+        const tsFromMsg = message.timestamp ? this.toDate(message.timestamp as unknown as Date | string | number) : undefined;
+        const tsFromMeta = stagedData?.ts ? this.toDate(stagedData.ts as unknown as Date | string | number) : undefined;
+        const ts = tsFromMsg ?? tsFromMeta;
 
         return html`
             <style>
@@ -249,16 +265,13 @@ export default class StreamChat extends LitElement {
                     line-height: 20px;
                     position: relative;
                 }
-
                 .sm-message__time {
                     color: var(--ig-gray-500);
                     float: left;
                 }
-
                 .sm-message__username {
                     font-weight: 700;
                 }
-
                 .sm-message__time,
                 .sm-message__username,
                 .sm-message__badges,
@@ -266,70 +279,23 @@ export default class StreamChat extends LitElement {
                     position: relative;
                     z-index: 1;
                 }
-
-                .sm-message--viewer {
-                    .sm-message__username {
-                        color: var(--ig-warn-700);
-                    }
-                }
-
-                .sm-message--moderator {
-                    .sm-message__username {
-                        color: #9AF2E4;
-                    }
-                }
-
-                .sm-message--streamer {
-                    .sm-message__username {
-                        color: #8B5BB1;
-                    }
-                }
-
-                .sm-message--bot {
-                    .sm-message__username {
-                        color: #F59321;
-                    }
-                }
-
-                .sm-message--broadcaster {
-                    .sm-message__username {
-                        color: #6DB1FF;
-                    }
-                }
-
-                .sm-message--subscriber {
-                    .sm-message__username {
-                        color: #EE5879;
-                    }
-                }
-
+                .sm-message--viewer { .sm-message__username { color: var(--ig-warn-700); } }
+                .sm-message--moderator { .sm-message__username { color: #9AF2E4; } }
+                .sm-message--streamer { .sm-message__username { color: #8B5BB1; } }
+                .sm-message--bot { .sm-message__username { color: #F59321; } }
+                .sm-message--broadcaster { .sm-message__username { color: #6DB1FF; } }
+                .sm-message--subscriber { .sm-message__username { color: #EE5879; } }
                 .sm-message--igc-bot {
-                    .sm-message__username {
-                        color: var(--ig-gray-500);
-                    }
-
-                    .sm-message__text {
-                        color: var(--ig-gray-300);
-                    }
+                    .sm-message__username { color: var(--ig-gray-500); }
+                    .sm-message__text { color: var(--ig-gray-300); }
                 }
-
-                .sm-message--user {
-                    .sm-message__username {
-                        color: #fff;
-                    }
-                }
-
+                .sm-message--user { .sm-message__username { color: #fff; } }
                 .sm-message__badges {
                     display: inline-flex;
                     align-items: center;
                     gap: 4px;
-
-                    igc-icon {
-                        --ig-size: 1;
-                        color: var(--sm-dim-purple);
-                    }
+                    igc-icon { --ig-size: 1; color: var(--sm-dim-purple); }
                 }
-
                 .sm-message__info {
                     float: left;
                     display: flex;
@@ -338,20 +304,18 @@ export default class StreamChat extends LitElement {
                     margin-inline-end: 4px;
                     z-index: 1;
                 }
-
                 .sm-message--new {
                     transition: background 500ms ease-out;
                     animation: new-message-enter 500ms ease-out forwards;
                 }
-
                 @keyframes new-message-enter {
-                    from {
-                        transform: translateY(-12px);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateY(0);
-                        opacity: 1;
+                    from { transform: translateY(-12px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+
+                igc-chat::part(message-header) {
+                    &:empty {
+                        display: none;
                     }
                 }
             </style>
@@ -360,36 +324,24 @@ export default class StreamChat extends LitElement {
                 @animationend=${ () => this.newMessageIds.delete(message.id) }
             >
                 <div class="sm-message__info">
-                    <span class="sm-message__time">
-                      ${ this.formatTime(ts) }
-                    </span>
-
-                    
-                      ${badge ? html`
-                          <span class="sm-message__badges">
-                            <igc-icon name="${badge}" collection="material"></igc-icon>
-                          </span>
-                      ` : nothing}
-
+                    <span class="sm-message__time">${ this.formatTime(ts) }</span>
                     ${role === 'user' ? html`
+                        <igc-avatar shape="circle" style="--size: 18px;" src="${profileImage}"></igc-avatar>
+                    ` : nothing}
+                    ${badges.length ? html`
                         <span class="sm-message__badges">
-                            <igc-icon name="verified" collection="material"></igc-icon>
+                            ${badges.map(b => html`<igc-icon name="${b}" collection="material"></igc-icon>`)}
                         </span>
-                   ` : nothing}
-                    
+                    ` : nothing}
                 </div>
-
-                <span class="sm-message__username">
-                    ${ author }:
-                </span>
+                
+                <span class="sm-message__username">${ author }:</span>
                 
                 <span class="sm-message__text">
-                    ${ message.text } 
-                    
+                    ${ message.text }
                     ${ role === 'igc-bot' ? html`
                         <a href="https://github.com/IgniteUI/igniteui-webcomponents/wiki/Chat-UI-Component" target="_blank">Documentation</a>
                     ` : nothing}
-                    
                 </span>
             </div>
         `;
@@ -444,16 +396,16 @@ export default class StreamChat extends LitElement {
         await this.chat?.updateComplete;
         if (!this.chat) return;
 
-        // Configure chat only once it’s fully upgraded
         this.chat.options = {
             inputPlaceholder: 'Write a message here',
             suggestions: [],
             disableInputAttachments: true,
-            templates: {
-                messageActionsTemplate: () => nothing,
-                messageTemplate: (m: IgcMessage) => this.renderMessage(m),
-                messageAuthorTemplate: (m: IgcMessage) => this.renderMessage(m),
-                textAreaActionsTemplate: () => this.renderTextAreaActions(),
+            renderers: {
+                messageContent: ({ message }) => this.renderMessage(message as ChatMessage),
+                messageHeader: () => nothing,
+                messageActions: () => nothing,
+                inputActionsEnd: () => this.renderTextAreaActions(),
+                sendButton: () => nothing,
             },
         };
 
