@@ -22,4 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-./src/styles/theme.css
+
+**/styles/*.css
+!/src/styles/theme.css.map
+!/src/styles/theme.css

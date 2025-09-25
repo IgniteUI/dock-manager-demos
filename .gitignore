@@ -30,3 +30,7 @@ dist-ssr
 .ideo
 public/downloads
 projects.ports.json
+
+**/styles/*.css
+!/src/styles/styles.css
+!/src/styles/styles.css.map
