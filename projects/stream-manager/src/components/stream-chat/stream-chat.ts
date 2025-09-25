@@ -340,7 +340,8 @@ export default class StreamChat extends LitElement {
                 <span class="sm-message__text">
                     ${ message.text }
                     ${ role === 'igc-bot' ? html`
-                        <a href="https://github.com/IgniteUI/igniteui-webcomponents/wiki/Chat-UI-Component" target="_blank">Documentation</a>
+                        <a href="https://github.com/IgniteUI/igniteui-webcomponents/wiki/Chat-UI-Component" target="_blank">Wiki</a>, 
+                        <a href="https://www.infragistics.com/products/ignite-ui-web-components/web-components/components/interactivity/chat" target="_blank">Overview</a>
                     ` : nothing}
                 </span>
             </div>
