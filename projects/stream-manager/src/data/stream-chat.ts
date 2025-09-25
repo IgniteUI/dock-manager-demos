@@ -131,6 +131,6 @@ export const staged: StagedMsg[] = [
 ];
 
 // Split the messages for preloading and streaming
-export const preloadedMessages = staged.slice(0, 12);
-export const streamingMessages = staged.slice(12);
+export const preloadedMessages = staged.slice(0, 13);
+export const streamingMessages = staged.slice(13);
 
