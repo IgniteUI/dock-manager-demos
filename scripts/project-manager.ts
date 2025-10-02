@@ -99,8 +99,13 @@ async function runDev() {
         }
     }
     console.log('✅ All projects are copied under dist/projects/<id>/');
+    console.log('\n================ Project URLs ================');
+    console.log('Once the main app starts, projects will be available at:');
+    for (const project of projects) {
+        console.log(`  ➜  ${project}: [main-app-url]/projects/${project}`);
+    }
+    console.log('=============================================\n');
 }
-
 
 // Keep build mode copying into dist/projects/<id> for production/preview
 async function runBuild() {
@@ -110,7 +115,7 @@ async function runBuild() {
     const rootDistDir = join(process.cwd(), 'dist');
     const projectsDistDir = join(rootDistDir, 'projects');
 
-    // Ensure root dist/projects directory exists
+    // Ensure the root dist / projects directory exists
     if (!existsSync(rootDistDir)) {
         mkdirSync(rootDistDir, { recursive: true });
     }
@@ -169,4 +174,3 @@ async function runBuild() {
         process.exit(1);
     }
 })();
-

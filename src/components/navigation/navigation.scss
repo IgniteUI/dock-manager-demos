@@ -19,3 +19,15 @@
 	text-transform: uppercase;
 	font-weight: 700;
 }
+
+
+.is-logo-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	svg {
+		width: rem(16px);
+		height: rem(16px);
+	}
+}

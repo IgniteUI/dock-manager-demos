@@ -1,4 +1,5 @@
 import { LitElement, html, unsafeCSS } from 'lit';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 import {
 	defineComponents,
@@ -90,12 +91,24 @@ export default class Navigation extends LitElement {
 
                 ${this.items.map(item => html`
                     <igc-nav-drawer-item
-                            ?active=${ this.activePath === item.route || this.activePath.startsWith(item.route + '/') }
-                            @click=${ (e: Event) => this.handleNavigation(item.route, e)}>
-                        <igc-icon
-                                slot="icon" name="${item.icon}"
-                                collection="${item.collection || 'material'}">
-                        </igc-icon>
+                        ?active=${ this.activePath === item.route || this.activePath.startsWith(item.route + '/') }
+                        @click=${ (e: Event) => this.handleNavigation(item.route, e)}>
+
+                        ${item.svg
+                            ? html`
+                                <div slot="icon" class="is-logo-icon">
+                                    ${unsafeHTML(item.svg)}
+                                </div>
+                            `
+                            : html`
+                                <igc-icon
+                                        slot="icon"
+                                        name="${item.icon || 'project_fallback'}"
+                                        collection="${item.collection || 'material'}">
+                                </igc-icon>
+                            `
+                        }
+                    
                         <span slot="content">${item.label}</span>
                     </igc-nav-drawer-item>
                 `)}

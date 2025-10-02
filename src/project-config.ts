@@ -1,9 +1,14 @@
+import { LOGO_STREAM_MANAGER } from './assets/icons/icons.ts';
+
 export interface ProjectConfig {
 	id: string;
 	name: string;
-	icon: string;
-	component: string;
-	route: string;
+    /**
+     * Icon can be:
+     * - a registry icon name (e.g., 'smanager'), or
+     * - a raw SVG string (e.g., LOGO_STREAM_MANAGER)
+     */
+	icon?: string;
 	description?: string;
 }
 
@@ -11,17 +16,12 @@ export const projects: ProjectConfig[] = [
 	{
 		id: 'stream-manager',
 		name: 'Stream Manager',
-		icon: 'smanager',
-		component: 'stream-manager',
-		route: '/projects/stream-manager',
+        icon: LOGO_STREAM_MANAGER,
 		description: 'Stream Manager demo'
 	},
     {
         id: 'demo',
         name: 'Demo',
-        icon: 'smanager',
-        component: 'demo',
-        route: '/projects/demo',
         description: 'Minimal demo project'
     }
 ];

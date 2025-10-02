@@ -1,3 +1,6 @@
-import { createBaseViteConfig } from '../../scripts/vite.project-base';
+import { defineConfig } from 'vite';
 
-export default createBaseViteConfig();
+
+export default defineConfig({
+    base: "./",
+});

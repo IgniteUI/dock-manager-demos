@@ -6,8 +6,8 @@
   "author": "infragistics",
   "description": "Dock manager - showcase sample apps",
   "scripts": {
-    "dev": "npm run install-projects && concurrently -n \"main,projects,styles\" -c \"cyan,magenta,gray\" \"npm run dev:main\" \"npm run dev:projects\" \"npm run watch-styles\"",
-    "dev:main": "vite",
+    "dev": "npm run install-projects && npm run dev:projects && concurrently -n \"main,styles\" -c \"cyan,gray\" \"npm run dev:main\" \"npm run watch-styles\"",
+    "dev:main": "vite --open",
     "dev:projects": "tsx scripts/project-manager.ts dev",
     "install-projects": "tsx scripts/project-manager.ts install",
     "build": "npm run install-projects && npm run compile-styles && tsc && vite build && npm run build:projects",

@@ -4,6 +4,7 @@ import {
 	HAMBURGER_MENU,
 	HOME,
 	LOGO_STREAM_MANAGER,
+    FALLBACK_PROJECT_ICON
 } from '../assets/icons/icons.ts';
 
 /**
@@ -14,4 +15,5 @@ export function registerAppIcons(): void {
 	registerIconFromText('hamburger_menu', HAMBURGER_MENU, 'material');
 	registerIconFromText('close', CLOSE, 'material');
 	registerIconFromText('home', HOME, 'material');
+	registerIconFromText('project_fallback', FALLBACK_PROJECT_ICON, 'material');
 }

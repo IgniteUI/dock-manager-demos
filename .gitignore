@@ -31,6 +31,6 @@ dist-ssr
 public/downloads
 projects.ports.json
 
-**/styles/*.css
-!/src/styles/styles.css
-!/src/styles/styles.css.map
+# Allow only specific compiled CSS that should be versioned
+**/*.css
+**/*.css.map
