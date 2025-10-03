@@ -2,16 +2,19 @@ import type { Route } from '@vaadin/router';
 import { projects } from './project-config';
 
 // Pick Stream Manager if present; otherwise the first project.
-const defaultRoute = (projects.find(p => p.id === 'stream-manager') || projects[0])?.id || '/projects/stream-manager';
+const defaultProjectId = (projects.find(p => p.id === 'stream-manager') || projects[0])?.id ?? 'stream-manager';
+const defaultProjectPath = `/projects/${defaultProjectId}`;
 
 export const routes: Route[] = [
-    // Redirect roots to the default project
-    { path: '/', redirect: defaultRoute },
-    { path: '/projects', redirect: defaultRoute },
+    // Root → absolute default
+    { path: '/', redirect: defaultProjectPath },
 
-    // Projects view (expects :projectName)
+    // Parent segment → relative child redirect (avoids /projects/projects/…)
+    { path: '/projects', redirect: defaultProjectId },
+
+    // Project view
     { path: '/projects/:projectName', component: 'projects-view' },
 
-    // Catch-all → default
-    { path: '(.*)', redirect: defaultRoute }
+    // Catch-all → absolute default
+    { path: '(.*)', redirect: defaultProjectPath },
 ];
