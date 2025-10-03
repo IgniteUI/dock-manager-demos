@@ -90,7 +90,6 @@ export class ProjectIframe extends LitElement {
                 class="dm-loading ${this._loading ? 'dm-loading--visible': ''}"
                 role="status"
                 aria-live="polite"
-                aria-hidden="${String(!this._loading)}"
                 aria-describedby="${ this._loading ? 'dm-loading-message' : '' }"
                 tabindex="0">
                 <igc-circular-progress indeterminate></igc-circular-progress>
@@ -109,7 +108,6 @@ export class ProjectIframe extends LitElement {
                 aria-label="Interactive demo for ${this.projectName} project"
                 title="Project: ${this.projectName}"
                 loading="lazy"
-                sandbox="allow-scripts allow-same-origin"
                 referrerpolicy="no-referrer">
             </iframe>
         `;
