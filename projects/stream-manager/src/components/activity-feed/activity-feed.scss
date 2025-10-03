@@ -13,9 +13,9 @@
 	
 	&--tipped,
 	&--contributed {
-		--ig-list-item-thumbnail-color: var(--sm-activity-special);
-		--ig-list-item-thumbnail-color-hover: var(--sm-activity-special);
-		--ig-list-item-thumbnail-color-active: var(--sm-activity-special);
+		--item-thumbnail-color: var(--sm-activity-special);
+		--item-thumbnail-color-hover: var(--sm-activity-special);
+		--item-thumbnail-color-active: var(--sm-activity-special);
 	}
 	
 	&:focus,

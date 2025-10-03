@@ -20,6 +20,23 @@
 	}
 }
 
+igc-dockmanager::part(context-menu-content) {
+	background: var(--ig-surface-500);
+	color: var(--ig-gray-800);
+	border-color: var(--ig-gray-300);
+	border-radius: rem(4px) rem(4px) 0 0;
+	overflow: hidden;
+	box-shadow: none;
+}
+
+igc-dockmanager::part(context-menu-item) {
+	&:hover,
+	&:focus {
+		color: var(--sm-light-purple);
+		background: var(--ig-gray-50);
+	}
+}
+
 .app-dock-manager {
 	--igc-button-text: var(--ig-gray-500);
 	--igc-dock-background: var(--ig-gray-50);
