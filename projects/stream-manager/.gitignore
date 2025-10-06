@@ -26,3 +26,5 @@ dist-ssr
 **/styles/*.css
 !/src/styles/theme.css.map
 !/src/styles/theme.css
+
+package-lock.json

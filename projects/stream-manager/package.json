@@ -16,7 +16,7 @@
     "@lit-labs/motion": "^1.0.9",
     "dompurify": "^3.2.6",
     "igniteui-dockmanager": "^1.17.0",
-    "igniteui-theming": "v19.3.0-beta.3",
+    "igniteui-theming": "v20.0.0",
     "igniteui-webcomponents": "6.3.1",
     "lit": "^3.2.1",
     "marked": "^16.3.0",
